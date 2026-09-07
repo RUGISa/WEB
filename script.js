@@ -357,7 +357,7 @@ function lesson(group, title, nav, kind, description, points, syntax, mission, h
   return { group, title, nav, kind, description, points, syntax, mission, hint, files, validate, explain };
 }
 
-const storageKey = 'frame-study-v3';
+const storageKey = 'frame-study-v5';
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch { saved = {}; }
 
@@ -370,7 +370,7 @@ const state = {
 };
 
 const el = Object.fromEntries([
-  'sidebar','sidebarClose','sidebarOverlay','curriculum','summaryProgress','progressBar','crumb','lessonNumber','lessonKind','lessonTitle','lessonDescription','learningPoints','syntaxCode','missionText','problemNumber','problemFile','successCondition','missionResult','editorTabs','codeEditor','lineNumbers','hintButton','hintBox','runButton','previewFrame','explanationList','prevButton','nextButton','resetButton','menuButton','toast','saveState'
+  'sidebar','sidebarClose','sidebarOverlay','curriculum','summaryProgress','progressBar','crumb','lessonNumber','lessonKind','lessonTitle','lessonDescription','learningPoints','syntaxCode','missionText','problemNumber','problemFile','successCondition','missionResult','codeFeedback','feedbackTitle','feedbackMessage','editorTabs','codeEditor','lineNumbers','hintButton','hintBox','runButton','previewFrame','explanationList','prevButton','nextButton','resetButton','menuButton','toast','saveState'
 ].map(id => [id, document.getElementById(id)]));
 
 function filesFor(index) {
@@ -462,7 +462,6 @@ function renderLesson() {
   renderExplain();
   runPreview(false);
   renderCurriculum();
-  updateMission(l.validate(filesFor(state.current)));
   el.prevButton.disabled = state.current === 0;
 }
 
@@ -512,27 +511,276 @@ function escapeHtml(str) {
 }
 
 function makePreview(files) {
+  const runtimeGuard = `<script>window.__frameStudyRuntimeErrors=[];window.addEventListener("error",function(e){window.__frameStudyRuntimeErrors.push(e.message||"JavaScript 실행 오류");});window.addEventListener("unhandledrejection",function(e){window.__frameStudyRuntimeErrors.push(String(e.reason||"처리되지 않은 Promise 오류"));});<\/script>`;
   const hasFullDocument = /<!doctype|<html[\s>]/i.test(files.html);
   if (hasFullDocument) {
-    return files.html.replace(/<\/head>/i, `<style>${files.css}</style></head>`).replace(/<\/body>/i, `<script>${safeJs(files.js)}<\/script></body>`);
+    return files.html.replace(/<\/head>/i, `<style>${files.css}</style>${runtimeGuard}</head>`).replace(/<\/body>/i, `<script>${safeJs(files.js)}<\/script></body>`);
   }
-  return `<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${files.css}</style></head><body>${files.html}<script>${safeJs(files.js)}<\/script></body></html>`;
+  return `<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${files.css}</style>${runtimeGuard}</head><body>${files.html}<script>${safeJs(files.js)}<\/script></body></html>`;
 }
 
 function safeJs(js) { return String(js).replace(/<\/script>/gi, '<\\/script>'); }
 
+function lineNumberAt(text, index) {
+  return String(text).slice(0, Math.max(0, index)).split('\n').length;
+}
+
+function validateHtmlSyntax(html) {
+  const source = String(html || '');
+  const stack = [];
+  const voidTags = new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
+  const tagRe = /<!--[\s\S]*?-->|<!DOCTYPE\s+html\s*>|<\/?[A-Za-z][^<>]*>/gi;
+  let last = 0;
+  let match;
+
+  while ((match = tagRe.exec(source))) {
+    const gap = source.slice(last, match.index);
+    const badOffset = gap.search(/[<>]/);
+    if (badOffset !== -1) {
+      const index = last + badOffset;
+      return { ok: false, file: 'HTML', line: lineNumberAt(source, index), message: '태그의 < 또는 >가 올바르게 닫히지 않았습니다.' };
+    }
+
+    const token = match[0];
+    const index = match.index;
+    last = tagRe.lastIndex;
+    if (/^<!--/.test(token) || /^<!DOCTYPE/i.test(token)) continue;
+
+    const close = token.match(/^<\/\s*([A-Za-z][\w:-]*)\s*>$/);
+    if (close) {
+      const tag = close[1].toLowerCase();
+      const top = stack.pop();
+      if (!top) return { ok: false, file: 'HTML', line: lineNumberAt(source, index), message: `닫는 태그 </${tag}>에 대응하는 여는 태그가 없습니다.` };
+      if (top.tag !== tag) return { ok: false, file: 'HTML', line: lineNumberAt(source, index), message: `<${top.tag}>를 닫아야 하는데 </${tag}>가 입력되었습니다.` };
+      continue;
+    }
+
+    const open = token.match(/^<\s*([A-Za-z][\w:-]*)([\s\S]*?)>$/);
+    if (!open) return { ok: false, file: 'HTML', line: lineNumberAt(source, index), message: '태그 문법을 확인하세요.' };
+    const tag = open[1].toLowerCase();
+    const attrs = open[2] || '';
+
+    const quoteCountDouble = (attrs.match(/"/g) || []).length;
+    const quoteCountSingle = (attrs.match(/'/g) || []).length;
+    if (quoteCountDouble % 2 || quoteCountSingle % 2) {
+      return { ok: false, file: 'HTML', line: lineNumberAt(source, index), message: `<${tag}>의 속성 따옴표가 닫히지 않았습니다.` };
+    }
+    const assignmentRe = /=\s*([^\s"'][^\s>]*)/g;
+    if (assignmentRe.test(attrs)) {
+      return { ok: false, file: 'HTML', line: lineNumberAt(source, index), message: 'HTML 속성 값은 따옴표로 감싸서 작성하세요. 예: class="card"' };
+    }
+
+    const selfClosing = /\/\s*>$/.test(token);
+    if (!voidTags.has(tag) && !selfClosing) stack.push({ tag, index });
+  }
+
+  const tail = source.slice(last);
+  const badTail = tail.search(/[<>]/);
+  if (badTail !== -1) {
+    const index = last + badTail;
+    return { ok: false, file: 'HTML', line: lineNumberAt(source, index), message: '완성되지 않은 HTML 태그가 있습니다.' };
+  }
+  if (stack.length) {
+    const top = stack[stack.length - 1];
+    return { ok: false, file: 'HTML', line: lineNumberAt(source, top.index), message: `<${top.tag}> 태그를 닫는 </${top.tag}>가 없습니다.` };
+  }
+
+  const hasHtml = /<html[\s>]/i.test(source);
+  if (hasHtml) {
+    if (!/<!DOCTYPE\s+html\s*>/i.test(source)) return { ok: false, file: 'HTML', line: 1, message: '전체 HTML 문서에는 <!DOCTYPE html> 선언이 필요합니다.' };
+    if (!/<head[\s>][\s\S]*<\/head>/i.test(source)) return { ok: false, file: 'HTML', line: 1, message: '<head>...</head> 구조가 필요합니다.' };
+    if (!/<body[\s>][\s\S]*<\/body>/i.test(source)) return { ok: false, file: 'HTML', line: 1, message: '<body>...</body> 구조가 필요합니다.' };
+  }
+  return { ok: true };
+}
+
+function splitCssDeclarations(block) {
+  const out = [];
+  let start = 0, quote = '', depth = 0;
+  for (let i = 0; i < block.length; i++) {
+    const ch = block[i];
+    if (quote) {
+      if (ch === '\\') { i++; continue; }
+      if (ch === quote) quote = '';
+      continue;
+    }
+    if (ch === '"' || ch === "'") { quote = ch; continue; }
+    if (ch === '(' || ch === '[') depth++;
+    else if (ch === ')' || ch === ']') depth = Math.max(0, depth - 1);
+    else if (ch === ';' && depth === 0) { out.push(block.slice(start, i)); start = i + 1; }
+  }
+  out.push(block.slice(start));
+  return out;
+}
+
+function validateCssSyntax(css) {
+  const source = String(css || '');
+  const clean = source.replace(/\/\*[\s\S]*?\*\//g, '');
+  let quote = '', depthParen = 0, depthBrace = 0;
+  for (let i = 0; i < clean.length; i++) {
+    const ch = clean[i];
+    if (quote) {
+      if (ch === '\\') { i++; continue; }
+      if (ch === quote) quote = '';
+      continue;
+    }
+    if (ch === '"' || ch === "'") { quote = ch; continue; }
+    if (ch === '(' || ch === '[') depthParen++;
+    else if (ch === ')' || ch === ']') {
+      depthParen--;
+      if (depthParen < 0) return { ok: false, file: 'CSS', line: lineNumberAt(clean, i), message: '닫는 괄호가 너무 많습니다.' };
+    } else if (ch === '{') depthBrace++;
+    else if (ch === '}') {
+      depthBrace--;
+      if (depthBrace < 0) return { ok: false, file: 'CSS', line: lineNumberAt(clean, i), message: '닫는 중괄호 }에 대응하는 여는 중괄호 {가 없습니다.' };
+    }
+  }
+  if (quote) return { ok: false, file: 'CSS', line: lineNumberAt(clean, clean.length), message: '문자열 따옴표가 닫히지 않았습니다.' };
+  if (depthParen !== 0) return { ok: false, file: 'CSS', line: lineNumberAt(clean, clean.length), message: 'CSS 괄호의 짝이 맞지 않습니다.' };
+  if (depthBrace !== 0) return { ok: false, file: 'CSS', line: lineNumberAt(clean, clean.length), message: 'CSS 중괄호 { }의 짝이 맞지 않습니다.' };
+
+  function inspectRules(text, baseIndex = 0) {
+    let cursor = 0;
+    while (cursor < text.length) {
+      while (cursor < text.length && /\s/.test(text[cursor])) cursor++;
+      if (cursor >= text.length) break;
+      const open = text.indexOf('{', cursor);
+      if (open === -1) {
+        if (text.slice(cursor).trim()) return { ok: false, file: 'CSS', line: lineNumberAt(source, baseIndex + cursor), message: '선택자 뒤에 { } 블록이 필요합니다.' };
+        break;
+      }
+      const header = text.slice(cursor, open).trim();
+      if (!header) return { ok: false, file: 'CSS', line: lineNumberAt(source, baseIndex + open), message: 'CSS 선택자가 비어 있습니다.' };
+      let depth = 1, i = open + 1, q = '';
+      for (; i < text.length; i++) {
+        const ch = text[i];
+        if (q) {
+          if (ch === '\\') { i++; continue; }
+          if (ch === q) q = '';
+          continue;
+        }
+        if (ch === '"' || ch === "'") { q = ch; continue; }
+        if (ch === '{') depth++;
+        else if (ch === '}') { depth--; if (depth === 0) break; }
+      }
+      const body = text.slice(open + 1, i);
+      if (/^@media\b/i.test(header) || /^@supports\b/i.test(header)) {
+        const nested = inspectRules(body, baseIndex + open + 1);
+        if (!nested.ok) return nested;
+      } else if (/^@keyframes\b/i.test(header)) {
+        // 자유 프로젝트에서 사용할 수 있으므로 내부 선언은 브라우저 파서에 맡깁니다.
+      } else if (!header.startsWith('@')) {
+        for (const raw of splitCssDeclarations(body)) {
+          const decl = raw.trim();
+          if (!decl) continue;
+          let colon = -1, q2 = '', d2 = 0;
+          for (let k = 0; k < decl.length; k++) {
+            const ch = decl[k];
+            if (q2) { if (ch === '\\') k++; else if (ch === q2) q2 = ''; continue; }
+            if (ch === '"' || ch === "'") { q2 = ch; continue; }
+            if (ch === '(' || ch === '[') d2++;
+            else if (ch === ')' || ch === ']') d2 = Math.max(0, d2 - 1);
+            else if (ch === ':' && d2 === 0) { colon = k; break; }
+          }
+          if (colon === -1) return { ok: false, file: 'CSS', line: lineNumberAt(source, baseIndex + open + 1 + body.indexOf(raw)), message: `CSS 선언에 ':'가 없습니다: ${decl}` };
+          const prop = decl.slice(0, colon).trim();
+          const value = decl.slice(colon + 1).trim();
+          if (!/^--[\w-]+$/.test(prop) && !/^[a-z-]+$/i.test(prop)) return { ok: false, file: 'CSS', line: lineNumberAt(source, baseIndex + open + 1 + body.indexOf(raw)), message: `CSS 속성 이름이 올바르지 않습니다: ${prop}` };
+          if (!value) return { ok: false, file: 'CSS', line: lineNumberAt(source, baseIndex + open + 1 + body.indexOf(raw)), message: `${prop} 속성의 값이 비어 있습니다.` };
+          if (!prop.startsWith('--') && typeof CSS !== 'undefined' && CSS.supports && !CSS.supports(prop, value)) {
+            return { ok: false, file: 'CSS', line: lineNumberAt(source, baseIndex + open + 1 + body.indexOf(raw)), message: `브라우저가 이해할 수 없는 CSS입니다: ${prop}: ${value}` };
+          }
+        }
+      }
+      cursor = i + 1;
+    }
+    return { ok: true };
+  }
+
+  return inspectRules(clean, 0);
+}
+
+function validateJsSyntax(js) {
+  const source = String(js || '');
+  try {
+    new Function(source);
+    return { ok: true };
+  } catch (err) {
+    const match = String(err && err.stack || '').match(/<anonymous>:(\d+):\d+/);
+    return { ok: false, file: 'JavaScript', line: match ? Number(match[1]) - 2 : null, message: err && err.message ? err.message : 'JavaScript 문법 오류가 있습니다.' };
+  }
+}
+
+function filesForRequirementCheck(files) {
+  return {
+    html: String(files.html || '').replace(/<!--[\s\S]*?-->/g, ''),
+    css: String(files.css || '').replace(/\/\*[\s\S]*?\*\//g, ''),
+    js: String(files.js || '').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')
+  };
+}
+
+function validateSyntaxForLesson(files) {
+  const group = lessons[state.current].group;
+  const checks = [];
+  if (group === 'HTML' || group === 'PROJECT') checks.push(validateHtmlSyntax(files.html));
+  if (group === 'CSS' || group === 'PROJECT') checks.push(validateCssSyntax(files.css));
+  if (group === 'JS' || group === 'PROJECT') checks.push(validateJsSyntax(files.js));
+  return checks.find(result => !result.ok) || { ok: true };
+}
+
+function showFeedback(type, title, message) {
+  el.codeFeedback.className = `code-feedback show ${type || ''}`.trim();
+  el.feedbackTitle.textContent = title;
+  el.feedbackMessage.textContent = message;
+}
+
 function runPreview(check = true) {
   saveEditor();
   const files = filesFor(state.current);
+  const syntax = validateSyntaxForLesson(files);
+
+  if (!syntax.ok) {
+    el.previewFrame.onload = null;
+    el.previewFrame.srcdoc = '<!doctype html><html lang="ko"><body style="font-family:system-ui;padding:32px;color:#666"><strong>코드 오류를 먼저 수정하세요.</strong><p>문법이 올바를 때만 미리보기를 실행합니다.</p></body></html>';
+    const location = syntax.line ? `${syntax.file} ${syntax.line}줄 · ` : `${syntax.file} · `;
+    showFeedback('error', '코드 오류', location + syntax.message);
+    updateMission(false, true);
+    return;
+  }
+
+  const checkedFiles = filesForRequirementCheck(files);
+  const requirementSuccess = lessons[state.current].validate(checkedFiles);
+  updateMission(false, false);
+  showFeedback('', '코드를 실행하는 중입니다', '문법 검사를 통과했습니다. 실행 오류와 문제 조건을 확인합니다.');
+
+  el.previewFrame.onload = () => {
+    let runtimeErrors = [];
+    try { runtimeErrors = el.previewFrame.contentWindow.__frameStudyRuntimeErrors || []; } catch (_) {}
+
+    if (runtimeErrors.length) {
+      const message = runtimeErrors[0];
+      showFeedback('error', 'JavaScript 실행 오류', message);
+      updateMission(false, true);
+      return;
+    }
+
+    if (requirementSuccess) {
+      showFeedback('success', '정답입니다', '문법, 실행 상태, 문제의 성공 조건을 모두 만족했습니다.');
+      updateMission(true, false);
+      if (check) completeLesson();
+    } else {
+      showFeedback('', '아직 문제 조건을 만족하지 않았습니다', '코드 문법과 실행에는 문제가 없습니다. 위의 “해야 할 일”과 “성공 조건”을 다시 확인하세요.');
+      updateMission(false, false);
+    }
+  };
+
   el.previewFrame.srcdoc = makePreview(files);
-  const success = lessons[state.current].validate(files);
-  updateMission(success);
-  if (check && success) completeLesson();
 }
 
-function updateMission(success) {
-  el.missionResult.textContent = success ? '완료' : '미완료';
+function updateMission(success, hasError = false) {
+  el.missionResult.textContent = success ? '완료' : hasError ? '코드 오류' : '미완료';
   el.missionResult.classList.toggle('done', success);
+  el.missionResult.classList.toggle('error', hasError);
   const isLast = state.current === lessons.length - 1;
   el.nextButton.disabled = !success || isLast;
   el.nextButton.textContent = isLast && success ? '전체 과정 완료' : '다음 레슨 →';
