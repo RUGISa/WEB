@@ -276,3 +276,62 @@ button { cursor: pointer; }
 .tok-selector { color: #d7ba7d; }
 .tok-variable { color: #4ec9b0; }
 .tok-global { color: #4ec9b0; }
+
+/* v9: pixel-perfect editor overlay alignment */
+.syntax-layer,
+#codeEditor,
+#highlightCode {
+  font-family: "SFMono-Regular", "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 21px;
+  letter-spacing: 0;
+  word-spacing: 0;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+  font-kerning: none;
+  tab-size: 2;
+  -moz-tab-size: 2;
+}
+.syntax-layer,
+#codeEditor {
+  box-sizing: border-box;
+  padding: 18px;
+  text-align: left;
+  text-indent: 0;
+  text-transform: none;
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+#highlightCode {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: max-content;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  white-space: inherit;
+  tab-size: inherit;
+  -moz-tab-size: inherit;
+}
+#codeEditor {
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+  scrollbar-gutter: stable;
+}
+.line-numbers {
+  box-sizing: border-box;
+  font-family: "SFMono-Regular", "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: 0;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+  font-kerning: none;
+}
