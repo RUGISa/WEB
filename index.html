@@ -89,15 +89,21 @@
             <section class="editor-pane">
               <div class="pane-head">
                 <div class="tabs" id="editorTabs"></div>
-                <button class="hint-button" id="hintButton">힌트</button>
+                <div class="editor-actions">
+                  <span class="language-badge" id="languageBadge">HTML</span>
+                  <button class="hint-button" id="hintButton">힌트</button>
+                </div>
               </div>
               <div class="editor-wrap">
                 <pre class="line-numbers" id="lineNumbers"></pre>
-                <textarea id="codeEditor" spellcheck="false" aria-label="코드 편집기"></textarea>
+                <div class="editor-stack">
+                  <pre class="syntax-layer" id="syntaxLayer" aria-hidden="true"><code id="highlightCode"></code></pre>
+                  <textarea id="codeEditor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="코드 편집기"></textarea>
+                </div>
               </div>
               <div class="hint" id="hintBox"></div>
               <div class="run-row">
-                <span id="saveState">자동 저장 · 자동 닫기 · Enter 자동 들여쓰기 ON</span>
+                <span id="saveState">자동 저장 · 구문 강조 · 자동 닫기 · 자동 들여쓰기 ON</span>
                 <button class="run-button" id="runButton">실행</button>
               </div>
             </section>

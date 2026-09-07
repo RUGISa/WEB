@@ -240,3 +240,39 @@ button { cursor: pointer; }
 .code-feedback.error .feedback-title { color: #914e45; }
 .code-feedback.success .feedback-title { color: #356342; }
 .mission-result.error { background: #f4e3df; color: #9b5148; }
+
+
+/* v8: VS Code-like syntax highlighting */
+.editor-actions { display: flex; align-items: center; gap: 4px; }
+.language-badge { padding: 4px 7px; border: 1px solid #3a3d42; border-radius: 6px; color: #858991; font: 700 9px/1 "SFMono-Regular", Consolas, monospace; letter-spacing: .04em; }
+.editor-stack { position: relative; min-width: 0; height: 100%; min-height: 390px; overflow: hidden; }
+.syntax-layer,
+#codeEditor {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 390px;
+  margin: 0;
+  padding: 18px;
+  border: 0;
+  font: 12px/1.72 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  tab-size: 2;
+  white-space: pre;
+  overflow: auto;
+}
+.syntax-layer { z-index: 1; background: transparent; color: #d4d4d4; pointer-events: none; scrollbar-width: none; }
+.syntax-layer::-webkit-scrollbar { width: 0; height: 0; }
+#codeEditor { z-index: 2; resize: none; outline: 0; background: transparent; color: transparent; -webkit-text-fill-color: transparent; caret-color: #ffffff; overflow: auto; }
+#codeEditor::selection { background: rgba(94, 129, 172, .42); -webkit-text-fill-color: transparent; }
+.tok-comment { color: #6a9955; }
+.tok-keyword { color: #c586c0; }
+.tok-tag { color: #569cd6; }
+.tok-punc { color: #808080; }
+.tok-attr { color: #9cdcfe; }
+.tok-string { color: #ce9178; }
+.tok-number { color: #b5cea8; }
+.tok-property { color: #9cdcfe; }
+.tok-selector { color: #d7ba7d; }
+.tok-variable { color: #4ec9b0; }
+.tok-global { color: #4ec9b0; }

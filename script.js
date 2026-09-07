@@ -8,35 +8,45 @@ const courseInfo = {
 const baseCss = `body {\n  margin: 0;\n  padding: 40px;\n  font-family: Arial, sans-serif;\n  color: #222;\n}\n`;
 
 const lessons = [
-  // HTML 01-10
-  lesson('HTML','HTML은 어떤 구조로 이루어질까?','문서 구조 이해','개념',
-    'HTML을 태그 암기부터 시작하지 않습니다. 먼저 하나의 웹 문서가 어떻게 나뉘는지 봅니다. 브라우저는 HTML 파일을 위에서 아래로 읽고, 문서 정보가 있는 head와 실제 화면 내용이 들어가는 body를 구분합니다.',
-    ['HTML은 웹페이지의 내용과 구조를 표현하는 문서입니다.','문서는 html이라는 큰 범위 안에서 head와 body 두 영역으로 나뉩니다.','지금은 태그 이름을 외우지 말고, 무엇이 어디에 들어가는지만 이해하면 됩니다.'],
-    'HTML 문서 → 문서 정보(head) + 화면 내용(body)',
-    'body 영역 안에 “내 첫 웹 문서”라는 글자를 직접 입력하세요.',
-    'body를 여는 줄과 닫는 줄 사이에 글자를 그대로 적으면 됩니다. 아직 제목 태그를 쓰지 않아도 됩니다.',
-    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <title>첫 문서</title>\n  </head>\n  <body>\n    \n  </body>\n</html>', css:'', js:''},
-    f => /<body>[\s\S]*내 첫 웹 문서[\s\S]*<\/body>/i.test(f.html),
-    [['html 영역','HTML 문서 전체를 감싸는 가장 큰 범위입니다.'],['head 영역','브라우저가 문서를 이해하는 데 필요한 설정과 정보를 담습니다.'],['body 영역','사용자가 실제 화면에서 보게 되는 내용을 넣는 영역입니다.']]),
+  // HTML — 기초 구조부터 실제 문서 작성까지
+  lesson('HTML','웹페이지와 HTML 문서','HTML의 역할','개념',
+    '브라우저에 보이는 웹페이지는 먼저 HTML 문서에서 시작합니다. HTML은 화면의 색이나 동작보다 먼저, 어떤 내용이 있고 서로 어떤 관계인지 구조를 전달합니다. 이 레슨에서는 태그를 외우기보다 HTML 파일의 어느 부분이 화면에 표시되는지 먼저 확인합니다.',
+    ['브라우저는 HTML 파일을 읽어 화면의 구조를 만듭니다.','head는 문서 정보, body는 사용자가 보는 내용을 담습니다.','body 안의 일반 글자도 텍스트 노드로 표시되며 자동으로 p 태그가 되는 것은 아닙니다.'],
+    'HTML 문서 → head(문서 정보) + body(화면 내용)',
+    'body 안의 안내 문장 아래에 “브라우저에 보이는 내용”이라는 텍스트를 한 줄 더 직접 입력하세요.',
+    '새 태그를 만들 필요는 없습니다. <body>와 </body> 사이에 일반 텍스트를 추가하고 실행 결과를 확인하세요.',
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>첫 HTML 문서</title>\n  </head>\n  <body>\n    이 문장은 body 안에 있어서 화면에 보입니다.\n    \n  </body>\n</html>', css:'', js:''},
+    f => /<body>[\s\S]*브라우저에 보이는 내용[\s\S]*<\/body>/i.test(f.html),
+    [['<!DOCTYPE html>','현재 파일을 HTML5 문서로 해석하라고 브라우저에 알려줍니다.'],['<head>','브라우저 탭 제목, 문자 인코딩처럼 화면 본문이 아닌 문서 정보를 담습니다.'],['<body>','실제 화면에 표시할 내용이 들어갑니다. 태그 없이 적은 글자도 텍스트 노드로 표시됩니다.']]),
 
-  lesson('HTML','HTML 문서의 기본 골격','기본 골격','기초',
-    '이제 방금 본 구조를 실제 코드로 읽어봅니다. HTML에서는 시작과 끝을 표시하는 표현을 사용해 영역을 만듭니다. 이 표현을 태그라고 부릅니다. 먼저 문서 전체의 뼈대만 익힙니다.',
-    ['<!DOCTYPE html>은 이 파일이 현대 HTML 문서임을 브라우저에 알립니다.','<html> 안에 <head>와 <body>가 들어가는 포함 관계를 확인합니다.','들여쓰기는 어떤 요소가 어떤 요소 안에 있는지 눈으로 쉽게 확인하게 해줍니다.'],
-    '<html> 안에 <head>와 <body>가 들어간다',
-    '비어 있는 body 안에 “구조를 이해했다”라는 문장을 넣으세요.',
-    '<body>와 </body> 사이에 문장을 입력하세요. 아직 새로운 태그는 추가하지 않아도 됩니다.',
-    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <title>HTML 구조</title>\n  </head>\n  <body>\n    \n  </body>\n</html>', css:'', js:''},
-    f => /<body>[\s\S]*구조를 이해했다[\s\S]*<\/body>/i.test(f.html),
-    [['<!DOCTYPE html>','브라우저에게 HTML5 방식으로 문서를 해석하라고 알려줍니다.'],['<head>...</head>','화면 내용이 아니라 문서 설정을 담는 한 쌍의 태그입니다.'],['<body>...</body>','화면에 표시할 내용을 넣는 한 쌍의 태그입니다.']]),
+  lesson('HTML','태그, 요소 그리고 부모·자식','태그와 중첩','기초',
+    'HTML의 구조는 태그를 열고 닫아 요소를 만드는 방식으로 표현합니다. 요소 안에 다른 요소를 넣으면 부모와 자식 관계가 생깁니다. 이 관계를 이해하면 들여쓰기와 문서 구조가 자연스럽게 보이기 시작합니다.',
+    ['<p>는 여는 태그, </p>는 닫는 태그이며 둘과 내용 전체를 p 요소라고 부릅니다.','요소 안에 들어간 요소는 자식, 바깥 요소는 부모가 됩니다.','같은 단계의 요소는 형제 관계이며 같은 깊이로 들여쓰는 것이 좋습니다.'],
+    '<main>  <h1>제목</h1>  <p>문장</p>  </main>',
+    'main 안에 <h1>나의 첫 제목</h1>과 <p>HTML 구조를 배우는 중입니다.</p>를 직접 작성하세요.',
+    '두 요소 모두 <main>과 </main> 사이에 있어야 합니다. 자동 태그 닫기와 Enter 자동 들여쓰기를 사용해보세요.',
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>태그와 요소</title>\n  </head>\n  <body>\n    <main>\n      \n    </main>\n  </body>\n</html>', css:'', js:''},
+    f => /<main>[\s\S]*<h1>\s*나의 첫 제목\s*<\/h1>[\s\S]*<p>\s*HTML 구조를 배우는 중입니다\.\s*<\/p>[\s\S]*<\/main>/i.test(f.html),
+    [['태그','<h1>처럼 요소의 시작이나 끝을 표시하는 문법입니다.'],['요소','<h1>제목</h1>처럼 여는 태그, 내용, 닫는 태그를 합친 하나의 구조입니다.'],['부모·자식','main 안에 h1과 p가 들어가면 main은 부모, h1과 p는 자식입니다.']]),
+
+  lesson('HTML','속성과 값으로 정보 더하기','속성과 값','기초',
+    '태그 이름만으로 부족한 정보는 속성(attribute)으로 추가합니다. 속성은 보통 여는 태그 안에서 이름="값" 형태로 작성합니다. 링크 주소, 이미지 설명, 요소의 언어 같은 정보가 모두 속성입니다.',
+    ['속성은 여는 태그 안에 작성합니다.','하나의 요소에 여러 속성을 공백으로 구분해 넣을 수 있습니다.','속성값은 초보 단계에서는 항상 따옴표로 감싸는 습관을 들입니다.'],
+    '<태그 속성="값">내용</태그>',
+    'a 태그에 href="https://example.com"과 target="_blank" 두 속성을 모두 추가하세요.',
+    '여는 <a> 태그 안에 두 속성을 공백으로 구분해 작성합니다. 링크 글자는 그대로 두세요.',
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>속성과 값</title>\n  </head>\n  <body>\n    <main>\n      <h1>속성 연습</h1>\n      <a>Example 사이트 열기</a>\n    </main>\n  </body>\n</html>', css:'', js:''},
+    f => /<a\s+[^>]*href\s*=\s*["']https:\/\/example\.com\/?["'][^>]*target\s*=\s*["']_blank["'][^>]*>/i.test(f.html) || /<a\s+[^>]*target\s*=\s*["']_blank["'][^>]*href\s*=\s*["']https:\/\/example\.com\/?["'][^>]*>/i.test(f.html),
+    [['href="..."','href는 링크가 이동할 목적지를 지정하는 속성입니다.'],['target="_blank"','링크를 새 탭에서 열도록 지정합니다.'],['lang="ko"','html 요소의 주 언어가 한국어임을 알려주는 속성입니다.']]),
 
   lesson('HTML','제목과 문단','텍스트 태그','기초',
     '글은 웹페이지에서 가장 많이 쓰는 콘텐츠입니다. 제목의 중요도는 h1부터 h6까지, 일반 문장은 p 태그로 표현합니다.',
     ['h1은 한 페이지의 대표 제목에 가깝습니다.','h2~h6은 하위 제목을 계층적으로 나눕니다.','p는 독립된 문단을 표현합니다.'],
     '<h1>제목</h1>  <p>문단</p>',
-    'h2 태그로 “오늘 배울 내용”이라는 소제목을 추가하세요.',
-    'h1 아래에 <h2>오늘 배울 내용</h2>를 넣어보세요.',
+    'h1 아래에 h2 소제목과 p 문단을 각각 한 줄씩 직접 추가하세요. h2 내용은 “오늘 배울 내용”, p 내용은 “태그의 의미를 구분합니다.”로 작성하세요.',
+    '기존 h1과 p 사이에 h2를 추가하고, 그 아래에 새 p 요소도 직접 작성하세요.',
     {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>제목과 문단</title>\n  </head>\n  <body>\n    <main>\n      <h1>HTML 텍스트</h1>\n      <p>제목과 문단을 구분해봅니다.</p>\n    </main>\n  </body>\n</html>', css:'', js:''},
-    f => /<h2>\s*오늘 배울 내용\s*<\/h2>/i.test(f.html),
+    f => /<h2>\s*오늘 배울 내용\s*<\/h2>/i.test(f.html) && /<p>\s*태그의 의미를 구분합니다\.\s*<\/p>/i.test(f.html),
     [['<h1>','가장 높은 단계의 제목입니다.'],['<h2>','h1 아래의 소제목처럼 사용합니다.'],['<p>','한 덩어리의 문단을 의미합니다.']]),
 
   lesson('HTML','링크로 페이지 연결하기','링크','기초',
@@ -69,14 +79,14 @@ const lessons = [
     f => /<li>\s*JavaScript\s*<\/li>/i.test(f.html),
     [['<ul>','순서가 중요하지 않은 목록 전체를 감쌉니다.'],['<ol>','1, 2, 3처럼 순서가 있는 목록에 사용합니다.'],['<li>','목록 안의 한 항목을 나타냅니다.']]),
 
-  lesson('HTML','버튼과 입력창','폼 요소','기초',
-    '사용자가 값을 입력하거나 행동할 수 있게 만들려면 input, button 같은 폼 요소를 사용합니다.',
-    ['input은 사용자의 값을 입력받습니다.','placeholder는 입력 전 안내 문구입니다.','button은 클릭 가능한 행동 요소입니다.'],
-    '<input placeholder="이름">  <button>저장</button>',
-    'input에 placeholder="이름을 입력하세요"를 넣으세요.',
-    'input 태그 안에 placeholder 속성을 추가하면 됩니다.',
-    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>입력 요소 연습</title>\n  </head>\n  <body>\n    <main>\n      <h1>프로필</h1>\n      <input type="text">\n      <button>저장</button>\n    </main>\n  </body>\n</html>', css:'', js:''},
-    f => /placeholder\s*=\s*["']이름을 입력하세요["']/i.test(f.html),
+  lesson('HTML','폼과 입력 요소','폼 요소','기초',
+    '사용자에게 값을 입력받을 때는 form, label, input, button을 함께 사용합니다. input만 놓는 것보다 label을 연결하면 무엇을 입력해야 하는지 의미가 분명하고 접근성도 좋아집니다.',
+    ['form은 하나의 입력 작업을 묶습니다.','label의 for 값과 input의 id를 같게 연결합니다.','placeholder는 label을 대신하는 이름표가 아니라 보조 안내 문구로 사용합니다.'],
+    '<label for="name">이름</label>  <input id="name">',
+    'input에 id="name"을 추가하고, 바로 위에 <label for="name">이름</label>을 직접 작성하세요.',
+    'label의 for와 input의 id가 같은 name인지 확인하세요. 두 값이 연결의 핵심입니다.',
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>입력 요소 연습</title>\n  </head>\n  <body>\n    <main>\n      <h1>프로필</h1>\n      <form>\n        <input type="text" placeholder="이름을 입력하세요">\n        <button type="submit">저장</button>\n      </form>\n    </main>\n  </body>\n</html>', css:'', js:''},
+    f => /<label\s+[^>]*for\s*=\s*["']name["'][^>]*>\s*이름\s*<\/label>/i.test(f.html) && /<input\s+[^>]*id\s*=\s*["']name["'][^>]*>/i.test(f.html),
     [['<input>','한 줄의 텍스트나 숫자 등 다양한 값을 받을 수 있습니다.'],['type','input이 어떤 종류의 입력을 받을지 정합니다.'],['placeholder','입력창 안에 임시 안내 문구를 보여줍니다.']]),
 
   lesson('HTML','class와 id','요소 이름 붙이기','핵심',
@@ -88,6 +98,16 @@ const lessons = [
     {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>class와 id</title>\n  </head>\n  <body>\n    <main>\n      <h1>메모</h1>\n      <p class="note">첫 번째 메모</p>\n      <p>두 번째 메모</p>\n    </main>\n  </body>\n</html>', css:'', js:''},
     f => (f.html.match(/class\s*=\s*["']note["']/gi)||[]).length >= 2,
     [['class','여러 요소가 같은 그룹 이름을 공유할 수 있습니다.'],['id','한 요소를 고유하게 찾을 때 적합합니다.'],['.note','CSS에서 점(.)은 class를 선택한다는 뜻입니다.']]),
+
+  lesson('HTML','표로 관계 있는 데이터 표현하기','표 만들기','핵심',
+    '행과 열의 관계가 중요한 데이터는 table로 표현합니다. 단순히 화면을 칸으로 나누기 위해 table을 쓰는 것이 아니라 시간표, 가격표, 성적표처럼 실제 표 데이터에 사용합니다.',
+    ['table은 표 전체를 감쌉니다.','tr은 한 행, th는 제목 셀, td는 일반 데이터 셀입니다.','표의 구조와 의미가 분명하면 스크린리더도 데이터를 더 잘 이해할 수 있습니다.'],
+    '<table> <tr> <th>제목</th> <td>값</td> </tr> </table>',
+    '두 번째 행을 추가하고 <td>JavaScript</td><td>동작</td> 두 셀을 작성하세요.',
+    '기존 첫 번째 데이터 행 아래에 새로운 <tr>을 만들고 그 안에 td 두 개를 넣으세요.',
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>표 연습</title>\n  </head>\n  <body>\n    <main>\n      <h1>웹 기술 역할</h1>\n      <table>\n        <tr>\n          <th>기술</th>\n          <th>역할</th>\n        </tr>\n        <tr>\n          <td>HTML</td>\n          <td>구조</td>\n        </tr>\n      </table>\n    </main>\n  </body>\n</html>', css:'', js:''},
+    f => /<tr>[\s\S]*<td>\s*JavaScript\s*<\/td>[\s\S]*<td>\s*동작\s*<\/td>[\s\S]*<\/tr>/i.test(f.html),
+    [['<table>','표 데이터 전체를 감싸는 요소입니다.'],['<tr>','table row의 약자로 표의 한 행을 만듭니다.'],['<th> / <td>','th는 제목 셀, td는 실제 데이터 셀을 의미합니다.']]),
 
   lesson('HTML','의미 있는 레이아웃','시맨틱 태그','핵심',
     'div만으로도 화면은 만들 수 있지만 header, main, section, footer 같은 태그를 사용하면 구조의 의미가 더 분명해집니다.',
@@ -109,15 +129,15 @@ const lessons = [
     f => /<h1[\s>]/i.test(f.html) && /<p[\s>]/i.test(f.html) && /<ul[\s>]/i.test(f.html) && /<li[\s>]/i.test(f.html) && /<a[\s>]/i.test(f.html),
     [['구조','무엇을 보여줄지 먼저 HTML로 정합니다.'],['계층','h1 아래에 제목과 내용을 자연스럽게 배치합니다.'],['링크','마지막에 사용자가 이동할 수 있는 경로를 제공합니다.']]),
 
-  // CSS 01-10
-  lesson('CSS','CSS를 연결하는 방법','CSS 시작','기초',
-    'CSS는 HTML 요소의 모양을 바꿉니다. 선택자로 대상을 찾고, 중괄호 안에 속성과 값을 작성합니다.',
+  // CSS — 스타일의 원리와 레이아웃
+  lesson('CSS','CSS 규칙의 구조','CSS 문법','기초',
+    'CSS는 선택자로 꾸밀 대상을 찾고, 중괄호 안에 속성과 값을 작성합니다. 첫 단계에서는 HTML 연결 방법보다 CSS 한 규칙이 어떻게 읽히는지부터 정확히 익힙니다.',
     ['선택자는 어떤 HTML 요소를 꾸밀지 정합니다.','속성은 무엇을 바꿀지, 값은 어떻게 바꿀지 정합니다.','선언 끝에는 세미콜론을 쓰는 습관을 들입니다.'],
     '선택자 { 속성: 값; }',
-    'h1의 color를 #344960으로 바꾸세요.',
-    'CSS 탭에서 h1 { color: ...; } 부분의 값을 수정하세요.',
+    'h1 규칙 안의 color 값을 #344960으로 수정하고, 같은 규칙에 font-size: 36px;를 한 줄 직접 추가하세요.',
+    'h1의 중괄호 안에서 속성: 값; 형태를 두 줄로 작성해보세요.',
     {html:'<h1>CSS 시작</h1>\n<p>이제 화면을 꾸며봅니다.</p>', css:'body { padding: 40px; font-family: Arial, sans-serif; }\nh1 { color: red; }', js:''},
-    f => /h1\s*\{[^}]*color\s*:\s*#344960\s*;?[^}]*\}/i.test(f.css),
+    f => /h1\s*\{[^}]*color\s*:\s*#344960\s*;?[^}]*font-size\s*:\s*36px\s*;?[^}]*\}/i.test(f.css),
     [['h1','현재 규칙이 적용될 HTML 요소를 선택합니다.'],['color','글자색을 바꾸는 CSS 속성입니다.'],['#344960','16진수 방식으로 표현한 색상 값입니다.']]),
 
   lesson('CSS','색상과 배경','색상','기초',
@@ -159,6 +179,26 @@ const lessons = [
     {html:'<div class="card">\n  <strong>Simple Card</strong>\n  <p>깔끔한 카드 UI입니다.</p>\n</div>', css:'body { padding: 40px; background: #f3f3f1; font-family: Arial, sans-serif; }\n.card { max-width: 320px; padding: 24px; background: white; border: 1px solid #ddd; border-radius: 0; }', js:''},
     f => /border-radius\s*:\s*16px/i.test(f.css),
     [['border','요소 외곽에 선을 표시합니다.'],['solid','끊기지 않은 일반 실선입니다.'],['border-radius','값이 커질수록 모서리가 더 둥글어집니다.']]),
+
+  lesson('CSS','박스 모델과 box-sizing','박스 모델','핵심',
+    'HTML 요소는 내용(content), 안쪽 여백(padding), 테두리(border), 바깥 여백(margin)으로 이루어진 박스로 생각할 수 있습니다. box-sizing을 이해하면 실제 크기를 예상하기 쉬워집니다.',
+    ['기본 content-box에서는 width에 padding과 border가 추가됩니다.','border-box는 지정한 width 안에 padding과 border를 포함합니다.','실무에서는 전체 요소에 border-box를 적용하는 경우가 많습니다.'],
+    '* { box-sizing: border-box; }',
+    '.card가 최종 너비 320px 안에 padding까지 포함하도록 box-sizing: border-box를 추가하세요.',
+    '.card 블록 안에 box-sizing: border-box;를 직접 작성하세요.',
+    {html:'<div class="card">박스 모델</div>', css:'body { padding: 40px; font-family: Arial, sans-serif; }\n.card {\n  width: 320px;\n  padding: 32px;\n  border: 4px solid #555;\n}', js:''},
+    f => /\.card\s*\{[^}]*box-sizing\s*:\s*border-box\s*;?[^}]*\}/i.test(f.css),
+    [['content','요소의 실제 글자나 이미지가 들어가는 영역입니다.'],['padding / border','content 주변의 안쪽 여백과 테두리입니다.'],['box-sizing: border-box','width 계산에 padding과 border를 포함합니다.']]),
+
+  lesson('CSS','position으로 위치 기준 만들기','위치 지정','심화',
+    '일반적인 배치는 Flexbox와 Grid가 우선이지만, 배지나 닫기 버튼처럼 특정 박스를 기준으로 겹쳐 놓을 때 position을 사용합니다. absolute는 가장 가까운 position 기준 조상을 찾아 위치합니다.',
+    ['relative는 요소를 문서 흐름에 두면서 자식의 위치 기준이 될 수 있습니다.','absolute는 일반 흐름에서 빠져 기준 요소를 따라 배치됩니다.','top/right/bottom/left로 기준점과의 거리를 지정합니다.'],
+    '.card { position: relative; }  .badge { position: absolute; top: 12px; right: 12px; }',
+    '.badge가 card의 오른쪽 위를 기준으로 배치되도록 .card에는 relative, .badge에는 absolute를 추가하세요.',
+    '두 선택자에 position 속성을 각각 직접 추가하세요. top과 right 값은 이미 준비되어 있습니다.',
+    {html:'<div class="card"><span class="badge">NEW</span><h2>카드</h2><p>위치 기준을 연습합니다.</p></div>', css:'body { padding: 40px; font-family: Arial, sans-serif; }\n.card {\n  width: 280px;\n  padding: 24px;\n  border: 1px solid #ccc;\n}\n.badge {\n  top: 12px;\n  right: 12px;\n}', js:''},
+    f => /\.card\s*\{[^}]*position\s*:\s*relative/i.test(f.css) && /\.badge\s*\{[^}]*position\s*:\s*absolute/i.test(f.css),
+    [['position: relative','absolute 자식의 위치 기준점을 만들 때 자주 사용합니다.'],['position: absolute','일반 배치 흐름에서 벗어나 좌표처럼 배치합니다.'],['top / right','기준 요소의 위쪽·오른쪽에서 얼마나 떨어질지 정합니다.']]),
 
   lesson('CSS','display와 Flexbox','가로 배치','핵심',
     'Flexbox는 여러 요소를 한 줄 또는 한 열로 정렬할 때 가장 자주 쓰는 레이아웃 도구 중 하나입니다.',
@@ -210,7 +250,7 @@ const lessons = [
     f => /\.card\s*\{[^}]*padding\s*:/i.test(f.css) && /\.card\s*\{[^}]*border-radius\s*:/i.test(f.css) && /\.card\s*\{[^}]*background(?:-color)?\s*:/i.test(f.css),
     [['padding','카드 내용이 테두리에 붙지 않게 내부 여백을 만듭니다.'],['border-radius','카드의 인상을 부드럽게 만듭니다.'],['background','카드를 페이지 배경과 시각적으로 구분합니다.']]),
 
-  // JS 01-10
+  // JavaScript — 문법에서 DOM 상호작용까지
   lesson('JS','JavaScript 시작하기','JS 시작','기초',
     'JavaScript는 HTML과 CSS로 만든 화면에 행동을 추가합니다. 가장 먼저 console.log를 이용해 코드가 실행되는지 확인해봅니다.',
     ['JavaScript는 위에서 아래로 코드를 실행합니다.','console.log는 개발 중 값을 확인하는 가장 기본적인 도구입니다.','문자열은 따옴표로 감쌉니다.'],
@@ -220,6 +260,16 @@ const lessons = [
     {html:'<h1>JavaScript</h1>\n<p>개발자 도구의 콘솔도 확인해보세요.</p>', css:baseCss, js:'console.log("Hello");'},
     f => /console\.log\(\s*["']Hello JavaScript["']\s*\)/i.test(f.js),
     [['console.log','브라우저 개발자 도구의 콘솔에 값을 출력합니다.'],['"문자열"','글자 데이터는 따옴표로 감싸 표현합니다.'],[';','한 문장의 끝을 명확히 표시할 수 있습니다.']]),
+
+  lesson('JS','console로 값과 오류 확인하기','콘솔과 디버깅','기초',
+    'JavaScript를 공부할 때 화면만 보는 것보다 코드가 어떤 값을 가지고 있는지 확인하는 습관이 중요합니다. console.log는 개발자 도구 콘솔에 값을 출력해 흐름을 확인하게 해줍니다.',
+    ['console.log는 변수나 계산 결과를 확인하는 가장 기본적인 디버깅 도구입니다.','오류 메시지는 실패가 아니라 어느 줄에서 무엇이 잘못됐는지 알려주는 정보입니다.','작은 단위로 실행하고 값을 확인하면 문제를 훨씬 빨리 찾을 수 있습니다.'],
+    'console.log("확인할 값");',
+    'message 변수의 값을 console.log(message);로 출력하는 한 줄을 추가하세요.',
+    '변수를 만든 다음 줄에 console.log(message);를 직접 작성하세요.',
+    {html:'<h1>콘솔 연습</h1>', css:baseCss, js:'const message = "JavaScript 실행 확인";\n\n'},
+    f => /console\.log\(\s*message\s*\)\s*;?/i.test(f.js),
+    [['console.log(...)','괄호 안의 값을 브라우저 개발자 도구 콘솔에 출력합니다.'],['오류 메시지','오류 종류와 위치를 읽으면 수정할 지점을 찾을 수 있습니다.'],['작게 확인하기','긴 코드를 한 번에 쓰기보다 중간 값을 자주 확인하는 습관이 좋습니다.']]),
 
   lesson('JS','변수로 값 기억하기','변수','기초',
     '변수는 값을 저장하고 이름을 붙이는 공간입니다. 값이 바뀔 수 있으면 let, 바뀌지 않는 값은 const를 주로 사용합니다.',
@@ -357,7 +407,7 @@ function lesson(group, title, nav, kind, description, points, syntax, mission, h
   return { group, title, nav, kind, description, points, syntax, mission, hint, files, validate, explain };
 }
 
-const storageKey = 'frame-study-v6';
+const storageKey = 'frame-study-v8';
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch { saved = {}; }
 
@@ -370,7 +420,7 @@ const state = {
 };
 
 const el = Object.fromEntries([
-  'sidebar','sidebarClose','sidebarOverlay','curriculum','summaryProgress','progressBar','crumb','lessonNumber','lessonKind','lessonTitle','lessonDescription','learningPoints','syntaxCode','missionText','problemNumber','problemFile','successCondition','missionResult','codeFeedback','feedbackTitle','feedbackMessage','editorTabs','codeEditor','lineNumbers','hintButton','hintBox','runButton','previewFrame','explanationList','prevButton','nextButton','resetButton','menuButton','toast','saveState'
+  'sidebar','sidebarClose','sidebarOverlay','curriculum','summaryProgress','progressBar','crumb','lessonNumber','lessonKind','lessonTitle','lessonDescription','learningPoints','syntaxCode','missionText','problemNumber','problemFile','successCondition','missionResult','codeFeedback','feedbackTitle','feedbackMessage','editorTabs','codeEditor','lineNumbers','syntaxLayer','highlightCode','languageBadge','hintButton','hintBox','runButton','previewFrame','explanationList','prevButton','nextButton','resetButton','menuButton','toast','saveState'
 ].map(id => [id, document.getElementById(id)]));
 
 function filesFor(index) {
@@ -385,9 +435,9 @@ function save() {
     completed: state.completed,
     code: state.code
   }));
-  el.saveState.textContent = '저장됨 · 자동 닫기 ON';
+  el.saveState.textContent = '저장됨 · 구문 강조 ON';
   clearTimeout(save.timer);
-  save.timer = setTimeout(() => el.saveState.textContent = '자동 저장 · 태그/괄호 자동 닫기 ON', 900);
+  save.timer = setTimeout(() => el.saveState.textContent = '자동 저장 · 구문 강조 · 자동 닫기 · 자동 들여쓰기 ON', 900);
 }
 
 function saveEditor() {
@@ -490,9 +540,93 @@ function renderTabs() {
   });
 }
 
+
+function highlightJs(code) {
+  const source = String(code || '');
+  const tokenRe = /(\/\*[\s\S]*?\*\/|\/\/[^\n]*|`(?:\\[\s\S]|[^`])*`|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b(?:const|let|var|function|return|if|else|for|while|forEach|new|class|true|false|null|undefined|document|window)\b|\b\d+(?:\.\d+)?\b)/g;
+  let out = '', last = 0;
+  for (const match of source.matchAll(tokenRe)) {
+    out += escapeHtml(source.slice(last, match.index));
+    const token = match[0];
+    let cls = 'tok-keyword';
+    if (/^\/\//.test(token) || /^\/\*/.test(token)) cls = 'tok-comment';
+    else if (/^["'`]/.test(token)) cls = 'tok-string';
+    else if (/^\d/.test(token)) cls = 'tok-number';
+    else if (/^(document|window)$/.test(token)) cls = 'tok-global';
+    out += `<span class="${cls}">${escapeHtml(token)}</span>`;
+    last = match.index + token.length;
+  }
+  return out + escapeHtml(source.slice(last));
+}
+
+function highlightCss(code) {
+  const source = String(code || '');
+  const tokenRe = /(\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|#[0-9a-fA-F]{3,8}\b|\b-?\d+(?:\.\d+)?(?:px|rem|em|vh|vw|%|s|ms|fr)?\b|@[\w-]+|--[\w-]+|[a-zA-Z-]+(?=\s*:))/g;
+  let out = '', last = 0;
+  for (const match of source.matchAll(tokenRe)) {
+    const raw = source.slice(last, match.index);
+    out += escapeHtml(raw).replace(/(^|\})(\s*)([^{}]+)(?=\{)/g, '$1$2<span class="tok-selector">$3</span>');
+    const token = match[0];
+    let cls = 'tok-property';
+    if (/^\/\*/.test(token)) cls = 'tok-comment';
+    else if (/^["']/.test(token)) cls = 'tok-string';
+    else if (/^#/.test(token) || /^-?\d/.test(token)) cls = 'tok-number';
+    else if (/^@/.test(token)) cls = 'tok-keyword';
+    else if (/^--/.test(token)) cls = 'tok-variable';
+    out += `<span class="${cls}">${escapeHtml(token)}</span>`;
+    last = match.index + token.length;
+  }
+  out += escapeHtml(source.slice(last)).replace(/(^|\})(\s*)([^{}]+)(?=\{)/g, '$1$2<span class="tok-selector">$3</span>');
+  return out;
+}
+
+function highlightHtmlTag(token) {
+  if (/^<!--/.test(token)) return `<span class="tok-comment">${escapeHtml(token)}</span>`;
+  if (/^<!DOCTYPE/i.test(token)) return `<span class="tok-keyword">${escapeHtml(token)}</span>`;
+  const m = token.match(/^(<\/?)([A-Za-z][\w:-]*)([\s\S]*?)(\/?>)$/);
+  if (!m) return escapeHtml(token);
+  let attrs = '', last = 0;
+  const attrRe = /([:\w-]+)(\s*=\s*)("[^"]*"|'[^']*'|[^\s>]+)/g;
+  for (const a of m[3].matchAll(attrRe)) {
+    attrs += escapeHtml(m[3].slice(last, a.index));
+    attrs += `<span class="tok-attr">${escapeHtml(a[1])}</span>${escapeHtml(a[2])}<span class="tok-string">${escapeHtml(a[3])}</span>`;
+    last = a.index + a[0].length;
+  }
+  attrs += escapeHtml(m[3].slice(last));
+  return `<span class="tok-punc">${escapeHtml(m[1])}</span><span class="tok-tag">${escapeHtml(m[2])}</span>${attrs}<span class="tok-punc">${escapeHtml(m[4])}</span>`;
+}
+
+function highlightHtml(code) {
+  const source = String(code || '');
+  const tokenRe = /<!--[\s\S]*?-->|<!DOCTYPE[^>]*>|<\/?[A-Za-z][^>]*>/gi;
+  let out = '', last = 0;
+  for (const match of source.matchAll(tokenRe)) {
+    out += escapeHtml(source.slice(last, match.index));
+    out += highlightHtmlTag(match[0]);
+    last = match.index + match[0].length;
+  }
+  return out + escapeHtml(source.slice(last));
+}
+
+function updateHighlight() {
+  const file = state.activeFile;
+  const code = el.codeEditor.value;
+  el.highlightCode.innerHTML = file === 'html' ? highlightHtml(code) : file === 'css' ? highlightCss(code) : highlightJs(code);
+  el.languageBadge.textContent = file === 'js' ? 'JavaScript' : file.toUpperCase();
+  syncEditorScroll();
+}
+
+function syncEditorScroll() {
+  if (!el.syntaxLayer) return;
+  el.syntaxLayer.scrollTop = el.codeEditor.scrollTop;
+  el.syntaxLayer.scrollLeft = el.codeEditor.scrollLeft;
+  el.lineNumbers.scrollTop = el.codeEditor.scrollTop;
+}
+
 function loadEditor() {
   el.codeEditor.value = filesFor(state.current)[state.activeFile] || '';
   updateLines();
+  updateHighlight();
 }
 
 function updateLines() {
@@ -565,10 +699,8 @@ function validateHtmlSyntax(html) {
     if (quoteCountDouble % 2 || quoteCountSingle % 2) {
       return { ok: false, file: 'HTML', line: lineNumberAt(source, index), message: `<${tag}>의 속성 따옴표가 닫히지 않았습니다.` };
     }
-    const assignmentRe = /=\s*([^\s"'][^\s>]*)/g;
-    if (assignmentRe.test(attrs)) {
-      return { ok: false, file: 'HTML', line: lineNumberAt(source, index), message: 'HTML 속성 값은 따옴표로 감싸서 작성하세요. 예: class="card"' };
-    }
+    // HTML에서는 공백이나 따옴표 등이 없는 단순 속성값은 따옴표 없이도 문법상 허용됩니다.
+    // 학습 문제에서 따옴표 사용을 요구하고 싶다면 문법 검사가 아니라 해당 레슨의 성공 조건에서 검사합니다.
 
     const selfClosing = /\/\s*>$/.test(token);
     if (!voidTags.has(tag) && !selfClosing) stack.push({ tag, index });
@@ -739,41 +871,54 @@ function runPreview(check = true) {
   const files = filesFor(state.current);
   const syntax = validateSyntaxForLesson(files);
 
+  // 1. 문법이 잘못된 경우에만 미리보기를 중단합니다.
   if (!syntax.ok) {
     el.previewFrame.onload = null;
-    el.previewFrame.srcdoc = '<!doctype html><html lang="ko"><body style="font-family:system-ui;padding:32px;color:#666"><strong>코드 오류를 먼저 수정하세요.</strong><p>문법이 올바를 때만 미리보기를 실행합니다.</p></body></html>';
+    el.previewFrame.srcdoc = '<!doctype html><html lang="ko"><body style="font-family:system-ui;padding:32px;color:#666"><strong>코드 오류를 먼저 수정하세요.</strong><p>문법이 올바르면 정답 여부와 관계없이 미리보기가 표시됩니다.</p></body></html>';
     const location = syntax.line ? `${syntax.file} ${syntax.line}줄 · ` : `${syntax.file} · `;
     showFeedback('error', '코드 오류', location + syntax.message);
     updateMission(false, true);
     return;
   }
 
-  const checkedFiles = filesForRequirementCheck(files);
-  const requirementSuccess = lessons[state.current].validate(checkedFiles);
-  updateMission(false, false);
-  showFeedback('', '코드를 실행하는 중입니다', '문법 검사를 통과했습니다. 실행 오류와 문제 조건을 확인합니다.');
-
+  // 2. 문법이 맞으면 정답 판정 전에 먼저 미리보기를 갱신합니다.
+  //    문제를 아직 풀지 않았어도 현재 작성한 결과를 항상 볼 수 있어야 합니다.
   el.previewFrame.onload = () => {
     let runtimeErrors = [];
     try { runtimeErrors = el.previewFrame.contentWindow.__frameStudyRuntimeErrors || []; } catch (_) {}
 
+    // JavaScript 과정에서는 문법이 맞아도 실행 중 오류가 날 수 있습니다.
+    // 이 경우 화면은 그대로 보여주되 문제는 통과시키지 않습니다.
     if (runtimeErrors.length) {
-      const message = runtimeErrors[0];
-      showFeedback('error', 'JavaScript 실행 오류', message);
+      showFeedback('error', 'JavaScript 실행 오류', runtimeErrors[0]);
+      updateMission(false, true);
+      return;
+    }
+
+    // 3. 미리보기가 정상적으로 만들어진 뒤에 문제 성공 조건을 별도로 검사합니다.
+    let requirementSuccess = false;
+    try {
+      const checkedFiles = filesForRequirementCheck(files);
+      requirementSuccess = Boolean(lessons[state.current].validate(checkedFiles));
+    } catch (err) {
+      console.error('Lesson validation error:', err);
+      showFeedback('error', '문제 판정 오류', '미리보기는 정상적으로 실행됐지만 이 레슨의 정답 검사 코드에 문제가 있습니다.');
       updateMission(false, true);
       return;
     }
 
     if (requirementSuccess) {
-      showFeedback('success', '정답입니다', '문법, 실행 상태, 문제의 성공 조건을 모두 만족했습니다.');
+      showFeedback('success', '정답입니다', '문법과 실행 상태가 정상이고 문제의 성공 조건도 만족했습니다.');
       updateMission(true, false);
       if (check) completeLesson();
     } else {
-      showFeedback('', '아직 문제 조건을 만족하지 않았습니다', '코드 문법과 실행에는 문제가 없습니다. 위의 “해야 할 일”과 “성공 조건”을 다시 확인하세요.');
+      showFeedback('', '미리보기는 정상입니다', '코드 문법에는 문제가 없습니다. 결과를 확인한 뒤 위의 “해야 할 일”과 “성공 조건”을 만족하도록 코드를 수정하세요.');
       updateMission(false, false);
     }
   };
 
+  showFeedback('', '미리보기 실행', '문법 검사를 통과했습니다. 정답 여부와 관계없이 현재 코드를 미리보기에 표시합니다.');
+  updateMission(false, false);
   el.previewFrame.srcdoc = makePreview(files);
 }
 
@@ -804,6 +949,7 @@ function insertEditorText(text, caretOffset = text.length) {
   const pos = start + caretOffset;
   el.codeEditor.selectionStart = el.codeEditor.selectionEnd = pos;
   updateLines();
+  updateHighlight();
   saveEditor();
 }
 
@@ -906,8 +1052,44 @@ function handleSmartEnter(e) {
   return true;
 }
 
-el.codeEditor.addEventListener('input', () => { updateLines(); saveEditor(); });
-el.codeEditor.addEventListener('scroll', () => { el.lineNumbers.scrollTop = el.codeEditor.scrollTop; });
+
+function handleHtmlClosingIndent(e) {
+  if (state.activeFile !== 'html' || e.key !== '>') return false;
+  const start = el.codeEditor.selectionStart;
+  if (start !== el.codeEditor.selectionEnd) return false;
+  const value = el.codeEditor.value;
+  const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+  const beforeOnLine = value.slice(lineStart, start);
+  if (!/^\s+<\/[A-Za-z][\w:-]*$/.test(beforeOnLine)) return false;
+  const indent = (beforeOnLine.match(/^\s*/) || [''])[0];
+  if (indent.length < 2) return false;
+  e.preventDefault();
+  const rest = beforeOnLine.slice(indent.length);
+  const replacement = indent.slice(0, -2) + rest + '>';
+  el.codeEditor.setRangeText(replacement, lineStart, start, 'end');
+  el.codeEditor.dispatchEvent(new Event('input', { bubbles: true }));
+  return true;
+}
+
+function handleClosingOutdent(e) {
+  const start = el.codeEditor.selectionStart;
+  if (start !== el.codeEditor.selectionEnd) return false;
+  const value = el.codeEditor.value;
+  const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+  const beforeOnLine = value.slice(lineStart, start);
+  if (!/^\s+$/.test(beforeOnLine) && beforeOnLine !== '') return false;
+
+  if (e.key === '}' && beforeOnLine.length >= 2) {
+    e.preventDefault();
+    el.codeEditor.setRangeText(beforeOnLine.slice(0, -2) + '}', lineStart, start, 'end');
+    el.codeEditor.dispatchEvent(new Event('input', { bubbles: true }));
+    return true;
+  }
+  return false;
+}
+
+el.codeEditor.addEventListener('input', () => { updateLines(); updateHighlight(); saveEditor(); });
+el.codeEditor.addEventListener('scroll', syncEditorScroll);
 el.codeEditor.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); runPreview(true); return; }
 
@@ -917,6 +1099,8 @@ el.codeEditor.addEventListener('keydown', e => {
     return;
   }
 
+  if (handleClosingOutdent(e)) return;
+  if (handleHtmlClosingIndent(e)) return;
   if (handleSmartEnter(e)) return;
   if (handleHtmlAutoClose(e)) return;
   handlePairCompletion(e);
