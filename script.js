@@ -407,7 +407,7 @@ function lesson(group, title, nav, kind, description, points, syntax, mission, h
   return { group, title, nav, kind, description, points, syntax, mission, hint, files, validate, explain };
 }
 
-const storageKey = 'frame-study-v8';
+const storageKey = 'frame-study-v10';
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch { saved = {}; }
 
@@ -420,7 +420,7 @@ const state = {
 };
 
 const el = Object.fromEntries([
-  'sidebar','sidebarClose','sidebarOverlay','curriculum','summaryProgress','progressBar','crumb','lessonNumber','lessonKind','lessonTitle','lessonDescription','learningPoints','syntaxCode','missionText','problemNumber','problemFile','successCondition','missionResult','codeFeedback','feedbackTitle','feedbackMessage','editorTabs','codeEditor','lineNumbers','syntaxLayer','highlightCode','languageBadge','hintButton','hintBox','runButton','previewFrame','explanationList','prevButton','nextButton','resetButton','menuButton','toast','saveState'
+  'sidebar','sidebarClose','sidebarOverlay','curriculum','summaryProgress','progressBar','crumb','lessonNumber','lessonKind','lessonTitle','lessonDescription','learningPoints','syntaxCode','missionText','problemNumber','problemFile','successCondition','missionResult','codeFeedback','feedbackTitle','feedbackMessage','editorTabs','codeEditor','lineNumbers','languageBadge','hintButton','hintBox','runButton','previewFrame','explanationList','prevButton','nextButton','resetButton','menuButton','toast','saveState'
 ].map(id => [id, document.getElementById(id)]));
 
 function filesFor(index) {
@@ -441,7 +441,7 @@ function save() {
 }
 
 function saveEditor() {
-  filesFor(state.current)[state.activeFile] = el.codeEditor.value;
+  filesFor(state.current)[state.activeFile] = getEditorText();
   save();
 }
 
@@ -608,30 +608,99 @@ function highlightHtml(code) {
   return out + escapeHtml(source.slice(last));
 }
 
-function updateHighlight() {
+let editorComposing = false;
+
+function getEditorText() {
+  return (el.codeEditor.textContent || '').replace(/\r/g, '');
+}
+
+function getEditorSelection() {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0 || !el.codeEditor.contains(sel.anchorNode)) {
+    const length = getEditorText().length;
+    return { start: length, end: length };
+  }
+  const range = sel.getRangeAt(0);
+  const beforeStart = document.createRange();
+  beforeStart.selectNodeContents(el.codeEditor);
+  beforeStart.setEnd(range.startContainer, range.startOffset);
+  const beforeEnd = document.createRange();
+  beforeEnd.selectNodeContents(el.codeEditor);
+  beforeEnd.setEnd(range.endContainer, range.endOffset);
+  return { start: beforeStart.toString().length, end: beforeEnd.toString().length };
+}
+
+function setEditorSelection(start, end = start) {
+  const total = getEditorText().length;
+  start = Math.max(0, Math.min(start, total));
+  end = Math.max(0, Math.min(end, total));
+  const walker = document.createTreeWalker(el.codeEditor, NodeFilter.SHOW_TEXT);
+  let node;
+  let pos = 0;
+  let startPoint = null;
+  let endPoint = null;
+  while ((node = walker.nextNode())) {
+    const next = pos + node.nodeValue.length;
+    if (!startPoint && start <= next) startPoint = [node, start - pos];
+    if (!endPoint && end <= next) { endPoint = [node, end - pos]; break; }
+    pos = next;
+  }
+  const range = document.createRange();
+  if (!startPoint) {
+    range.selectNodeContents(el.codeEditor);
+    range.collapse(false);
+  } else {
+    range.setStart(startPoint[0], startPoint[1]);
+    const ep = endPoint || startPoint;
+    range.setEnd(ep[0], ep[1]);
+  }
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+function highlightedMarkup(code) {
   const file = state.activeFile;
-  const code = el.codeEditor.value;
-  el.highlightCode.innerHTML = file === 'html' ? highlightHtml(code) : file === 'css' ? highlightCss(code) : highlightJs(code);
-  el.languageBadge.textContent = file === 'js' ? 'JavaScript' : file.toUpperCase();
-  syncEditorScroll();
+  return file === 'html' ? highlightHtml(code) : file === 'css' ? highlightCss(code) : highlightJs(code);
+}
+
+function renderEditorText(code, selection = null) {
+  el.codeEditor.innerHTML = highlightedMarkup(code);
+  if (!el.codeEditor.firstChild && code === '') el.codeEditor.appendChild(document.createTextNode(''));
+  if (selection) setEditorSelection(selection.start, selection.end);
+  el.languageBadge.textContent = state.activeFile === 'js' ? 'JavaScript' : state.activeFile.toUpperCase();
+}
+
+function updateHighlight() {
+  if (editorComposing) return;
+  const selection = getEditorSelection();
+  const code = getEditorText();
+  renderEditorText(code, selection);
 }
 
 function syncEditorScroll() {
-  if (!el.syntaxLayer) return;
-  el.syntaxLayer.scrollTop = el.codeEditor.scrollTop;
-  el.syntaxLayer.scrollLeft = el.codeEditor.scrollLeft;
   el.lineNumbers.scrollTop = el.codeEditor.scrollTop;
 }
 
 function loadEditor() {
-  el.codeEditor.value = filesFor(state.current)[state.activeFile] || '';
+  const code = filesFor(state.current)[state.activeFile] || '';
+  renderEditorText(code, { start: 0, end: 0 });
   updateLines();
-  updateHighlight();
+  el.codeEditor.scrollTop = 0;
+  el.codeEditor.scrollLeft = 0;
 }
 
 function updateLines() {
-  const count = Math.max(1, el.codeEditor.value.split('\n').length);
+  const count = Math.max(1, getEditorText().split('\n').length);
   el.lineNumbers.textContent = Array.from({length: count}, (_,i) => i + 1).join('\n');
+}
+
+function replaceEditorRange(text, start, end, caret = start + text.length) {
+  const value = getEditorText();
+  const next = value.slice(0, start) + text + value.slice(end);
+  renderEditorText(next, { start: caret, end: caret });
+  updateLines();
+  saveEditor();
 }
 
 function renderExplain() {
@@ -943,21 +1012,17 @@ function completeLesson() {
 }
 
 function insertEditorText(text, caretOffset = text.length) {
-  const start = el.codeEditor.selectionStart;
-  const end = el.codeEditor.selectionEnd;
-  el.codeEditor.setRangeText(text, start, end, 'end');
+  const { start, end } = getEditorSelection();
   const pos = start + caretOffset;
-  el.codeEditor.selectionStart = el.codeEditor.selectionEnd = pos;
-  updateLines();
-  updateHighlight();
-  saveEditor();
+  replaceEditorRange(text, start, end, pos);
 }
 
 function handleHtmlAutoClose(e) {
   if (state.activeFile !== 'html' || e.key !== '>') return false;
-  const start = el.codeEditor.selectionStart;
-  if (start !== el.codeEditor.selectionEnd) return false;
-  const before = el.codeEditor.value.slice(0, start);
+  const sel = getEditorSelection();
+  const start = sel.start;
+  if (start !== sel.end) return false;
+  const before = getEditorText().slice(0, start);
   const match = before.match(/<([A-Za-z][\w:-]*)(?:\s[^<>]*)?$/);
   if (!match) return false;
   const tag = match[1].toLowerCase();
@@ -972,15 +1037,15 @@ function handlePairCompletion(e) {
   if (e.metaKey || e.ctrlKey || e.altKey) return false;
   const pairs = { '(': ')', '[': ']', '{': '}', '"': '"', "'": "'", '`': '`' };
   const closing = new Set(Object.values(pairs));
-  const start = el.codeEditor.selectionStart;
-  const end = el.codeEditor.selectionEnd;
-  const selected = el.codeEditor.value.slice(start, end);
+  const { start, end } = getEditorSelection();
+  const editorValue = getEditorText();
+  const selected = editorValue.slice(start, end);
 
   if (pairs[e.key]) {
-    const next = el.codeEditor.value[start] || '';
+    const next = editorValue[start] || '';
     if ((e.key === '"' || e.key === "'" || e.key === '`') && next === e.key && start === end) {
       e.preventDefault();
-      el.codeEditor.selectionStart = el.codeEditor.selectionEnd = start + 1;
+      setEditorSelection(start + 1);
       return true;
     }
     e.preventDefault();
@@ -989,9 +1054,9 @@ function handlePairCompletion(e) {
     return true;
   }
 
-  if (closing.has(e.key) && el.codeEditor.value[start] === e.key && start === end) {
+  if (closing.has(e.key) && editorValue[start] === e.key && start === end) {
     e.preventDefault();
-    el.codeEditor.selectionStart = el.codeEditor.selectionEnd = start + 1;
+    setEditorSelection(start + 1);
     return true;
   }
   return false;
@@ -1000,9 +1065,8 @@ function handlePairCompletion(e) {
 function handleSmartEnter(e) {
   if (e.key !== 'Enter') return false;
 
-  const start = el.codeEditor.selectionStart;
-  const end = el.codeEditor.selectionEnd;
-  const value = el.codeEditor.value;
+  const { start, end } = getEditorSelection();
+  const value = getEditorText();
   const before = value.slice(0, start);
   const after = value.slice(end);
   const currentLine = before.slice(before.lastIndexOf('\n') + 1);
@@ -1025,10 +1089,8 @@ function handleSmartEnter(e) {
 
   if (htmlBetweenPair || braceBetweenPair) {
     const text = `\n${baseIndent}${indentUnit}\n${baseIndent}`;
-    el.codeEditor.setRangeText(text, start, end, 'end');
     const cursor = start + 1 + baseIndent.length + indentUnit.length;
-    el.codeEditor.selectionStart = el.codeEditor.selectionEnd = cursor;
-    el.codeEditor.dispatchEvent(new Event('input', { bubbles: true }));
+    replaceEditorRange(text, start, end, cursor);
     return true;
   }
 
@@ -1045,19 +1107,18 @@ function handleSmartEnter(e) {
   if (/\{$/.test(trimmedBefore)) nextIndent += indentUnit;
 
   const text = `\n${nextIndent}`;
-  el.codeEditor.setRangeText(text, start, end, 'end');
   const cursor = start + text.length;
-  el.codeEditor.selectionStart = el.codeEditor.selectionEnd = cursor;
-  el.codeEditor.dispatchEvent(new Event('input', { bubbles: true }));
+  replaceEditorRange(text, start, end, cursor);
   return true;
 }
 
 
 function handleHtmlClosingIndent(e) {
   if (state.activeFile !== 'html' || e.key !== '>') return false;
-  const start = el.codeEditor.selectionStart;
-  if (start !== el.codeEditor.selectionEnd) return false;
-  const value = el.codeEditor.value;
+  const sel = getEditorSelection();
+  const start = sel.start;
+  if (start !== sel.end) return false;
+  const value = getEditorText();
   const lineStart = value.lastIndexOf('\n', start - 1) + 1;
   const beforeOnLine = value.slice(lineStart, start);
   if (!/^\s+<\/[A-Za-z][\w:-]*$/.test(beforeOnLine)) return false;
@@ -1066,29 +1127,46 @@ function handleHtmlClosingIndent(e) {
   e.preventDefault();
   const rest = beforeOnLine.slice(indent.length);
   const replacement = indent.slice(0, -2) + rest + '>';
-  el.codeEditor.setRangeText(replacement, lineStart, start, 'end');
-  el.codeEditor.dispatchEvent(new Event('input', { bubbles: true }));
+  replaceEditorRange(replacement, lineStart, start, lineStart + replacement.length);
   return true;
 }
 
 function handleClosingOutdent(e) {
-  const start = el.codeEditor.selectionStart;
-  if (start !== el.codeEditor.selectionEnd) return false;
-  const value = el.codeEditor.value;
+  const sel = getEditorSelection();
+  const start = sel.start;
+  if (start !== sel.end) return false;
+  const value = getEditorText();
   const lineStart = value.lastIndexOf('\n', start - 1) + 1;
   const beforeOnLine = value.slice(lineStart, start);
   if (!/^\s+$/.test(beforeOnLine) && beforeOnLine !== '') return false;
 
   if (e.key === '}' && beforeOnLine.length >= 2) {
     e.preventDefault();
-    el.codeEditor.setRangeText(beforeOnLine.slice(0, -2) + '}', lineStart, start, 'end');
-    el.codeEditor.dispatchEvent(new Event('input', { bubbles: true }));
+    const replacement = beforeOnLine.slice(0, -2) + '}';
+    replaceEditorRange(replacement, lineStart, start, lineStart + replacement.length);
     return true;
   }
   return false;
 }
 
-el.codeEditor.addEventListener('input', () => { updateLines(); updateHighlight(); saveEditor(); });
+el.codeEditor.addEventListener('compositionstart', () => { editorComposing = true; });
+el.codeEditor.addEventListener('compositionend', () => {
+  editorComposing = false;
+  updateLines();
+  updateHighlight();
+  saveEditor();
+});
+el.codeEditor.addEventListener('input', () => {
+  updateLines();
+  if (!editorComposing) updateHighlight();
+  saveEditor();
+});
+el.codeEditor.addEventListener('paste', e => {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text/plain').replace(/\r/g, '');
+  const { start, end } = getEditorSelection();
+  replaceEditorRange(text, start, end, start + text.length);
+});
 el.codeEditor.addEventListener('scroll', syncEditorScroll);
 el.codeEditor.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); runPreview(true); return; }

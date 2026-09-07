@@ -97,8 +97,7 @@
               <div class="editor-wrap">
                 <pre class="line-numbers" id="lineNumbers"></pre>
                 <div class="editor-stack">
-                  <pre class="syntax-layer" id="syntaxLayer" aria-hidden="true"><code id="highlightCode"></code></pre>
-                  <textarea id="codeEditor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="코드 편집기"></textarea>
+                  <pre id="codeEditor" class="code-editor" contenteditable="true" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="코드 편집기" role="textbox" aria-multiline="true"></pre>
                 </div>
               </div>
               <div class="hint" id="hintBox"></div>
@@ -113,7 +112,15 @@
                 <span>미리보기</span>
                 <span class="live-dot">LIVE</span>
               </div>
-              <iframe id="previewFrame" title="실습 결과"></iframe>
+              <div class="preview-surface">
+                <div class="preview-browser">
+                  <div class="preview-toolbar" aria-hidden="true">
+                    <span class="preview-dot"></span><span class="preview-dot"></span><span class="preview-dot"></span>
+                    <span class="preview-address">preview</span>
+                  </div>
+                  <iframe id="previewFrame" title="실습 결과"></iframe>
+                </div>
+              </div>
             </section>
           </div>
         </section>

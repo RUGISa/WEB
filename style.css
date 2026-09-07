@@ -335,3 +335,176 @@ button { cursor: pointer; }
   font-feature-settings: "liga" 0, "calt" 0;
   font-kerning: none;
 }
+
+
+/* v10: single-layer editor, wider learning canvas, cleaner preview */
+.lesson {
+  width: min(1440px, calc(100% - 40px));
+}
+.study-section,
+.practice,
+.lesson-footer {
+  width: 100%;
+}
+.lesson-head,
+.learning-note,
+.explain {
+  max-width: 940px;
+}
+.workbench {
+  grid-template-columns: minmax(0, 1.18fr) minmax(420px, .82fr);
+  min-height: 600px;
+  border-radius: 16px;
+}
+.editor-wrap {
+  grid-template-columns: 48px minmax(0, 1fr);
+  min-height: 520px;
+}
+.line-numbers {
+  padding: 20px 10px 20px 0;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  line-height: 22px;
+}
+.editor-stack {
+  min-height: 520px;
+  background: #1f2125;
+}
+.syntax-layer { display: none !important; }
+.code-editor,
+#codeEditor {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  margin: 0;
+  padding: 20px 22px 28px;
+  overflow: auto;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #d4d4d4;
+  caret-color: #ffffff;
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
+  tab-size: 2;
+  -moz-tab-size: 2;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 22px;
+  letter-spacing: 0;
+  word-spacing: 0;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+  font-kerning: none;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  resize: none;
+}
+#codeEditor::selection,
+#codeEditor *::selection {
+  background: rgba(77, 117, 171, .58);
+  color: inherit;
+}
+#codeEditor:focus {
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.035);
+}
+
+.preview-pane {
+  background: #f4f4f1;
+}
+.preview-head {
+  background: #fbfbf9;
+}
+.preview-surface {
+  flex: 1;
+  min-height: 0;
+  padding: 16px;
+  background: #f4f4f1;
+}
+.preview-browser {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 520px;
+  overflow: hidden;
+  border: 1px solid #deded8;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 1px 2px rgba(20, 22, 24, .03);
+}
+.preview-toolbar {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 11px;
+  border-bottom: 1px solid #e7e7e2;
+  background: #fafaf8;
+}
+.preview-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c9c9c4;
+}
+.preview-address {
+  min-width: 0;
+  margin-left: 6px;
+  padding: 4px 9px;
+  border: 1px solid #ecece7;
+  border-radius: 6px;
+  color: #9a9a94;
+  background: #f3f3f0;
+  font: 600 9px/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+.preview-pane iframe {
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  border: 0;
+  background: #fff;
+}
+
+.problem-card {
+  border-radius: 16px;
+}
+
+@media (max-width: 1180px) {
+  .lesson { width: min(100% - 32px, 1180px); }
+  .workbench { grid-template-columns: 1fr; }
+  .preview-pane { border-left: 0; border-top: 1px solid var(--line); }
+  .preview-browser { min-height: 430px; }
+}
+
+@media (max-width: 640px) {
+  .lesson { width: min(100% - 24px, 100%); }
+  .preview-surface { padding: 10px; }
+  .editor-wrap { grid-template-columns: 40px minmax(0, 1fr); }
+  .line-numbers { font-size: 12px; padding-right: 8px; }
+  .code-editor, #codeEditor { font-size: 12px; padding: 18px 16px 24px; }
+}
+
+/* Ensure the editable text itself is painted; older overlay rules made it transparent. */
+#codeEditor {
+  -webkit-text-fill-color: currentColor;
+}
+#codeEditor .tok-comment,
+#codeEditor .tok-keyword,
+#codeEditor .tok-tag,
+#codeEditor .tok-punc,
+#codeEditor .tok-attr,
+#codeEditor .tok-string,
+#codeEditor .tok-number,
+#codeEditor .tok-property,
+#codeEditor .tok-selector,
+#codeEditor .tok-variable,
+#codeEditor .tok-global {
+  -webkit-text-fill-color: currentColor;
+}
