@@ -35,7 +35,7 @@ const lessons = [
     '<h1>제목</h1>  <p>문단</p>',
     'h2 태그로 “오늘 배울 내용”이라는 소제목을 추가하세요.',
     'h1 아래에 <h2>오늘 배울 내용</h2>를 넣어보세요.',
-    {html:'<main>\n  <h1>HTML 텍스트</h1>\n  <p>제목과 문단을 구분해봅니다.</p>\n</main>', css:baseCss, js:''},
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>제목과 문단</title>\n  </head>\n  <body>\n    <main>\n      <h1>HTML 텍스트</h1>\n      <p>제목과 문단을 구분해봅니다.</p>\n    </main>\n  </body>\n</html>', css:'', js:''},
     f => /<h2>\s*오늘 배울 내용\s*<\/h2>/i.test(f.html),
     [['<h1>','가장 높은 단계의 제목입니다.'],['<h2>','h1 아래의 소제목처럼 사용합니다.'],['<p>','한 덩어리의 문단을 의미합니다.']]),
 
@@ -45,7 +45,7 @@ const lessons = [
     '<a href="주소">링크 이름</a>',
     'href를 https://example.com 으로 바꾸세요.',
     'a 태그 안의 href="..." 값만 바꾸면 됩니다.',
-    {html:'<h1>유용한 링크</h1>\n<a href="#">Example 사이트</a>', css:baseCss + '\na { color: #24527a; }', js:''},
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>링크 연습</title>\n  </head>\n  <body>\n    <main>\n      <h1>유용한 링크</h1>\n      <a href="#">Example 사이트</a>\n    </main>\n  </body>\n</html>', css:'', js:''},
     f => /href\s*=\s*["']https:\/\/example\.com\/?["']/i.test(f.html),
     [['<a>','클릭 가능한 링크를 만드는 태그입니다.'],['href','링크가 이동할 목적지를 지정하는 속성입니다.'],['https://','웹 주소의 통신 방식을 나타냅니다.']]),
 
@@ -55,7 +55,7 @@ const lessons = [
     '<img src="image.jpg" alt="이미지 설명">',
     'alt 값을 “산 풍경”으로 바꾸세요.',
     'img 태그의 alt="..." 부분을 수정하세요.',
-    {html:'<h1>여행 사진</h1>\n<img src="https://picsum.photos/420/220" alt="사진">', css:baseCss + '\nimg { max-width: 100%; border-radius: 12px; }', js:''},
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>이미지 연습</title>\n  </head>\n  <body>\n    <main>\n      <h1>여행 사진</h1>\n      <img src="https://picsum.photos/420/220" alt="사진">\n    </main>\n  </body>\n</html>', css:'', js:''},
     f => /alt\s*=\s*["']산 풍경["']/i.test(f.html),
     [['<img>','외부 이미지나 프로젝트 안의 이미지를 화면에 표시합니다.'],['src','source의 약자로 이미지 파일의 위치입니다.'],['alt','이미지를 볼 수 없는 상황에서도 내용을 전달하는 대체 텍스트입니다.']]),
 
@@ -65,7 +65,7 @@ const lessons = [
     '<ul><li>항목</li></ul>',
     '목록에 “JavaScript” 항목을 하나 더 추가하세요.',
     '<li>JavaScript</li>를 ul 안쪽 마지막에 추가하세요.',
-    {html:'<h1>배울 언어</h1>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n</ul>', css:baseCss, js:''},
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>목록 연습</title>\n  </head>\n  <body>\n    <main>\n      <h1>배울 언어</h1>\n      <ul>\n        <li>HTML</li>\n        <li>CSS</li>\n      </ul>\n    </main>\n  </body>\n</html>', css:'', js:''},
     f => /<li>\s*JavaScript\s*<\/li>/i.test(f.html),
     [['<ul>','순서가 중요하지 않은 목록 전체를 감쌉니다.'],['<ol>','1, 2, 3처럼 순서가 있는 목록에 사용합니다.'],['<li>','목록 안의 한 항목을 나타냅니다.']]),
 
@@ -75,7 +75,7 @@ const lessons = [
     '<input placeholder="이름">  <button>저장</button>',
     'input에 placeholder="이름을 입력하세요"를 넣으세요.',
     'input 태그 안에 placeholder 속성을 추가하면 됩니다.',
-    {html:'<h1>프로필</h1>\n<input type="text">\n<button>저장</button>', css:baseCss + '\ninput, button { padding: 10px; }', js:''},
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>입력 요소 연습</title>\n  </head>\n  <body>\n    <main>\n      <h1>프로필</h1>\n      <input type="text">\n      <button>저장</button>\n    </main>\n  </body>\n</html>', css:'', js:''},
     f => /placeholder\s*=\s*["']이름을 입력하세요["']/i.test(f.html),
     [['<input>','한 줄의 텍스트나 숫자 등 다양한 값을 받을 수 있습니다.'],['type','input이 어떤 종류의 입력을 받을지 정합니다.'],['placeholder','입력창 안에 임시 안내 문구를 보여줍니다.']]),
 
@@ -85,7 +85,7 @@ const lessons = [
     'class="card"  id="submitButton"',
     '두 번째 p 태그에도 class="note"를 추가하세요.',
     '<p class="note">처럼 class 속성을 붙여보세요.',
-    {html:'<h1>메모</h1>\n<p class="note">첫 번째 메모</p>\n<p>두 번째 메모</p>', css:baseCss + '\n.note { color: #315f49; }', js:''},
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>class와 id</title>\n  </head>\n  <body>\n    <main>\n      <h1>메모</h1>\n      <p class="note">첫 번째 메모</p>\n      <p>두 번째 메모</p>\n    </main>\n  </body>\n</html>', css:'', js:''},
     f => (f.html.match(/class\s*=\s*["']note["']/gi)||[]).length >= 2,
     [['class','여러 요소가 같은 그룹 이름을 공유할 수 있습니다.'],['id','한 요소를 고유하게 찾을 때 적합합니다.'],['.note','CSS에서 점(.)은 class를 선택한다는 뜻입니다.']]),
 
@@ -95,7 +95,7 @@ const lessons = [
     '<header> <main> <section> <footer>',
     'main 안의 콘텐츠를 section 태그로 감싸세요.',
     '<main> 바로 안쪽에 <section>을 열고, 내용 뒤에서 </section>으로 닫아주세요.',
-    {html:'<header>\n  <h1>나의 사이트</h1>\n</header>\n<main>\n  <h2>소개</h2>\n  <p>의미 있는 구조를 연습합니다.</p>\n</main>\n<footer>2026</footer>', css:baseCss, js:''},
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>의미 있는 레이아웃</title>\n  </head>\n  <body>\n    <header>\n      <h1>나의 사이트</h1>\n    </header>\n    <main>\n      <h2>소개</h2>\n      <p>의미 있는 구조를 연습합니다.</p>\n    </main>\n    <footer>2026</footer>\n  </body>\n</html>', css:'', js:''},
     f => /<main>[\s\S]*<section>[\s\S]*<\/section>[\s\S]*<\/main>/i.test(f.html),
     [['<header>','사이트나 섹션의 시작 부분을 의미합니다.'],['<main>','현재 문서의 중심 콘텐츠를 나타냅니다.'],['<section>','같은 주제의 콘텐츠 묶음을 만듭니다.']]),
 
@@ -103,10 +103,10 @@ const lessons = [
     '지금까지 배운 HTML만으로 작은 소개 페이지의 구조를 완성합니다. 아직 예쁘게 꾸미는 것은 신경 쓰지 않고 내용의 의미와 순서에 집중합니다.',
     ['h1로 페이지의 대표 제목을 만듭니다.','ul/li로 기술 목록을 만듭니다.','a로 다른 페이지로 이동하는 링크를 만듭니다.'],
     '구조 먼저 → 디자인은 나중',
-    'h1, ul, a 태그를 모두 포함한 소개 페이지를 완성하세요.',
-    '세 태그가 모두 HTML 안에 있으면 됩니다. 내용은 자유롭게 작성하세요.',
-    {html:'<main>\n  <!-- 나만의 소개 페이지를 완성하세요 -->\n\n</main>', css:baseCss, js:''},
-    f => /<h1[\s>]/i.test(f.html) && /<ul[\s>]/i.test(f.html) && /<a[\s>]/i.test(f.html),
+    '제공된 전체 HTML 문서의 <main> 안에 제목, 소개 문단, 기술 목록, 링크를 직접 작성해 소개 페이지를 완성하세요.',
+    '<h1>, <p>, <ul>/<li>, <a>를 직접 작성하세요. 기존 문서 골격은 유지하고 <main> 안의 콘텐츠는 스스로 구성합니다.',
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>나의 소개 페이지</title>\n  </head>\n  <body>\n    <main>\n      <!-- 여기부터 직접 소개 페이지의 전체 콘텐츠를 작성하세요. -->\n\n    </main>\n  </body>\n</html>', css:'', js:''},
+    f => /<h1[\s>]/i.test(f.html) && /<p[\s>]/i.test(f.html) && /<ul[\s>]/i.test(f.html) && /<li[\s>]/i.test(f.html) && /<a[\s>]/i.test(f.html),
     [['구조','무엇을 보여줄지 먼저 HTML로 정합니다.'],['계층','h1 아래에 제목과 내용을 자연스럽게 배치합니다.'],['링크','마지막에 사용자가 이동할 수 있는 경로를 제공합니다.']]),
 
   // CSS 01-10
@@ -357,7 +357,7 @@ function lesson(group, title, nav, kind, description, points, syntax, mission, h
   return { group, title, nav, kind, description, points, syntax, mission, hint, files, validate, explain };
 }
 
-const storageKey = 'frame-study-v5';
+const storageKey = 'frame-study-v6';
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch { saved = {}; }
 
@@ -853,18 +853,56 @@ function handlePairCompletion(e) {
 
 function handleSmartEnter(e) {
   if (e.key !== 'Enter') return false;
-  const start = el.codeEditor.selectionStart;
-  const before = el.codeEditor.value.slice(0, start);
-  const after = el.codeEditor.value.slice(start);
-  const currentLine = before.slice(before.lastIndexOf('\n') + 1);
-  const indent = (currentLine.match(/^\s*/) || [''])[0];
 
-  const htmlPair = state.activeFile === 'html' && /<([A-Za-z][\w:-]*)(?:\s[^<>]*)?>\s*$/.test(before) && /^\s*<\/([A-Za-z][\w:-]*)>/.test(after);
-  const bracePair = /\{\s*$/.test(before) && /^\s*\}/.test(after);
-  if (!htmlPair && !bracePair) return false;
+  const start = el.codeEditor.selectionStart;
+  const end = el.codeEditor.selectionEnd;
+  const value = el.codeEditor.value;
+  const before = value.slice(0, start);
+  const after = value.slice(end);
+  const currentLine = before.slice(before.lastIndexOf('\n') + 1);
+  const baseIndent = (currentLine.match(/^\s*/) || [''])[0];
+  const trimmedBefore = before.trimEnd();
+  const trimmedAfter = after.trimStart();
+  const indentUnit = '  ';
+
+  // <section>|</section> 또는 {|} 사이에서 Enter를 누르면
+  // VS Code처럼 내부 한 줄을 만들고 닫는 줄의 들여쓰기를 자동 정렬합니다.
+  let htmlBetweenPair = false;
+  if (state.activeFile === 'html') {
+    const openMatch = trimmedBefore.match(/<([A-Za-z][\w:-]*)(?:\s[^<>]*)?>$/);
+    const closeMatch = trimmedAfter.match(/^<\/([A-Za-z][\w:-]*)>/);
+    htmlBetweenPair = !!(openMatch && closeMatch && openMatch[1].toLowerCase() === closeMatch[1].toLowerCase());
+  }
+  const braceBetweenPair = /\{$/.test(trimmedBefore) && /^\}/.test(trimmedAfter);
 
   e.preventDefault();
-  insertEditorText(`\n${indent}  \n${indent}`, indent.length + 3);
+
+  if (htmlBetweenPair || braceBetweenPair) {
+    const text = `\n${baseIndent}${indentUnit}\n${baseIndent}`;
+    el.codeEditor.setRangeText(text, start, end, 'end');
+    const cursor = start + 1 + baseIndent.length + indentUnit.length;
+    el.codeEditor.selectionStart = el.codeEditor.selectionEnd = cursor;
+    el.codeEditor.dispatchEvent(new Event('input', { bubbles: true }));
+    return true;
+  }
+
+  let nextIndent = baseIndent;
+
+  if (state.activeFile === 'html') {
+    const voidTags = new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
+    const openMatch = trimmedBefore.match(/<([A-Za-z][\w:-]*)(?:\s[^<>]*)?>$/);
+    if (openMatch && !voidTags.has(openMatch[1].toLowerCase()) && !/\/\s*>$/.test(trimmedBefore)) {
+      nextIndent += indentUnit;
+    }
+  }
+
+  if (/\{$/.test(trimmedBefore)) nextIndent += indentUnit;
+
+  const text = `\n${nextIndent}`;
+  el.codeEditor.setRangeText(text, start, end, 'end');
+  const cursor = start + text.length;
+  el.codeEditor.selectionStart = el.codeEditor.selectionEnd = cursor;
+  el.codeEditor.dispatchEvent(new Event('input', { bubbles: true }));
   return true;
 }
 
