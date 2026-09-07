@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frame — 웹 개발을 직접 만들며 배우기</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-hidden="true">
+      <div class="sidebar-head">
+        <div class="brand">
+          <span class="brand-mark">F</span>
+          <div><strong>Frame</strong><small>Web Study</small></div>
+        </div>
+        <button class="sidebar-close" id="sidebarClose" aria-label="챕터 메뉴 닫기">×</button>
+      </div>
+
+      <div class="course-summary">
+        <span>웹 프론트엔드 기초</span>
+        <strong id="summaryProgress">0 / 0</strong>
+      </div>
+      <div class="progress"><span id="progressBar"></span></div>
+
+      <nav class="curriculum" id="curriculum"></nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-button" id="menuButton" aria-label="메뉴 열기">☰</button>
+        <div class="crumb" id="crumb">HTML · 01</div>
+        <div class="top-actions">
+          <button class="text-button" id="resetButton">초기화</button>
+        </div>
+      </header>
+
+      <article class="lesson">
+        <section class="study-section">
+          <div class="section-kicker">학습하기</div>
+          <section class="lesson-head">
+            <div class="lesson-meta"><span id="lessonNumber">01</span><span id="lessonKind">기초</span></div>
+            <h1 id="lessonTitle"></h1>
+            <p id="lessonDescription"></p>
+          </section>
+
+          <section class="learning-note">
+            <div class="note-title">이 레슨에서 배우는 것</div>
+            <ul id="learningPoints"></ul>
+            <div class="syntax-row">
+              <span>기본 형태</span>
+              <code id="syntaxCode"></code>
+            </div>
+          </section>
+
+          <section class="explain">
+            <div class="section-label">코드 읽기</div>
+            <div id="explanationList"></div>
+          </section>
+        </section>
+
+        <section class="practice">
+          <div class="practice-title-row">
+            <div>
+              <div class="section-kicker">실습 문제</div>
+              <h2>배운 내용을 직접 코드로 확인해보세요.</h2>
+            </div>
+            <div class="mission-result" id="missionResult">미완료</div>
+          </div>
+
+          <div class="problem-card">
+            <div class="problem-number" id="problemNumber">문제 01</div>
+            <div class="problem-main">
+              <span>해야 할 일</span>
+              <strong id="missionText"></strong>
+            </div>
+            <div class="problem-details">
+              <div><span>수정할 파일</span><strong id="problemFile">HTML</strong></div>
+              <div><span>성공 조건</span><p id="successCondition">요구사항을 코드에 반영한 뒤 실행하세요.</p></div>
+            </div>
+          </div>
+
+          <div class="workbench">
+            <section class="editor-pane">
+              <div class="pane-head">
+                <div class="tabs" id="editorTabs"></div>
+                <button class="hint-button" id="hintButton">힌트</button>
+              </div>
+              <div class="editor-wrap">
+                <pre class="line-numbers" id="lineNumbers"></pre>
+                <textarea id="codeEditor" spellcheck="false" aria-label="코드 편집기"></textarea>
+              </div>
+              <div class="hint" id="hintBox"></div>
+              <div class="run-row">
+                <span id="saveState">자동 저장 · 태그/괄호 자동 닫기 ON</span>
+                <button class="run-button" id="runButton">실행</button>
+              </div>
+            </section>
+
+            <section class="preview-pane">
+              <div class="pane-head preview-head">
+                <span>미리보기</span>
+                <span class="live-dot">LIVE</span>
+              </div>
+              <iframe id="previewFrame" title="실습 결과"></iframe>
+            </section>
+          </div>
+        </section>
+
+        <footer class="lesson-footer">
+          <button class="prev-button" id="prevButton">← 이전 레슨</button>
+          <button class="next-button" id="nextButton" disabled>다음 레슨 →</button>
+        </footer>
+      </article>
+    </main>
+  </div>
+  <button class="sidebar-overlay" id="sidebarOverlay" aria-label="챕터 메뉴 닫기" tabindex="-1"></button>
+
+  <div class="toast" id="toast">완료했습니다. 다음 레슨이 열렸어요.</div>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,676 @@
+const courseInfo = {
+  HTML: { title: '1. HTML — 구조 만들기', color: 'HTML' },
+  CSS: { title: '2. CSS — 화면 꾸미기', color: 'CSS' },
+  JS: { title: '3. JavaScript — 동작 만들기', color: 'JavaScript' },
+  PROJECT: { title: '4. 실전 — 혼자 만들기', color: 'Project' }
+};
+
+const baseCss = `body {\n  margin: 0;\n  padding: 40px;\n  font-family: Arial, sans-serif;\n  color: #222;\n}\n`;
+
+const lessons = [
+  // HTML 01-10
+  lesson('HTML','HTML은 어떤 구조로 이루어질까?','문서 구조 이해','개념',
+    'HTML을 태그 암기부터 시작하지 않습니다. 먼저 하나의 웹 문서가 어떻게 나뉘는지 봅니다. 브라우저는 HTML 파일을 위에서 아래로 읽고, 문서 정보가 있는 head와 실제 화면 내용이 들어가는 body를 구분합니다.',
+    ['HTML은 웹페이지의 내용과 구조를 표현하는 문서입니다.','문서는 html이라는 큰 범위 안에서 head와 body 두 영역으로 나뉩니다.','지금은 태그 이름을 외우지 말고, 무엇이 어디에 들어가는지만 이해하면 됩니다.'],
+    'HTML 문서 → 문서 정보(head) + 화면 내용(body)',
+    'body 영역 안에 “내 첫 웹 문서”라는 글자를 직접 입력하세요.',
+    'body를 여는 줄과 닫는 줄 사이에 글자를 그대로 적으면 됩니다. 아직 제목 태그를 쓰지 않아도 됩니다.',
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <title>첫 문서</title>\n  </head>\n  <body>\n    \n  </body>\n</html>', css:'', js:''},
+    f => /<body>[\s\S]*내 첫 웹 문서[\s\S]*<\/body>/i.test(f.html),
+    [['html 영역','HTML 문서 전체를 감싸는 가장 큰 범위입니다.'],['head 영역','브라우저가 문서를 이해하는 데 필요한 설정과 정보를 담습니다.'],['body 영역','사용자가 실제 화면에서 보게 되는 내용을 넣는 영역입니다.']]),
+
+  lesson('HTML','HTML 문서의 기본 골격','기본 골격','기초',
+    '이제 방금 본 구조를 실제 코드로 읽어봅니다. HTML에서는 시작과 끝을 표시하는 표현을 사용해 영역을 만듭니다. 이 표현을 태그라고 부릅니다. 먼저 문서 전체의 뼈대만 익힙니다.',
+    ['<!DOCTYPE html>은 이 파일이 현대 HTML 문서임을 브라우저에 알립니다.','<html> 안에 <head>와 <body>가 들어가는 포함 관계를 확인합니다.','들여쓰기는 어떤 요소가 어떤 요소 안에 있는지 눈으로 쉽게 확인하게 해줍니다.'],
+    '<html> 안에 <head>와 <body>가 들어간다',
+    '비어 있는 body 안에 “구조를 이해했다”라는 문장을 넣으세요.',
+    '<body>와 </body> 사이에 문장을 입력하세요. 아직 새로운 태그는 추가하지 않아도 됩니다.',
+    {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <title>HTML 구조</title>\n  </head>\n  <body>\n    \n  </body>\n</html>', css:'', js:''},
+    f => /<body>[\s\S]*구조를 이해했다[\s\S]*<\/body>/i.test(f.html),
+    [['<!DOCTYPE html>','브라우저에게 HTML5 방식으로 문서를 해석하라고 알려줍니다.'],['<head>...</head>','화면 내용이 아니라 문서 설정을 담는 한 쌍의 태그입니다.'],['<body>...</body>','화면에 표시할 내용을 넣는 한 쌍의 태그입니다.']]),
+
+  lesson('HTML','제목과 문단','텍스트 태그','기초',
+    '글은 웹페이지에서 가장 많이 쓰는 콘텐츠입니다. 제목의 중요도는 h1부터 h6까지, 일반 문장은 p 태그로 표현합니다.',
+    ['h1은 한 페이지의 대표 제목에 가깝습니다.','h2~h6은 하위 제목을 계층적으로 나눕니다.','p는 독립된 문단을 표현합니다.'],
+    '<h1>제목</h1>  <p>문단</p>',
+    'h2 태그로 “오늘 배울 내용”이라는 소제목을 추가하세요.',
+    'h1 아래에 <h2>오늘 배울 내용</h2>를 넣어보세요.',
+    {html:'<main>\n  <h1>HTML 텍스트</h1>\n  <p>제목과 문단을 구분해봅니다.</p>\n</main>', css:baseCss, js:''},
+    f => /<h2>\s*오늘 배울 내용\s*<\/h2>/i.test(f.html),
+    [['<h1>','가장 높은 단계의 제목입니다.'],['<h2>','h1 아래의 소제목처럼 사용합니다.'],['<p>','한 덩어리의 문단을 의미합니다.']]),
+
+  lesson('HTML','링크로 페이지 연결하기','링크','기초',
+    '웹의 핵심은 문서와 문서를 연결하는 것입니다. a 태그의 href 속성에 이동할 주소를 적으면 링크가 됩니다.',
+    ['a는 anchor의 약자입니다.','href에는 이동할 URL이나 파일 경로를 넣습니다.','target="_blank"를 쓰면 새 탭에서 열 수 있습니다.'],
+    '<a href="주소">링크 이름</a>',
+    'href를 https://example.com 으로 바꾸세요.',
+    'a 태그 안의 href="..." 값만 바꾸면 됩니다.',
+    {html:'<h1>유용한 링크</h1>\n<a href="#">Example 사이트</a>', css:baseCss + '\na { color: #24527a; }', js:''},
+    f => /href\s*=\s*["']https:\/\/example\.com\/?["']/i.test(f.html),
+    [['<a>','클릭 가능한 링크를 만드는 태그입니다.'],['href','링크가 이동할 목적지를 지정하는 속성입니다.'],['https://','웹 주소의 통신 방식을 나타냅니다.']]),
+
+  lesson('HTML','이미지 보여주기','이미지','기초',
+    'img 태그는 이미지를 화면에 표시합니다. 닫는 태그가 없는 대표적인 빈 요소이며, src와 alt 속성을 자주 함께 사용합니다.',
+    ['src에는 이미지 주소나 파일 경로를 넣습니다.','alt는 이미지가 보이지 않을 때 대신 설명하는 글입니다.','접근성을 위해 의미 있는 alt를 작성하는 습관이 중요합니다.'],
+    '<img src="image.jpg" alt="이미지 설명">',
+    'alt 값을 “산 풍경”으로 바꾸세요.',
+    'img 태그의 alt="..." 부분을 수정하세요.',
+    {html:'<h1>여행 사진</h1>\n<img src="https://picsum.photos/420/220" alt="사진">', css:baseCss + '\nimg { max-width: 100%; border-radius: 12px; }', js:''},
+    f => /alt\s*=\s*["']산 풍경["']/i.test(f.html),
+    [['<img>','외부 이미지나 프로젝트 안의 이미지를 화면에 표시합니다.'],['src','source의 약자로 이미지 파일의 위치입니다.'],['alt','이미지를 볼 수 없는 상황에서도 내용을 전달하는 대체 텍스트입니다.']]),
+
+  lesson('HTML','목록 만들기','목록','기초',
+    '여러 항목을 묶어 보여줄 때는 목록 태그를 사용합니다. 순서가 중요하지 않으면 ul, 순서가 중요하면 ol을 사용합니다.',
+    ['ul은 순서 없는 목록입니다.','ol은 순서 있는 목록입니다.','각 항목은 li 태그로 만듭니다.'],
+    '<ul><li>항목</li></ul>',
+    '목록에 “JavaScript” 항목을 하나 더 추가하세요.',
+    '<li>JavaScript</li>를 ul 안쪽 마지막에 추가하세요.',
+    {html:'<h1>배울 언어</h1>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n</ul>', css:baseCss, js:''},
+    f => /<li>\s*JavaScript\s*<\/li>/i.test(f.html),
+    [['<ul>','순서가 중요하지 않은 목록 전체를 감쌉니다.'],['<ol>','1, 2, 3처럼 순서가 있는 목록에 사용합니다.'],['<li>','목록 안의 한 항목을 나타냅니다.']]),
+
+  lesson('HTML','버튼과 입력창','폼 요소','기초',
+    '사용자가 값을 입력하거나 행동할 수 있게 만들려면 input, button 같은 폼 요소를 사용합니다.',
+    ['input은 사용자의 값을 입력받습니다.','placeholder는 입력 전 안내 문구입니다.','button은 클릭 가능한 행동 요소입니다.'],
+    '<input placeholder="이름">  <button>저장</button>',
+    'input에 placeholder="이름을 입력하세요"를 넣으세요.',
+    'input 태그 안에 placeholder 속성을 추가하면 됩니다.',
+    {html:'<h1>프로필</h1>\n<input type="text">\n<button>저장</button>', css:baseCss + '\ninput, button { padding: 10px; }', js:''},
+    f => /placeholder\s*=\s*["']이름을 입력하세요["']/i.test(f.html),
+    [['<input>','한 줄의 텍스트나 숫자 등 다양한 값을 받을 수 있습니다.'],['type','input이 어떤 종류의 입력을 받을지 정합니다.'],['placeholder','입력창 안에 임시 안내 문구를 보여줍니다.']]),
+
+  lesson('HTML','class와 id','요소 이름 붙이기','핵심',
+    'CSS나 JavaScript에서 특정 요소를 찾으려면 이름표가 필요합니다. class는 여러 요소에, id는 보통 한 요소에 사용합니다.',
+    ['class는 같은 스타일이나 역할을 여러 요소에 공유할 때 좋습니다.','id는 문서에서 고유한 요소를 구분할 때 사용합니다.','CSS와 JS에서 요소를 선택하는 기준이 됩니다.'],
+    'class="card"  id="submitButton"',
+    '두 번째 p 태그에도 class="note"를 추가하세요.',
+    '<p class="note">처럼 class 속성을 붙여보세요.',
+    {html:'<h1>메모</h1>\n<p class="note">첫 번째 메모</p>\n<p>두 번째 메모</p>', css:baseCss + '\n.note { color: #315f49; }', js:''},
+    f => (f.html.match(/class\s*=\s*["']note["']/gi)||[]).length >= 2,
+    [['class','여러 요소가 같은 그룹 이름을 공유할 수 있습니다.'],['id','한 요소를 고유하게 찾을 때 적합합니다.'],['.note','CSS에서 점(.)은 class를 선택한다는 뜻입니다.']]),
+
+  lesson('HTML','의미 있는 레이아웃','시맨틱 태그','핵심',
+    'div만으로도 화면은 만들 수 있지만 header, main, section, footer 같은 태그를 사용하면 구조의 의미가 더 분명해집니다.',
+    ['header는 머리말 영역입니다.','main은 페이지의 핵심 콘텐츠입니다.','section은 주제별 묶음, footer는 하단 정보를 나타냅니다.'],
+    '<header> <main> <section> <footer>',
+    'main 안의 콘텐츠를 section 태그로 감싸세요.',
+    '<main> 바로 안쪽에 <section>을 열고, 내용 뒤에서 </section>으로 닫아주세요.',
+    {html:'<header>\n  <h1>나의 사이트</h1>\n</header>\n<main>\n  <h2>소개</h2>\n  <p>의미 있는 구조를 연습합니다.</p>\n</main>\n<footer>2026</footer>', css:baseCss, js:''},
+    f => /<main>[\s\S]*<section>[\s\S]*<\/section>[\s\S]*<\/main>/i.test(f.html),
+    [['<header>','사이트나 섹션의 시작 부분을 의미합니다.'],['<main>','현재 문서의 중심 콘텐츠를 나타냅니다.'],['<section>','같은 주제의 콘텐츠 묶음을 만듭니다.']]),
+
+  lesson('HTML','HTML 미니 프로젝트','소개 페이지','프로젝트',
+    '지금까지 배운 HTML만으로 작은 소개 페이지의 구조를 완성합니다. 아직 예쁘게 꾸미는 것은 신경 쓰지 않고 내용의 의미와 순서에 집중합니다.',
+    ['h1로 페이지의 대표 제목을 만듭니다.','ul/li로 기술 목록을 만듭니다.','a로 다른 페이지로 이동하는 링크를 만듭니다.'],
+    '구조 먼저 → 디자인은 나중',
+    'h1, ul, a 태그를 모두 포함한 소개 페이지를 완성하세요.',
+    '세 태그가 모두 HTML 안에 있으면 됩니다. 내용은 자유롭게 작성하세요.',
+    {html:'<main>\n  <!-- 나만의 소개 페이지를 완성하세요 -->\n\n</main>', css:baseCss, js:''},
+    f => /<h1[\s>]/i.test(f.html) && /<ul[\s>]/i.test(f.html) && /<a[\s>]/i.test(f.html),
+    [['구조','무엇을 보여줄지 먼저 HTML로 정합니다.'],['계층','h1 아래에 제목과 내용을 자연스럽게 배치합니다.'],['링크','마지막에 사용자가 이동할 수 있는 경로를 제공합니다.']]),
+
+  // CSS 01-10
+  lesson('CSS','CSS를 연결하는 방법','CSS 시작','기초',
+    'CSS는 HTML 요소의 모양을 바꿉니다. 선택자로 대상을 찾고, 중괄호 안에 속성과 값을 작성합니다.',
+    ['선택자는 어떤 HTML 요소를 꾸밀지 정합니다.','속성은 무엇을 바꿀지, 값은 어떻게 바꿀지 정합니다.','선언 끝에는 세미콜론을 쓰는 습관을 들입니다.'],
+    '선택자 { 속성: 값; }',
+    'h1의 color를 #344960으로 바꾸세요.',
+    'CSS 탭에서 h1 { color: ...; } 부분의 값을 수정하세요.',
+    {html:'<h1>CSS 시작</h1>\n<p>이제 화면을 꾸며봅니다.</p>', css:'body { padding: 40px; font-family: Arial, sans-serif; }\nh1 { color: red; }', js:''},
+    f => /h1\s*\{[^}]*color\s*:\s*#344960\s*;?[^}]*\}/i.test(f.css),
+    [['h1','현재 규칙이 적용될 HTML 요소를 선택합니다.'],['color','글자색을 바꾸는 CSS 속성입니다.'],['#344960','16진수 방식으로 표현한 색상 값입니다.']]),
+
+  lesson('CSS','색상과 배경','색상','기초',
+    '글자색은 color, 배경색은 background-color로 지정합니다. 색은 HEX, RGB, HSL 등 여러 방식으로 표현할 수 있습니다.',
+    ['color는 글자의 전경색입니다.','background-color는 요소의 배경색입니다.','색상은 디자인 전체에서 너무 많은 종류를 쓰지 않는 것이 좋습니다.'],
+    'color: #222;  background-color: #f2f2f0;',
+    'body 배경색을 #f2f2f0으로 바꾸세요.',
+    'body 규칙 안에 background-color를 수정하세요.',
+    {html:'<main>\n  <h1>차분한 화면</h1>\n  <p>배경색을 바꿔보세요.</p>\n</main>', css:'body {\n  margin: 0;\n  padding: 40px;\n  background-color: white;\n  color: #222;\n  font-family: Arial, sans-serif;\n}', js:''},
+    f => /background-color\s*:\s*#f2f2f0\s*;?/i.test(f.css),
+    [['color','텍스트의 색을 결정합니다.'],['background-color','요소의 안쪽 배경색을 결정합니다.'],['HEX','웹에서 자주 쓰는 #RRGGBB 형태의 색상 표현입니다.']]),
+
+  lesson('CSS','글자 크기와 굵기','타이포그래피','기초',
+    '읽기 좋은 웹사이트는 글자 크기, 굵기, 줄간격이 잘 정리되어 있습니다. font-size, font-weight, line-height를 자주 사용합니다.',
+    ['font-size는 글자 크기입니다.','font-weight는 글자 굵기입니다.','line-height는 줄과 줄 사이의 높이를 정합니다.'],
+    'font-size: 32px; font-weight: 700; line-height: 1.5;',
+    'h1의 font-size를 42px로 바꾸세요.',
+    'h1 CSS의 28px를 42px로 수정하세요.',
+    {html:'<h1>좋은 타이포그래피</h1>\n<p>본문은 충분한 줄간격을 주면 읽기 편합니다.</p>', css:baseCss + '\nh1 { font-size: 28px; font-weight: 700; }\np { line-height: 1.7; }', js:''},
+    f => /h1\s*\{[^}]*font-size\s*:\s*42px/i.test(f.css),
+    [['font-size','글자의 크기를 설정합니다.'],['font-weight','400은 일반, 700은 굵은 글씨처럼 굵기를 조절합니다.'],['line-height','본문 가독성에 큰 영향을 주는 줄 높이입니다.']]),
+
+  lesson('CSS','margin과 padding','여백','핵심',
+    '웹 디자인의 완성도는 여백에서 크게 갈립니다. margin은 요소 바깥쪽, padding은 요소 안쪽 여백입니다.',
+    ['margin은 다른 요소와의 거리입니다.','padding은 테두리와 내용 사이의 거리입니다.','여백은 8px, 16px, 24px처럼 일정한 규칙을 두면 정돈돼 보입니다.'],
+    'margin: 24px;  padding: 16px;',
+    '.card의 padding을 24px로 바꾸세요.',
+    'CSS의 .card 안에 padding: 24px;로 수정하세요.',
+    {html:'<div class="card">\n  <h2>Card</h2>\n  <p>안쪽 여백을 확인해보세요.</p>\n</div>', css:'body { margin: 0; padding: 40px; background: #f2f2f0; font-family: Arial, sans-serif; }\n.card { background: white; padding: 8px; }', js:''},
+    f => /\.card\s*\{[^}]*padding\s*:\s*24px/i.test(f.css),
+    [['margin','요소 바깥의 공간입니다.'],['padding','요소 안쪽의 공간입니다.'],['box model','content, padding, border, margin으로 요소의 크기를 이해하는 모델입니다.']]),
+
+  lesson('CSS','테두리와 모서리','카드 만들기','기초',
+    'border는 요소의 경계를 만들고 border-radius는 모서리를 둥글게 합니다. 카드, 입력창, 버튼에서 매우 자주 사용합니다.',
+    ['border는 두께, 종류, 색 순서로 간단히 쓸 수 있습니다.','border-radius는 모서리 둥글기를 정합니다.','과한 그림자보다 얇은 경계선만으로도 깔끔한 UI를 만들 수 있습니다.'],
+    'border: 1px solid #ddd; border-radius: 12px;',
+    '.card의 border-radius를 16px로 바꾸세요.',
+    '.card의 border-radius 값만 수정하세요.',
+    {html:'<div class="card">\n  <strong>Simple Card</strong>\n  <p>깔끔한 카드 UI입니다.</p>\n</div>', css:'body { padding: 40px; background: #f3f3f1; font-family: Arial, sans-serif; }\n.card { max-width: 320px; padding: 24px; background: white; border: 1px solid #ddd; border-radius: 0; }', js:''},
+    f => /border-radius\s*:\s*16px/i.test(f.css),
+    [['border','요소 외곽에 선을 표시합니다.'],['solid','끊기지 않은 일반 실선입니다.'],['border-radius','값이 커질수록 모서리가 더 둥글어집니다.']]),
+
+  lesson('CSS','display와 Flexbox','가로 배치','핵심',
+    'Flexbox는 여러 요소를 한 줄 또는 한 열로 정렬할 때 가장 자주 쓰는 레이아웃 도구 중 하나입니다.',
+    ['display: flex를 부모 요소에 적용합니다.','gap은 자식 요소 사이의 간격입니다.','justify-content와 align-items로 정렬 방향을 제어합니다.'],
+    'display: flex; gap: 12px;',
+    '.row에 display: flex를 추가하세요.',
+    'CSS의 .row 중괄호 안에 display: flex;를 입력하세요.',
+    {html:'<div class="row">\n  <div class="box">A</div>\n  <div class="box">B</div>\n  <div class="box">C</div>\n</div>', css:'body { padding: 40px; font-family: Arial, sans-serif; }\n.row { gap: 12px; }\n.box { width: 72px; height: 72px; display: grid; place-items: center; background: #e8eaec; border-radius: 10px; }', js:''},
+    f => /\.row\s*\{[^}]*display\s*:\s*flex/i.test(f.css),
+    [['display: flex','자식 요소를 Flexbox 레이아웃으로 배치합니다.'],['gap','자식 요소 사이에 일정한 간격을 만듭니다.'],['부모/자식','Flexbox의 정렬 규칙은 부모에 쓰고, 실제 배치되는 것은 자식입니다.']]),
+
+  lesson('CSS','Flex 정렬 이해하기','정렬','핵심',
+    'Flexbox의 축을 이해하면 가운데 정렬부터 양끝 배치까지 대부분의 UI를 쉽게 만들 수 있습니다.',
+    ['justify-content는 주축 방향 정렬입니다.','align-items는 교차축 방향 정렬입니다.','flex-direction을 바꾸면 주축의 방향도 바뀝니다.'],
+    'justify-content: center; align-items: center;',
+    '.stage에 justify-content: center를 추가하세요.',
+    'display: flex 아래에 justify-content: center;를 입력하세요.',
+    {html:'<div class="stage">\n  <button>가운데 버튼</button>\n</div>', css:'body { margin: 0; font-family: Arial, sans-serif; }\n.stage { height: 100vh; display: flex; align-items: center; }\nbutton { padding: 12px 18px; }', js:''},
+    f => /justify-content\s*:\s*center/i.test(f.css),
+    [['justify-content','주축을 기준으로 자식 요소의 위치를 정합니다.'],['align-items','교차축을 기준으로 자식 요소를 정렬합니다.'],['center','축의 중앙에 요소를 배치합니다.']]),
+
+  lesson('CSS','Grid로 카드 배열하기','Grid','핵심',
+    'CSS Grid는 행과 열을 동시에 다루는 레이아웃에 강합니다. 카드 목록이나 갤러리를 만들 때 특히 편리합니다.',
+    ['display: grid로 Grid를 시작합니다.','grid-template-columns로 열의 개수와 크기를 정합니다.','repeat와 fr 단위를 사용하면 균등한 열을 쉽게 만들 수 있습니다.'],
+    'grid-template-columns: repeat(3, 1fr);',
+    '.grid를 3열로 만드세요.',
+    '.grid에 grid-template-columns: repeat(3, 1fr);를 추가하세요.',
+    {html:'<div class="grid">\n  <div>1</div><div>2</div><div>3</div>\n  <div>4</div><div>5</div><div>6</div>\n</div>', css:'body { padding: 40px; font-family: Arial, sans-serif; }\n.grid { display: grid; gap: 10px; }\n.grid div { padding: 28px; background: #ececea; text-align: center; border-radius: 10px; }', js:''},
+    f => /grid-template-columns\s*:\s*repeat\(\s*3\s*,\s*1fr\s*\)/i.test(f.css),
+    [['display: grid','행과 열 기반 레이아웃을 활성화합니다.'],['repeat(3, 1fr)','같은 너비의 열 3개를 만듭니다.'],['fr','Grid에서 남은 공간의 비율을 나타내는 단위입니다.']]),
+
+  lesson('CSS','반응형 웹의 기본','미디어 쿼리','심화',
+    '같은 사이트라도 모바일과 데스크톱에서는 화면 폭이 다릅니다. 미디어 쿼리를 사용하면 특정 너비 이하에서 스타일을 바꿀 수 있습니다.',
+    ['@media로 조건부 CSS를 작성합니다.','max-width는 화면이 특정 크기 이하일 때 적용됩니다.','반응형은 새로운 페이지를 만드는 것이 아니라 같은 구조를 유연하게 바꾸는 방식입니다.'],
+    '@media (max-width: 600px) { ... }',
+    '600px 이하에서 .grid를 1열로 바꾸는 코드를 완성하세요.',
+    '@media 안에서 grid-template-columns: 1fr;를 사용하세요.',
+    {html:'<div class="grid">\n  <div>A</div><div>B</div><div>C</div>\n</div>', css:'body { padding: 24px; font-family: Arial, sans-serif; }\n.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }\n.grid div { padding: 30px; background: #eee; }\n\n@media (max-width: 600px) {\n  .grid {\n    /* 모바일에서는 1열 */\n  }\n}', js:''},
+    f => /@media\s*\(\s*max-width\s*:\s*600px\s*\)[\s\S]*grid-template-columns\s*:\s*1fr/i.test(f.css),
+    [['@media','조건이 맞을 때만 적용되는 CSS 영역입니다.'],['max-width: 600px','브라우저 폭이 600px 이하인지 확인합니다.'],['1fr','모바일에서 한 줄에 카드 하나만 표시하게 만듭니다.']]),
+
+  lesson('CSS','CSS 미니 프로젝트','랜딩 카드','프로젝트',
+    'HTML로 만든 구조를 실제 서비스처럼 정리해봅니다. 이번에는 정답 하나보다 여백과 정렬 원리를 적용하는 것이 목표입니다.',
+    ['카드에 충분한 padding을 줍니다.','버튼과 텍스트 사이의 간격을 정리합니다.','너무 많은 색을 쓰지 않고 기본색과 강조색만 사용합니다.'],
+    '깔끔함 = 규칙적인 여백 + 적은 색 + 명확한 계층',
+    '.card에 padding, border-radius, background 세 속성을 모두 사용하세요.',
+    '값은 자유롭게 선택해도 됩니다. 세 CSS 속성이 .card 안에 있으면 됩니다.',
+    {html:'<div class="card">\n  <span>NEW COURSE</span>\n  <h1>Build your first web.</h1>\n  <p>HTML과 CSS를 이용해 작은 화면을 완성해보세요.</p>\n  <button>시작하기</button>\n</div>', css:'body { margin: 0; padding: 48px; background: #f2f2ef; font-family: Arial, sans-serif; }\n.card {\n  max-width: 460px;\n  /* 여기에 스타일을 완성하세요 */\n}\nbutton { padding: 11px 16px; }', js:''},
+    f => /\.card\s*\{[^}]*padding\s*:/i.test(f.css) && /\.card\s*\{[^}]*border-radius\s*:/i.test(f.css) && /\.card\s*\{[^}]*background(?:-color)?\s*:/i.test(f.css),
+    [['padding','카드 내용이 테두리에 붙지 않게 내부 여백을 만듭니다.'],['border-radius','카드의 인상을 부드럽게 만듭니다.'],['background','카드를 페이지 배경과 시각적으로 구분합니다.']]),
+
+  // JS 01-10
+  lesson('JS','JavaScript 시작하기','JS 시작','기초',
+    'JavaScript는 HTML과 CSS로 만든 화면에 행동을 추가합니다. 가장 먼저 console.log를 이용해 코드가 실행되는지 확인해봅니다.',
+    ['JavaScript는 위에서 아래로 코드를 실행합니다.','console.log는 개발 중 값을 확인하는 가장 기본적인 도구입니다.','문자열은 따옴표로 감쌉니다.'],
+    'console.log("Hello");',
+    'console.log에 “Hello JavaScript”를 출력하세요.',
+    'JS 탭에서 따옴표 안의 문장을 바꾸세요.',
+    {html:'<h1>JavaScript</h1>\n<p>개발자 도구의 콘솔도 확인해보세요.</p>', css:baseCss, js:'console.log("Hello");'},
+    f => /console\.log\(\s*["']Hello JavaScript["']\s*\)/i.test(f.js),
+    [['console.log','브라우저 개발자 도구의 콘솔에 값을 출력합니다.'],['"문자열"','글자 데이터는 따옴표로 감싸 표현합니다.'],[';','한 문장의 끝을 명확히 표시할 수 있습니다.']]),
+
+  lesson('JS','변수로 값 기억하기','변수','기초',
+    '변수는 값을 저장하고 이름을 붙이는 공간입니다. 값이 바뀔 수 있으면 let, 바뀌지 않는 값은 const를 주로 사용합니다.',
+    ['let은 나중에 값을 다시 넣을 수 있습니다.','const는 같은 변수에 다른 값을 다시 대입할 수 없습니다.','좋은 변수 이름은 값의 의미를 설명합니다.'],
+    'let count = 0;  const name = "Frame";',
+    'score의 시작 값을 10으로 바꾸세요.',
+    'let score = 0에서 숫자만 10으로 바꾸세요.',
+    {html:'<h1 id="score">0</h1>', css:baseCss, js:'let score = 0;\ndocument.querySelector("#score").textContent = score;'},
+    f => /let\s+score\s*=\s*10\s*;?/i.test(f.js),
+    [['let score','score라는 이름의 변경 가능한 변수를 만듭니다.'],['= 10','오른쪽의 값을 왼쪽 변수에 저장합니다.'],['textContent','HTML 요소 안의 글자를 JavaScript에서 바꿉니다.']]),
+
+  lesson('JS','숫자와 문자열','데이터 타입','기초',
+    'JavaScript는 숫자, 문자열, 참/거짓처럼 여러 종류의 데이터를 다룹니다. 같은 + 기호라도 데이터 종류에 따라 결과가 달라질 수 있습니다.',
+    ['숫자는 따옴표 없이 작성합니다.','문자열은 따옴표로 감쌉니다.','typeof를 사용하면 값의 데이터 타입을 확인할 수 있습니다.'],
+    '10 + 5 → 15   "10" + "5" → "105"',
+    'age의 값을 숫자 20으로 바꾸세요. 따옴표를 사용하면 안 됩니다.',
+    'const age = "20"에서 따옴표를 제거하세요.',
+    {html:'<p id="result"></p>', css:baseCss, js:'const age = "20";\ndocument.querySelector("#result").textContent = age + 1;'},
+    f => /const\s+age\s*=\s*20\s*;?/i.test(f.js),
+    [['20','따옴표가 없기 때문에 숫자입니다.'],['"20"','따옴표가 있으면 숫자처럼 보여도 문자열입니다.'],['+','숫자에서는 덧셈, 문자열에서는 이어 붙이기로 동작할 수 있습니다.']]),
+
+  lesson('JS','조건에 따라 다르게 동작하기','조건문','기초',
+    'if 문을 사용하면 조건이 참인지 거짓인지에 따라 다른 코드를 실행할 수 있습니다.',
+    ['if 괄호 안에는 참/거짓으로 판단할 조건을 씁니다.','===는 두 값이 같은지 엄격하게 비교합니다.','else는 조건이 거짓일 때 실행됩니다.'],
+    'if (조건) { ... } else { ... }',
+    'score가 80 이상일 때 “PASS”가 나오도록 조건을 수정하세요.',
+    'score > 80이 아니라 score >= 80으로 바꿔보세요.',
+    {html:'<strong id="result"></strong>', css:baseCss, js:'const score = 80;\nconst result = document.querySelector("#result");\n\nif (score > 80) {\n  result.textContent = "PASS";\n} else {\n  result.textContent = "TRY AGAIN";\n}'},
+    f => /if\s*\(\s*score\s*>=\s*80\s*\)/i.test(f.js),
+    [['if','조건이 true일 때 중괄호 안의 코드를 실행합니다.'],['>=','왼쪽 값이 오른쪽 값보다 크거나 같은지 비교합니다.'],['else','if 조건이 false일 때 실행할 코드를 작성합니다.']]),
+
+  lesson('JS','함수로 코드 묶기','함수','핵심',
+    '함수는 여러 줄의 코드를 하나의 이름으로 묶어 필요할 때 다시 실행하게 합니다. 반복되는 코드를 줄이는 핵심 도구입니다.',
+    ['function 키워드로 함수를 만들 수 있습니다.','괄호 안에는 함수가 받을 값을 적을 수 있습니다.','함수 이름 뒤에 ()를 붙이면 실행됩니다.'],
+    'function hello() { ... }  hello();',
+    '함수 이름을 sayHello로 바꾸고 호출 부분도 같은 이름으로 맞추세요.',
+    'function hello와 맨 아래 hello()를 둘 다 sayHello로 바꾸세요.',
+    {html:'<p id="message"></p>', css:baseCss, js:'function hello() {\n  document.querySelector("#message").textContent = "안녕하세요!";\n}\n\nhello();'},
+    f => /function\s+sayHello\s*\(/i.test(f.js) && /sayHello\s*\(\s*\)\s*;?/i.test(f.js),
+    [['function sayHello','sayHello라는 이름으로 코드 묶음을 정의합니다.'],['{ ... }','함수를 실행했을 때 수행할 코드입니다.'],['sayHello()','정의한 함수를 실제로 호출합니다.']]),
+
+  lesson('JS','HTML 요소 찾기','DOM 선택','핵심',
+    'JavaScript가 화면을 바꾸려면 먼저 HTML 요소를 찾아야 합니다. querySelector는 CSS 선택자 방식으로 요소 하나를 찾습니다.',
+    ['#은 id, .은 class를 선택합니다.','querySelector는 조건에 맞는 첫 번째 요소를 가져옵니다.','찾은 요소는 변수에 저장해 다시 사용할 수 있습니다.'],
+    'document.querySelector("#id")',
+    'querySelector가 #title을 찾도록 수정하세요.',
+    '"h1" 대신 "#title"을 넣으세요.',
+    {html:'<h1 id="title">Before</h1>', css:baseCss, js:'const title = document.querySelector("h1");\ntitle.textContent = "After";'},
+    f => /querySelector\(\s*["']#title["']\s*\)/i.test(f.js),
+    [['document','현재 브라우저에 열린 HTML 문서를 의미합니다.'],['querySelector','CSS 선택자를 사용해 HTML 요소를 찾습니다.'],['#title','id가 title인 요소를 선택합니다.']]),
+
+  lesson('JS','클릭 이벤트','이벤트','핵심',
+    '사용자가 버튼을 클릭하거나 글자를 입력하면 이벤트가 발생합니다. addEventListener로 그 순간 실행할 코드를 연결합니다.',
+    ['click은 클릭 이벤트 이름입니다.','이벤트 리스너 안의 함수가 클릭할 때마다 실행됩니다.','UI 대부분은 이벤트를 중심으로 동작합니다.'],
+    'element.addEventListener("click", () => { ... });',
+    '버튼을 클릭하면 제목이 “Clicked!”로 바뀌도록 빈칸을 완성하세요.',
+    'addEventListener의 첫 번째 값에 "click"을 넣으세요.',
+    {html:'<h1 id="title">Ready</h1>\n<button id="button">Click</button>', css:baseCss + '\nbutton { padding: 10px 16px; }', js:'const title = document.querySelector("#title");\nconst button = document.querySelector("#button");\n\nbutton.addEventListener("", () => {\n  title.textContent = "Clicked!";\n});'},
+    f => /addEventListener\(\s*["']click["']/i.test(f.js),
+    [['addEventListener','특정 이벤트가 발생할 때 실행할 함수를 등록합니다.'],['"click"','마우스나 터치로 클릭했을 때 발생하는 이벤트입니다.'],['() => { }','이벤트가 발생했을 때 실행할 함수입니다.']]),
+
+  lesson('JS','입력값 읽기','입력 처리','핵심',
+    'input 요소의 value를 읽으면 사용자가 입력한 내용을 JavaScript에서 사용할 수 있습니다.',
+    ['input.value는 현재 입력창의 값입니다.','클릭 이벤트와 함께 사용하면 간단한 폼을 만들 수 있습니다.','입력값은 기본적으로 문자열로 다뤄지는 경우가 많습니다.'],
+    'const value = input.value;',
+    '버튼 클릭 시 message에 input.value가 표시되도록 빈칸을 완성하세요.',
+    'message.textContent = input.value; 형태로 작성하세요.',
+    {html:'<input id="name" placeholder="이름">\n<button id="show">표시</button>\n<p id="message"></p>', css:baseCss + '\ninput, button { padding: 10px; }', js:'const input = document.querySelector("#name");\nconst button = document.querySelector("#show");\nconst message = document.querySelector("#message");\n\nbutton.addEventListener("click", () => {\n  message.textContent = "";\n});'},
+    f => /message\.textContent\s*=\s*input\.value\s*;?/i.test(f.js),
+    [['input.value','사용자가 입력한 현재 글자를 가져옵니다.'],['textContent','가져온 값을 다른 요소의 텍스트로 표시할 수 있습니다.'],['이벤트 흐름','클릭 → 값 읽기 → 화면 변경 순서로 생각하면 쉽습니다.']]),
+
+  lesson('JS','배열과 반복','반복 데이터','심화',
+    '목록 데이터가 많아지면 같은 코드를 여러 번 쓰기 어렵습니다. 배열에 값을 모으고 forEach로 하나씩 처리할 수 있습니다.',
+    ['배열은 여러 값을 순서대로 저장합니다.','forEach는 배열의 모든 값을 한 번씩 처리합니다.','실제 웹에서는 상품 목록, 댓글, 메뉴 같은 데이터를 반복 출력할 때 사용합니다.'],
+    '["HTML", "CSS", "JS"].forEach(item => { ... })',
+    'skills 배열에 “JavaScript”를 추가하세요.',
+    '배열 마지막에 , "JavaScript"를 추가하세요.',
+    {html:'<ul id="list"></ul>', css:baseCss, js:'const skills = ["HTML", "CSS"];\nconst list = document.querySelector("#list");\n\nskills.forEach((skill) => {\n  list.innerHTML += `<li>${skill}</li>`;\n});'},
+    f => /const\s+skills\s*=\s*\[[^\]]*["']JavaScript["'][^\]]*\]/i.test(f.js),
+    [['[ ... ]','여러 값을 하나의 배열로 묶습니다.'],['forEach','배열 안의 값을 앞에서부터 하나씩 처리합니다.'],['${skill}','템플릿 문자열 안에서 JavaScript 값을 삽입합니다.']]),
+
+  lesson('JS','JavaScript 미니 프로젝트','카운터','프로젝트',
+    '변수, DOM 선택, 클릭 이벤트를 합쳐 작은 카운터를 완성합니다. 이것만 이해해도 인터랙티브 UI의 기본 흐름을 경험할 수 있습니다.',
+    ['count 변수에 현재 상태를 저장합니다.','버튼을 클릭하면 count 값을 변경합니다.','변경한 값을 textContent로 화면에 다시 반영합니다.'],
+    '상태 → 이벤트 → 화면 갱신',
+    '버튼을 누를 때마다 count가 2씩 증가하도록 수정하세요.',
+    'count = count + 1의 숫자 1을 2로 바꾸세요.',
+    {html:'<main>\n  <span>COUNT</span>\n  <strong id="count">0</strong>\n  <button id="plus">+2</button>\n</main>', css:'body { min-height: 100vh; margin: 0; display: grid; place-items: center; font-family: Arial, sans-serif; background: #f3f3f0; }\nmain { text-align: center; }\nstrong { display: block; margin: 12px 0; font-size: 64px; }\nbutton { padding: 11px 18px; }', js:'let count = 0;\nconst countText = document.querySelector("#count");\nconst plusButton = document.querySelector("#plus");\n\nplusButton.addEventListener("click", () => {\n  count = count + 1;\n  countText.textContent = count;\n});'},
+    f => /count\s*=\s*count\s*\+\s*2\s*;?/i.test(f.js),
+    [['count','현재 숫자를 기억하는 상태 변수입니다.'],['click','사용자의 행동이 상태를 바꾸는 시작점입니다.'],['textContent','새로운 상태를 화면에 다시 그려줍니다.']]),
+
+  // PROJECT 01-04
+  lesson('PROJECT','결과를 보고 따라 만들기','프로필 카드','연습',
+    '이제 설명을 줄입니다. HTML과 CSS를 직접 조합해 간단한 프로필 카드를 완성하세요. 정답은 하나가 아닙니다.',
+    ['HTML에는 이름과 소개 문장을 만듭니다.','CSS에는 배경, 여백, 둥근 모서리를 적용합니다.','완성 후 코드를 조금씩 바꿔 결과 차이를 확인합니다.'],
+    'HTML + CSS',
+    'class="profile" 요소와 border-radius를 사용해 프로필 카드를 만드세요.',
+    'HTML에 class="profile"을 만들고 CSS에서 .profile을 꾸며보세요.',
+    {html:'<!-- 프로필 카드 구조를 직접 작성하세요 -->\n', css:'body { padding: 48px; background: #f3f3f0; font-family: Arial, sans-serif; }\n/* .profile 스타일을 작성하세요 */\n', js:''},
+    f => /class\s*=\s*["'][^"']*profile[^"']*["']/i.test(f.html) && /\.profile\s*\{[^}]*border-radius\s*:/i.test(f.css),
+    [['HTML 구조','카드 안에 어떤 정보가 들어갈지 먼저 정합니다.'],['.profile','하나의 컴포넌트 단위로 CSS를 묶습니다.'],['반복 수정','값을 조금씩 바꾸고 바로 결과를 확인하는 습관이 중요합니다.']]),
+
+  lesson('PROJECT','기능을 보고 구현하기','토글 버튼','연습',
+    '이번에는 JavaScript 비중을 높입니다. 버튼을 누르면 문구가 바뀌는 간단한 인터랙션을 직접 완성합니다.',
+    ['button과 결과 영역을 HTML에 만듭니다.','querySelector로 두 요소를 찾습니다.','click 이벤트에서 결과 텍스트를 변경합니다.'],
+    'HTML → querySelector → click → textContent',
+    'button, addEventListener, textContent를 모두 사용해 클릭 반응을 만드세요.',
+    'id 이름은 자유롭습니다. 세 요소가 코드에 모두 등장하면 됩니다.',
+    {html:'<!-- 버튼과 결과 문구를 만드세요 -->\n', css:baseCss, js:'// 클릭 이벤트를 직접 작성하세요\n'},
+    f => /<button[\s>]/i.test(f.html) && /addEventListener\s*\(/i.test(f.js) && /textContent\s*=/i.test(f.js),
+    [['button','사용자가 행동을 시작하는 UI입니다.'],['addEventListener','사용자 행동과 코드를 연결합니다.'],['textContent','행동 결과를 화면에 보여줍니다.']]),
+
+  lesson('PROJECT','작은 웹앱 만들기','미니 Todo','도전',
+    '입력창, 버튼, 목록을 이용해 아주 작은 Todo 기능을 만들어봅니다. 여기부터는 필요한 코드가 거의 제공되지 않습니다.',
+    ['input에서 할 일을 입력받습니다.','버튼을 클릭하면 새로운 li를 만듭니다.','목록에 새 항목을 추가합니다.'],
+    '입력 → 이벤트 → 새 요소 생성 → 목록 추가',
+    'input, button, ul을 만들고 JS에서 createElement("li")를 사용하세요.',
+    'document.createElement("li")가 핵심입니다.',
+    {html:'<!-- Todo의 HTML을 직접 작성하세요 -->\n', css:'body { padding: 40px; font-family: Arial, sans-serif; background: #f4f4f2; }\n', js:'// Todo 동작을 직접 작성하세요\n'},
+    f => /<input[\s>]/i.test(f.html) && /<button[\s>]/i.test(f.html) && /<ul[\s>]/i.test(f.html) && /createElement\(\s*["']li["']\s*\)/i.test(f.js),
+    [['input','사용자에게 새 할 일의 내용을 받습니다.'],['createElement','JavaScript로 새로운 HTML 요소를 생성합니다.'],['append / appendChild','생성한 요소를 실제 문서 안에 추가할 때 사용합니다.']]),
+
+  lesson('PROJECT','Final — 빈 화면에서 시작하기','자유 제작','최종',
+    '마지막 레슨에는 정답도 시작 코드도 거의 없습니다. 지금까지 배운 HTML, CSS, JavaScript를 사용해 스스로 한 페이지를 완성하세요.',
+    ['먼저 만들고 싶은 화면을 한 문장으로 정합니다.','HTML 구조를 먼저 만들고 CSS를 적용합니다.','마지막에 버튼이나 입력 같은 JavaScript 동작을 하나 이상 추가합니다.'],
+    '생각 → 구조 → 스타일 → 동작 → 수정',
+    'h1, button, addEventListener를 포함한 나만의 웹페이지를 완성하세요.',
+    '가장 작은 기능부터 시작하세요. 제목 하나, 버튼 하나면 충분합니다.',
+    {html:'<!-- HTML -->\n', css:'/* CSS */\n', js:'// JavaScript\n'},
+    f => /<h1[\s>]/i.test(f.html) && /<button[\s>]/i.test(f.html) && /addEventListener\s*\(/i.test(f.js),
+    [['1. 구조','먼저 HTML만으로 내용이 이해되는 페이지를 만듭니다.'],['2. 디자인','CSS로 읽기 쉽고 정돈된 화면을 만듭니다.'],['3. 동작','JavaScript로 사용자가 직접 경험할 기능을 하나 추가합니다.']])
+];
+
+function lesson(group, title, nav, kind, description, points, syntax, mission, hint, files, validate, explain) {
+  return { group, title, nav, kind, description, points, syntax, mission, hint, files, validate, explain };
+}
+
+const storageKey = 'frame-study-v3';
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch { saved = {}; }
+
+const state = {
+  current: Math.min(Number(saved.current || 0), lessons.length - 1),
+  unlocked: Math.max(0, Math.min(Number(saved.unlocked || 0), lessons.length - 1)),
+  completed: Array.isArray(saved.completed) ? saved.completed.filter(i => i >= 0 && i < lessons.length) : [],
+  code: saved.code && typeof saved.code === 'object' ? saved.code : {},
+  activeFile: 'html'
+};
+
+const el = Object.fromEntries([
+  'sidebar','sidebarClose','sidebarOverlay','curriculum','summaryProgress','progressBar','crumb','lessonNumber','lessonKind','lessonTitle','lessonDescription','learningPoints','syntaxCode','missionText','problemNumber','problemFile','successCondition','missionResult','editorTabs','codeEditor','lineNumbers','hintButton','hintBox','runButton','previewFrame','explanationList','prevButton','nextButton','resetButton','menuButton','toast','saveState'
+].map(id => [id, document.getElementById(id)]));
+
+function filesFor(index) {
+  if (!state.code[index]) state.code[index] = structuredClone(lessons[index].files);
+  return state.code[index];
+}
+
+function save() {
+  localStorage.setItem(storageKey, JSON.stringify({
+    current: state.current,
+    unlocked: state.unlocked,
+    completed: state.completed,
+    code: state.code
+  }));
+  el.saveState.textContent = '저장됨 · 자동 닫기 ON';
+  clearTimeout(save.timer);
+  save.timer = setTimeout(() => el.saveState.textContent = '자동 저장 · 태그/괄호 자동 닫기 ON', 900);
+}
+
+function saveEditor() {
+  filesFor(state.current)[state.activeFile] = el.codeEditor.value;
+  save();
+}
+
+function renderCurriculum() {
+  el.curriculum.innerHTML = '';
+  Object.keys(courseInfo).forEach(group => {
+    const indices = lessons.map((l, i) => l.group === group ? i : -1).filter(i => i >= 0);
+    const wrapper = document.createElement('section');
+    wrapper.className = 'course-group';
+    const head = document.createElement('div');
+    head.className = 'course-button';
+    head.innerHTML = `<span>${courseInfo[group].title}</span><span>${indices.length}</span>`;
+    const list = document.createElement('div');
+    list.className = 'lesson-list';
+    indices.forEach(index => {
+      const item = lessons[index];
+      const locked = index > state.unlocked;
+      const done = state.completed.includes(index);
+      const btn = document.createElement('button');
+      btn.className = `lesson-link ${index === state.current ? 'active' : ''} ${locked ? 'locked' : ''}`;
+      btn.innerHTML = `<span class="index">${String(indices.indexOf(index)+1).padStart(2,'0')}</span><span>${item.nav}</span><span class="state">${done ? '✓' : locked ? '·' : ''}</span>`;
+      btn.addEventListener('click', () => {
+        if (locked) return;
+        saveEditor();
+        state.current = index;
+        state.activeFile = bestFile(index);
+        renderLesson();
+        closeSidebar();
+      });
+      list.appendChild(btn);
+    });
+    wrapper.append(head, list);
+    el.curriculum.appendChild(wrapper);
+  });
+  const completed = new Set(state.completed).size;
+  el.summaryProgress.textContent = `${completed} / ${lessons.length}`;
+  el.progressBar.style.width = `${Math.round((completed / lessons.length) * 100)}%`;
+}
+
+function bestFile(index) {
+  const group = lessons[index].group;
+  if (group === 'CSS') return 'css';
+  if (group === 'JS') return 'js';
+  return 'html';
+}
+
+function renderLesson() {
+  const l = lessons[state.current];
+  const groupIndices = lessons.map((x,i) => x.group === l.group ? i : -1).filter(i => i >= 0);
+  const localNo = groupIndices.indexOf(state.current) + 1;
+  el.crumb.textContent = `${courseInfo[l.group].color} · ${String(localNo).padStart(2,'0')}`;
+  el.lessonNumber.textContent = String(localNo).padStart(2,'0');
+  el.lessonKind.textContent = l.kind;
+  el.lessonTitle.textContent = l.title;
+  el.lessonDescription.textContent = l.description;
+  el.learningPoints.innerHTML = l.points.map(p => `<li>${escapeHtml(p)}</li>`).join('');
+  el.syntaxCode.textContent = l.syntax;
+  el.missionText.textContent = l.mission;
+  el.problemNumber.textContent = `문제 ${String(localNo).padStart(2,'0')}`;
+  const editable = editableFiles(state.current);
+  el.problemFile.textContent = editable.map(f => f === 'js' ? 'JavaScript' : f.toUpperCase()).join(' / ');
+  el.successCondition.textContent = `위 요구사항을 ${el.problemFile.textContent} 코드에 정확히 반영한 뒤 ‘실행’을 누르세요.`;
+  el.hintBox.textContent = l.hint;
+  el.hintBox.classList.remove('show');
+  el.hintButton.textContent = '힌트';
+  renderTabs();
+  loadEditor();
+  renderExplain();
+  runPreview(false);
+  renderCurriculum();
+  updateMission(l.validate(filesFor(state.current)));
+  el.prevButton.disabled = state.current === 0;
+}
+
+function editableFiles(index) {
+  const group = lessons[index].group;
+  if (group === 'PROJECT') return ['html', 'css', 'js'];
+  return [bestFile(index)];
+}
+
+function renderTabs() {
+  el.editorTabs.innerHTML = '';
+  const files = editableFiles(state.current);
+  if (!files.includes(state.activeFile)) state.activeFile = files[0];
+
+  files.forEach(file => {
+    const btn = document.createElement('button');
+    btn.className = `editor-tab ${file === state.activeFile ? 'active' : ''}`;
+    btn.textContent = file === 'js' ? 'JAVASCRIPT' : file.toUpperCase();
+    btn.addEventListener('click', () => {
+      saveEditor();
+      state.activeFile = file;
+      renderTabs();
+      loadEditor();
+    });
+    el.editorTabs.appendChild(btn);
+  });
+}
+
+function loadEditor() {
+  el.codeEditor.value = filesFor(state.current)[state.activeFile] || '';
+  updateLines();
+}
+
+function updateLines() {
+  const count = Math.max(1, el.codeEditor.value.split('\n').length);
+  el.lineNumbers.textContent = Array.from({length: count}, (_,i) => i + 1).join('\n');
+}
+
+function renderExplain() {
+  el.explanationList.innerHTML = lessons[state.current].explain.map(([code, text]) => `
+    <div class="explanation-item"><code>${escapeHtml(code)}</code><p>${escapeHtml(text)}</p></div>
+  `).join('');
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function makePreview(files) {
+  const hasFullDocument = /<!doctype|<html[\s>]/i.test(files.html);
+  if (hasFullDocument) {
+    return files.html.replace(/<\/head>/i, `<style>${files.css}</style></head>`).replace(/<\/body>/i, `<script>${safeJs(files.js)}<\/script></body>`);
+  }
+  return `<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${files.css}</style></head><body>${files.html}<script>${safeJs(files.js)}<\/script></body></html>`;
+}
+
+function safeJs(js) { return String(js).replace(/<\/script>/gi, '<\\/script>'); }
+
+function runPreview(check = true) {
+  saveEditor();
+  const files = filesFor(state.current);
+  el.previewFrame.srcdoc = makePreview(files);
+  const success = lessons[state.current].validate(files);
+  updateMission(success);
+  if (check && success) completeLesson();
+}
+
+function updateMission(success) {
+  el.missionResult.textContent = success ? '완료' : '미완료';
+  el.missionResult.classList.toggle('done', success);
+  const isLast = state.current === lessons.length - 1;
+  el.nextButton.disabled = !success || isLast;
+  el.nextButton.textContent = isLast && success ? '전체 과정 완료' : '다음 레슨 →';
+}
+
+function completeLesson() {
+  if (!state.completed.includes(state.current)) state.completed.push(state.current);
+  if (state.current < lessons.length - 1) state.unlocked = Math.max(state.unlocked, state.current + 1);
+  save();
+  renderCurriculum();
+  updateMission(true);
+  el.toast.classList.add('show');
+  clearTimeout(completeLesson.timer);
+  completeLesson.timer = setTimeout(() => el.toast.classList.remove('show'), 1600);
+}
+
+function insertEditorText(text, caretOffset = text.length) {
+  const start = el.codeEditor.selectionStart;
+  const end = el.codeEditor.selectionEnd;
+  el.codeEditor.setRangeText(text, start, end, 'end');
+  const pos = start + caretOffset;
+  el.codeEditor.selectionStart = el.codeEditor.selectionEnd = pos;
+  updateLines();
+  saveEditor();
+}
+
+function handleHtmlAutoClose(e) {
+  if (state.activeFile !== 'html' || e.key !== '>') return false;
+  const start = el.codeEditor.selectionStart;
+  if (start !== el.codeEditor.selectionEnd) return false;
+  const before = el.codeEditor.value.slice(0, start);
+  const match = before.match(/<([A-Za-z][\w:-]*)(?:\s[^<>]*)?$/);
+  if (!match) return false;
+  const tag = match[1].toLowerCase();
+  const voidTags = new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
+  if (voidTags.has(tag) || /\/\s*$/.test(before)) return false;
+  e.preventDefault();
+  insertEditorText(`></${tag}>`, 1);
+  return true;
+}
+
+function handlePairCompletion(e) {
+  if (e.metaKey || e.ctrlKey || e.altKey) return false;
+  const pairs = { '(': ')', '[': ']', '{': '}', '"': '"', "'": "'", '`': '`' };
+  const closing = new Set(Object.values(pairs));
+  const start = el.codeEditor.selectionStart;
+  const end = el.codeEditor.selectionEnd;
+  const selected = el.codeEditor.value.slice(start, end);
+
+  if (pairs[e.key]) {
+    const next = el.codeEditor.value[start] || '';
+    if ((e.key === '"' || e.key === "'" || e.key === '`') && next === e.key && start === end) {
+      e.preventDefault();
+      el.codeEditor.selectionStart = el.codeEditor.selectionEnd = start + 1;
+      return true;
+    }
+    e.preventDefault();
+    if (selected) insertEditorText(e.key + selected + pairs[e.key], 1 + selected.length);
+    else insertEditorText(e.key + pairs[e.key], 1);
+    return true;
+  }
+
+  if (closing.has(e.key) && el.codeEditor.value[start] === e.key && start === end) {
+    e.preventDefault();
+    el.codeEditor.selectionStart = el.codeEditor.selectionEnd = start + 1;
+    return true;
+  }
+  return false;
+}
+
+function handleSmartEnter(e) {
+  if (e.key !== 'Enter') return false;
+  const start = el.codeEditor.selectionStart;
+  const before = el.codeEditor.value.slice(0, start);
+  const after = el.codeEditor.value.slice(start);
+  const currentLine = before.slice(before.lastIndexOf('\n') + 1);
+  const indent = (currentLine.match(/^\s*/) || [''])[0];
+
+  const htmlPair = state.activeFile === 'html' && /<([A-Za-z][\w:-]*)(?:\s[^<>]*)?>\s*$/.test(before) && /^\s*<\/([A-Za-z][\w:-]*)>/.test(after);
+  const bracePair = /\{\s*$/.test(before) && /^\s*\}/.test(after);
+  if (!htmlPair && !bracePair) return false;
+
+  e.preventDefault();
+  insertEditorText(`\n${indent}  \n${indent}`, indent.length + 3);
+  return true;
+}
+
+el.codeEditor.addEventListener('input', () => { updateLines(); saveEditor(); });
+el.codeEditor.addEventListener('scroll', () => { el.lineNumbers.scrollTop = el.codeEditor.scrollTop; });
+el.codeEditor.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); runPreview(true); return; }
+
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    insertEditorText('  ');
+    return;
+  }
+
+  if (handleSmartEnter(e)) return;
+  if (handleHtmlAutoClose(e)) return;
+  handlePairCompletion(e);
+});
+el.runButton.addEventListener('click', () => runPreview(true));
+el.hintButton.addEventListener('click', () => {
+  const show = !el.hintBox.classList.contains('show');
+  el.hintBox.classList.toggle('show', show);
+  el.hintButton.textContent = show ? '힌트 닫기' : '힌트';
+});
+el.resetButton.addEventListener('click', () => {
+  state.code[state.current] = structuredClone(lessons[state.current].files);
+  loadEditor(); runPreview(false); save();
+});
+el.prevButton.addEventListener('click', () => {
+  if (state.current === 0) return;
+  saveEditor(); state.current -= 1; state.activeFile = bestFile(state.current); renderLesson(); window.scrollTo({top:0, behavior:'smooth'});
+});
+el.nextButton.addEventListener('click', () => {
+  if (el.nextButton.disabled || state.current >= lessons.length - 1) return;
+  saveEditor(); state.current += 1; state.activeFile = bestFile(state.current); renderLesson(); window.scrollTo({top:0, behavior:'smooth'});
+});
+function openSidebar() {
+  el.sidebar.classList.add('open');
+  el.sidebar.setAttribute('aria-hidden', 'false');
+  el.sidebarOverlay.classList.add('show');
+}
+
+function closeSidebar() {
+  el.sidebar.classList.remove('open');
+  el.sidebar.setAttribute('aria-hidden', 'true');
+  el.sidebarOverlay.classList.remove('show');
+}
+
+el.menuButton.addEventListener('click', () => {
+  if (el.sidebar.classList.contains('open')) closeSidebar(); else openSidebar();
+});
+el.sidebarClose.addEventListener('click', closeSidebar);
+el.sidebarOverlay.addEventListener('click', closeSidebar);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+if (!state.code[state.current]) state.activeFile = bestFile(state.current);
+renderLesson();
