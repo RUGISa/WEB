@@ -14,7 +14,7 @@
           <span class="brand-mark">F</span>
           <div><strong>Frame</strong><small>Web Study</small></div>
         </div>
-        <button class="sidebar-close" id="sidebarClose" aria-label="챕터 메뉴 닫기">×</button>
+        <button class="sidebar-close" id="sidebarClose" aria-label="챕터 메뉴 닫기">닫기</button>
       </div>
 
       <div class="course-summary">
@@ -28,10 +28,10 @@
 
     <main class="main">
       <header class="topbar">
-        <button class="menu-button" id="menuButton" aria-label="챕터 메뉴 열기"><span class="menu-icon">☰</span><span>챕터</span></button>
+        <button class="menu-button" id="menuButton" aria-label="챕터 메뉴 열기"><span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span><span>챕터</span></button>
         <div class="crumb" id="crumb">HTML · 01</div>
         <div class="top-actions">
-          <button class="text-button reset-button" id="resetButton">↻ 현재 코드 초기화</button>
+          <button class="text-button reset-button" id="resetButton">현재 코드 초기화</button>
         </div>
       </header>
 
@@ -91,7 +91,7 @@
                 <div class="tabs" id="editorTabs"></div>
                 <div class="editor-actions">
                   <span class="language-badge" id="languageBadge">HTML</span>
-                  <button class="hint-button" id="hintButton">💡 힌트 보기</button>
+                  <button class="hint-button" id="hintButton">힌트 보기</button>
                 </div>
               </div>
               <div class="editor-wrap">
@@ -103,7 +103,7 @@
               <div class="hint" id="hintBox"></div>
               <div class="run-row">
                 <span id="saveState">자동 저장 · 구문 강조 · 자동 닫기 · 자동 들여쓰기 ON</span>
-                <button class="run-button" id="runButton">▶ 실행하기</button>
+                <button class="run-button" id="runButton">실행하기</button>
               </div>
             </section>
 
@@ -134,7 +134,7 @@
   </div>
   <button class="sidebar-overlay" id="sidebarOverlay" aria-label="챕터 메뉴 닫기" tabindex="-1"></button>
 
-  <div class="toast" id="toast">완료했습니다. 다음 레슨이 열렸어요.</div>
+  <div class="toast" id="toast">문제를 완료했습니다.</div>
   <script src="script.js"></script>
 </body>
 </html>

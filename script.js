@@ -461,7 +461,7 @@ function renderCurriculum() {
       const done = state.completed.includes(index);
       const btn = document.createElement('button');
       btn.className = `lesson-link ${index === state.current ? 'active' : ''}`;
-      btn.innerHTML = `<span class="index">${String(indices.indexOf(index)+1).padStart(2,'0')}</span><span>${item.nav}</span><span class="state">${done ? '✓' : '›'}</span>`;
+      btn.innerHTML = `<span class="index">${String(indices.indexOf(index)+1).padStart(2,'0')}</span><span>${item.nav}</span><span class="state">${done ? '완료' : ''}</span>`;
       btn.addEventListener('click', () => {
         saveEditor();
         state.current = index;
@@ -504,7 +504,7 @@ function renderLesson() {
   el.successCondition.textContent = `위 요구사항을 ${el.problemFile.textContent} 코드에 정확히 반영한 뒤 ‘실행’을 누르세요.`;
   el.hintBox.textContent = l.hint;
   el.hintBox.classList.remove('show');
-  el.hintButton.textContent = '💡 힌트 보기';
+  el.hintButton.textContent = '힌트 보기';
   renderTabs();
   loadEditor();
   renderExplain();
@@ -1185,7 +1185,7 @@ el.runButton.addEventListener('click', () => runPreview(true));
 el.hintButton.addEventListener('click', () => {
   const show = !el.hintBox.classList.contains('show');
   el.hintBox.classList.toggle('show', show);
-  el.hintButton.textContent = show ? '힌트 닫기' : '💡 힌트 보기';
+  el.hintButton.textContent = show ? '힌트 닫기' : '힌트 보기';
 });
 el.resetButton.addEventListener('click', () => {
   state.code[state.current] = structuredClone(lessons[state.current].files);
@@ -1200,12 +1200,14 @@ el.nextButton.addEventListener('click', () => {
   saveEditor(); state.current += 1; state.activeFile = bestFile(state.current); renderLesson(); window.scrollTo({top:0, behavior:'smooth'});
 });
 function openSidebar() {
+  document.body.classList.add('drawer-open');
   el.sidebar.classList.add('open');
   el.sidebar.setAttribute('aria-hidden', 'false');
   el.sidebarOverlay.classList.add('show');
 }
 
 function closeSidebar() {
+  document.body.classList.remove('drawer-open');
   el.sidebar.classList.remove('open');
   el.sidebar.setAttribute('aria-hidden', 'true');
   el.sidebarOverlay.classList.remove('show');
