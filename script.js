@@ -463,11 +463,17 @@ function renderCurriculum() {
       btn.className = `lesson-link ${index === state.current ? 'active' : ''}`;
       btn.innerHTML = `<span class="index">${String(indices.indexOf(index)+1).padStart(2,'0')}</span><span>${item.nav}</span><span class="state">${done ? '완료' : ''}</span>`;
       btn.addEventListener('click', () => {
+        if (index === state.current) {
+          closeSidebar();
+          return;
+        }
+
         saveEditor();
         state.current = index;
         state.activeFile = bestFile(index);
+        closeSidebar({ restorePage: false });
         renderLesson();
-        closeSidebar();
+        requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: 'auto' }));
       });
       list.appendChild(btn);
     });
@@ -1200,138 +1206,58 @@ el.nextButton.addEventListener('click', () => {
   saveEditor(); state.current += 1; state.activeFile = bestFile(state.current); renderLesson(); window.scrollTo({top:0, behavior:'smooth'});
 });
 let drawerScrollY = 0;
-let drawerTouchY = null;
-let drawerScrollGuard = false;
-
-function lockMainPage() {
-  drawerScrollY = window.scrollY || window.pageYOffset || 0;
-
-  document.documentElement.classList.add('drawer-open');
-  document.body.classList.add('drawer-open');
-
-  /* Lock the document itself at the exact current position. */
-  document.documentElement.style.overflow = 'hidden';
-  document.body.style.position = 'fixed';
-  document.body.style.top = `-${drawerScrollY}px`;
-  document.body.style.left = '0';
-  document.body.style.right = '0';
-  document.body.style.width = '100%';
-  document.body.style.overflow = 'hidden';
-}
-
-function unlockMainPage() {
-  document.documentElement.classList.remove('drawer-open');
-  document.body.classList.remove('drawer-open');
-
-  document.documentElement.style.overflow = '';
-  document.body.style.position = '';
-  document.body.style.top = '';
-  document.body.style.left = '';
-  document.body.style.right = '';
-  document.body.style.width = '';
-  document.body.style.overflow = '';
-
-  window.scrollTo(0, drawerScrollY);
-}
 
 function openSidebar() {
   if (el.sidebar.classList.contains('open')) return;
 
-  lockMainPage();
+  drawerScrollY = window.scrollY || window.pageYOffset || 0;
+  document.documentElement.classList.add('drawer-open');
+  document.body.classList.add('drawer-open');
+
   el.sidebar.classList.add('open');
   el.sidebar.setAttribute('aria-hidden', 'false');
   el.sidebarOverlay.classList.add('show');
+  el.menuButton.setAttribute('aria-expanded', 'true');
 
+  /* Keep the current lesson visible without touching the document scroll. */
   requestAnimationFrame(() => {
     const active = el.curriculum.querySelector('.lesson-link.active');
-    if (active) active.scrollIntoView({ block: 'nearest' });
+    if (active) active.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   });
 }
 
-function closeSidebar() {
+function closeSidebar({ restorePage = true } = {}) {
   if (!el.sidebar.classList.contains('open')) return;
 
   el.sidebar.classList.remove('open');
   el.sidebar.setAttribute('aria-hidden', 'true');
   el.sidebarOverlay.classList.remove('show');
-  unlockMainPage();
+  el.menuButton.setAttribute('aria-expanded', 'false');
+
+  document.documentElement.classList.remove('drawer-open');
+  document.body.classList.remove('drawer-open');
+
+  if (restorePage) {
+    requestAnimationFrame(() => window.scrollTo(0, drawerScrollY));
+  }
 }
 
+el.menuButton.setAttribute('aria-expanded', 'false');
 el.menuButton.addEventListener('click', () => {
-  if (el.sidebar.classList.contains('open')) closeSidebar(); else openSidebar();
+  if (el.sidebar.classList.contains('open')) closeSidebar();
+  else openSidebar();
 });
-el.sidebarClose.addEventListener('click', closeSidebar);
-el.sidebarOverlay.addEventListener('click', closeSidebar);
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+el.sidebarClose.addEventListener('click', () => closeSidebar());
+el.sidebarOverlay.addEventListener('click', () => closeSidebar());
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && el.sidebar.classList.contains('open')) closeSidebar();
+});
 
 /*
-  While the drawer is open, ONLY .curriculum may move.
-  Wheel/trackpad input anywhere inside the drawer is routed to that list.
-  Input outside the drawer is swallowed, so the page behind cannot move.
+  Do not hijack wheel/touch events. The chapter list uses the browser's native
+  overflow scrolling. When the drawer is open, html/body overflow is locked by
+  CSS, so only .curriculum can scroll naturally.
 */
-document.addEventListener('wheel', e => {
-  if (!el.sidebar.classList.contains('open')) return;
-
-  e.preventDefault();
-  e.stopPropagation();
-
-  if (el.sidebar.contains(e.target)) {
-    el.curriculum.scrollTop += e.deltaY;
-  }
-}, { passive: false, capture: true });
-
-/* Keyboard scrolling is also confined to the curriculum while open. */
-document.addEventListener('keydown', e => {
-  if (!el.sidebar.classList.contains('open')) return;
-  const key = e.key;
-  if (!['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(key)) return;
-
-  e.preventDefault();
-  if (key === 'ArrowUp') el.curriculum.scrollTop -= 40;
-  if (key === 'ArrowDown') el.curriculum.scrollTop += 40;
-  if (key === 'PageUp') el.curriculum.scrollTop -= el.curriculum.clientHeight * .85;
-  if (key === 'PageDown' || key === ' ') el.curriculum.scrollTop += el.curriculum.clientHeight * .85;
-  if (key === 'Home') el.curriculum.scrollTop = 0;
-  if (key === 'End') el.curriculum.scrollTop = el.curriculum.scrollHeight;
-}, { capture: true });
-
-document.addEventListener('touchstart', e => {
-  if (!el.sidebar.classList.contains('open') || !e.touches.length) return;
-  if (!el.sidebar.contains(e.target)) {
-    drawerTouchY = null;
-    return;
-  }
-  drawerTouchY = e.touches[0].clientY;
-}, { passive: true, capture: true });
-
-document.addEventListener('touchmove', e => {
-  if (!el.sidebar.classList.contains('open')) return;
-
-  e.preventDefault();
-  e.stopPropagation();
-
-  if (drawerTouchY == null || !e.touches.length || !el.sidebar.contains(e.target)) return;
-
-  const currentY = e.touches[0].clientY;
-  const delta = drawerTouchY - currentY;
-  drawerTouchY = currentY;
-  el.curriculum.scrollTop += delta;
-}, { passive: false, capture: true });
-
-document.addEventListener('touchend', () => {
-  drawerTouchY = null;
-}, { passive: true, capture: true });
-
-/* Last-resort guard: if a browser tries to scroll the document anyway, snap it back. */
-window.addEventListener('scroll', () => {
-  if (!el.sidebar.classList.contains('open') || drawerScrollGuard) return;
-  const y = window.scrollY || window.pageYOffset || 0;
-  if (Math.abs(y - drawerScrollY) < 1) return;
-
-  drawerScrollGuard = true;
-  window.scrollTo(0, drawerScrollY);
-  requestAnimationFrame(() => { drawerScrollGuard = false; });
-}, { passive: true });
 
 if (!state.code[state.current]) state.activeFile = bestFile(state.current);
 renderLesson();
