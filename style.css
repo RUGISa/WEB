@@ -969,3 +969,30 @@ body.drawer-open {
   overflow: hidden !important;
   overscroll-behavior: none !important;
 }
+
+/* v16: drawer header stays fixed; only the chapter list scrolls */
+.sidebar {
+  height: 100vh !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overscroll-behavior: none !important;
+}
+
+.curriculum {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior-y: contain !important;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  scrollbar-gutter: stable;
+}
+
+html.drawer-open,
+body.drawer-open {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}

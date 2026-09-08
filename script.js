@@ -1201,27 +1201,50 @@ el.nextButton.addEventListener('click', () => {
 });
 let drawerScrollY = 0;
 let drawerTouchY = null;
+let drawerScrollGuard = false;
 
-function openSidebar() {
-  if (el.sidebar.classList.contains('open')) return;
-
+function lockMainPage() {
   drawerScrollY = window.scrollY || window.pageYOffset || 0;
+
   document.documentElement.classList.add('drawer-open');
   document.body.classList.add('drawer-open');
+
+  /* Lock the document itself at the exact current position. */
+  document.documentElement.style.overflow = 'hidden';
   document.body.style.position = 'fixed';
   document.body.style.top = `-${drawerScrollY}px`;
   document.body.style.left = '0';
   document.body.style.right = '0';
   document.body.style.width = '100%';
+  document.body.style.overflow = 'hidden';
+}
 
+function unlockMainPage() {
+  document.documentElement.classList.remove('drawer-open');
+  document.body.classList.remove('drawer-open');
+
+  document.documentElement.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  document.body.style.overflow = '';
+
+  window.scrollTo(0, drawerScrollY);
+}
+
+function openSidebar() {
+  if (el.sidebar.classList.contains('open')) return;
+
+  lockMainPage();
   el.sidebar.classList.add('open');
   el.sidebar.setAttribute('aria-hidden', 'false');
   el.sidebarOverlay.classList.add('show');
 
   requestAnimationFrame(() => {
-    const active = el.sidebar.querySelector('.lesson-link.active');
+    const active = el.curriculum.querySelector('.lesson-link.active');
     if (active) active.scrollIntoView({ block: 'nearest' });
-    el.sidebar.focus?.({ preventScroll: true });
   });
 }
 
@@ -1231,15 +1254,7 @@ function closeSidebar() {
   el.sidebar.classList.remove('open');
   el.sidebar.setAttribute('aria-hidden', 'true');
   el.sidebarOverlay.classList.remove('show');
-
-  document.documentElement.classList.remove('drawer-open');
-  document.body.classList.remove('drawer-open');
-  document.body.style.position = '';
-  document.body.style.top = '';
-  document.body.style.left = '';
-  document.body.style.right = '';
-  document.body.style.width = '';
-  window.scrollTo(0, drawerScrollY);
+  unlockMainPage();
 }
 
 el.menuButton.addEventListener('click', () => {
@@ -1250,43 +1265,73 @@ el.sidebarOverlay.addEventListener('click', closeSidebar);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 
 /*
-  While the drawer is open, wheel input is captured before the document can
-  scroll. The drawer itself is the only scroll target. This is intentionally
-  manual so trackpads behave the same in Chrome/Safari/Firefox.
+  While the drawer is open, ONLY .curriculum may move.
+  Wheel/trackpad input anywhere inside the drawer is routed to that list.
+  Input outside the drawer is swallowed, so the page behind cannot move.
 */
 document.addEventListener('wheel', e => {
   if (!el.sidebar.classList.contains('open')) return;
 
+  e.preventDefault();
+  e.stopPropagation();
+
   if (el.sidebar.contains(e.target)) {
-    e.preventDefault();
-    el.sidebar.scrollTop += e.deltaY;
-    el.sidebar.scrollLeft += e.deltaX;
-  } else {
-    e.preventDefault();
+    el.curriculum.scrollTop += e.deltaY;
   }
 }, { passive: false, capture: true });
 
+/* Keyboard scrolling is also confined to the curriculum while open. */
+document.addEventListener('keydown', e => {
+  if (!el.sidebar.classList.contains('open')) return;
+  const key = e.key;
+  if (!['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(key)) return;
+
+  e.preventDefault();
+  if (key === 'ArrowUp') el.curriculum.scrollTop -= 40;
+  if (key === 'ArrowDown') el.curriculum.scrollTop += 40;
+  if (key === 'PageUp') el.curriculum.scrollTop -= el.curriculum.clientHeight * .85;
+  if (key === 'PageDown' || key === ' ') el.curriculum.scrollTop += el.curriculum.clientHeight * .85;
+  if (key === 'Home') el.curriculum.scrollTop = 0;
+  if (key === 'End') el.curriculum.scrollTop = el.curriculum.scrollHeight;
+}, { capture: true });
+
 document.addEventListener('touchstart', e => {
   if (!el.sidebar.classList.contains('open') || !e.touches.length) return;
+  if (!el.sidebar.contains(e.target)) {
+    drawerTouchY = null;
+    return;
+  }
   drawerTouchY = e.touches[0].clientY;
 }, { passive: true, capture: true });
 
 document.addEventListener('touchmove', e => {
-  if (!el.sidebar.classList.contains('open') || drawerTouchY == null || !e.touches.length) return;
+  if (!el.sidebar.classList.contains('open')) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  if (drawerTouchY == null || !e.touches.length || !el.sidebar.contains(e.target)) return;
 
   const currentY = e.touches[0].clientY;
   const delta = drawerTouchY - currentY;
   drawerTouchY = currentY;
-
-  e.preventDefault();
-  if (el.sidebar.contains(e.target)) {
-    el.sidebar.scrollTop += delta;
-  }
+  el.curriculum.scrollTop += delta;
 }, { passive: false, capture: true });
 
 document.addEventListener('touchend', () => {
   drawerTouchY = null;
 }, { passive: true, capture: true });
+
+/* Last-resort guard: if a browser tries to scroll the document anyway, snap it back. */
+window.addEventListener('scroll', () => {
+  if (!el.sidebar.classList.contains('open') || drawerScrollGuard) return;
+  const y = window.scrollY || window.pageYOffset || 0;
+  if (Math.abs(y - drawerScrollY) < 1) return;
+
+  drawerScrollGuard = true;
+  window.scrollTo(0, drawerScrollY);
+  requestAnimationFrame(() => { drawerScrollGuard = false; });
+}, { passive: true });
 
 if (!state.code[state.current]) state.activeFile = bestFile(state.current);
 renderLesson();
