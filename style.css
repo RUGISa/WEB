@@ -1061,3 +1061,82 @@ body.drawer-open {
 .sidebar-overlay.show {
   pointer-events: auto !important;
 }
+
+
+/* v18: stable chapter drawer -------------------------------------------------
+   Keep the drawer simple: the page is locked, and ONLY .curriculum scrolls.
+   These final rules intentionally override older experimental drawer rules. */
+html.drawer-open,
+body.drawer-open {
+  overflow: hidden !important;
+}
+
+.sidebar {
+  position: fixed !important;
+  inset: 0 auto 0 0 !important;
+  z-index: 1001 !important;
+  width: min(360px, calc(100vw - 24px)) !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 18px 16px !important;
+  overflow: hidden !important;
+  background: #f7f7f5 !important;
+  transform: translateX(-102%);
+  pointer-events: none;
+}
+
+.sidebar.open {
+  transform: translateX(0) !important;
+  pointer-events: auto !important;
+}
+
+.sidebar-head,
+.course-summary,
+.progress {
+  flex: 0 0 auto !important;
+}
+
+.curriculum {
+  position: relative !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: 0 !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
+  padding: 0 7px 28px 0 !important;
+  overscroll-behavior: contain !important;
+  touch-action: pan-y !important;
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-gutter: stable !important;
+  pointer-events: auto !important;
+}
+
+.curriculum .course-group,
+.curriculum .lesson-list,
+.curriculum .lesson-link {
+  pointer-events: auto !important;
+}
+
+.lesson-link {
+  cursor: pointer !important;
+  opacity: 1 !important;
+}
+
+.lesson-link.locked,
+.lesson-link[disabled] {
+  opacity: 1 !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+.sidebar-overlay {
+  z-index: 1000 !important;
+}
+
+.sidebar-overlay.show {
+  pointer-events: auto !important;
+}

@@ -447,42 +447,53 @@ function saveEditor() {
 
 function renderCurriculum() {
   el.curriculum.innerHTML = '';
+
   Object.keys(courseInfo).forEach(group => {
-    const indices = lessons.map((l, i) => l.group === group ? i : -1).filter(i => i >= 0);
+    const indices = lessons
+      .map((lesson, index) => lesson.group === group ? index : -1)
+      .filter(index => index >= 0);
+
     const wrapper = document.createElement('section');
     wrapper.className = 'course-group';
+
     const head = document.createElement('div');
     head.className = 'course-button';
     head.innerHTML = `<span>${courseInfo[group].title}</span><span>${indices.length}</span>`;
+
     const list = document.createElement('div');
     list.className = 'lesson-list';
-    indices.forEach(index => {
+
+    indices.forEach((index, localIndex) => {
       const item = lessons[index];
       const done = state.completed.includes(index);
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = `lesson-link ${index === state.current ? 'active' : ''}`;
-      btn.innerHTML = `<span class="index">${String(indices.indexOf(index)+1).padStart(2,'0')}</span><span>${item.nav}</span><span class="state">${done ? '완료' : ''}</span>`;
-      btn.addEventListener('click', () => {
-        if (index === state.current) {
-          closeSidebar();
-          return;
-        }
-
-        saveEditor();
-        state.current = index;
-        state.activeFile = bestFile(index);
-        closeSidebar({ restorePage: false });
-        renderLesson();
-        requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: 'auto' }));
-      });
+      btn.dataset.lessonIndex = String(index);
+      btn.innerHTML = `<span class="index">${String(localIndex + 1).padStart(2,'0')}</span><span>${item.nav}</span><span class="state">${done ? '완료' : ''}</span>`;
       list.appendChild(btn);
     });
+
     wrapper.append(head, list);
     el.curriculum.appendChild(wrapper);
   });
+
   const completed = new Set(state.completed).size;
   el.summaryProgress.textContent = `${completed} / ${lessons.length}`;
   el.progressBar.style.width = `${Math.round((completed / lessons.length) * 100)}%`;
+}
+
+function goToLesson(index) {
+  if (!Number.isInteger(index) || index < 0 || index >= lessons.length) return;
+
+  saveEditor();
+  state.current = index;
+  state.activeFile = bestFile(index);
+  save();
+
+  closeSidebar({ restorePage: false });
+  renderLesson();
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
 }
 
 function bestFile(index) {
@@ -1249,6 +1260,14 @@ el.menuButton.addEventListener('click', () => {
 });
 el.sidebarClose.addEventListener('click', () => closeSidebar());
 el.sidebarOverlay.addEventListener('click', () => closeSidebar());
+el.curriculum.addEventListener('click', event => {
+  const button = event.target.closest('.lesson-link[data-lesson-index]');
+  if (!button || !el.curriculum.contains(button)) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+  goToLesson(Number(button.dataset.lessonIndex));
+});
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && el.sidebar.classList.contains('open')) closeSidebar();
 });
