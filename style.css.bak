@@ -843,101 +843,11 @@ button { cursor: pointer; }
   .menu-button { height: 40px; padding: 0 11px; }
   .menu-button span:last-child { display: none; }
   .reset-button { font-size: 0 !important; width: 42px; padding: 0 !important; }
-  .reset-button::after { content: none; }
+  .reset-button::after { content: '↻'; font-size: 18px; }
   .study-section { padding: 24px 18px 28px; border-radius: 18px; }
   .practice { padding: 24px 14px 24px; border-radius: 18px; }
   .section-heading { align-items: flex-start; }
   .practice-title-row { align-items: flex-start; flex-direction: column; gap: 12px; }
   .lesson-footer { flex-direction: column; }
   .prev-button, .next-button { width: 100%; }
-}
-
-
-/* v13: text-first controls and non-blurred drawer */
-.sidebar-overlay {
-  background: rgba(24, 26, 28, .08) !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-  pointer-events: none;
-}
-.sidebar-overlay.show {
-  pointer-events: auto;
-}
-
-/* Keep the page itself crisp while the chapter drawer is open. */
-body.drawer-open .main,
-body.drawer-open .topbar,
-body.drawer-open .lesson {
-  filter: none !important;
-}
-
-.menu-icon {
-  display: inline-flex;
-  width: 17px;
-  height: 14px;
-  flex-direction: column;
-  justify-content: space-between;
-  font-size: 0;
-}
-.menu-icon > span {
-  display: block;
-  width: 17px;
-  height: 1.5px;
-  border-radius: 999px;
-  background: currentColor;
-}
-
-.sidebar-close {
-  width: auto !important;
-  min-width: 52px;
-  height: 34px;
-  padding: 0 10px;
-  font-size: 11px !important;
-  font-weight: 700;
-  line-height: 1 !important;
-}
-
-.lesson-link .state {
-  min-width: 28px;
-  font-size: 10px !important;
-  font-weight: 700 !important;
-  text-align: right;
-  color: #777d81;
-}
-.lesson-link.active .state { color: var(--accent); }
-
-/* Prevent the mobile reset control from becoming a symbol-only button. */
-@media (max-width: 640px) {
-  .menu-button span:last-child { display: inline !important; }
-  .reset-button {
-    width: auto !important;
-    padding: 0 11px !important;
-    font-size: 11px !important;
-  }
-  .reset-button::after { content: none !important; }
-}
-
-
-/* v14: lock page scrolling while the chapter drawer is open */
-body.drawer-open {
-  position: fixed;
-  left: 0;
-  right: 0;
-  width: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
-}
-
-.sidebar {
-  overscroll-behavior: contain;
-}
-
-.curriculum {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior-y: contain;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-gutter: stable;
-  touch-action: pan-y;
 }
