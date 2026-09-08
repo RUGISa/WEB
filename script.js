@@ -407,24 +407,156 @@ function lesson(group, title, nav, kind, description, points, syntax, mission, h
   return { group, title, nav, kind, description, points, syntax, mission, hint, files, validate, explain };
 }
 
+const jaLessonData = [{"title": "WebページとHTML文書", "nav": "HTMLの役割", "description": "WebページはHTML文書から始まります。HTMLは色や動きより先に、何があり、どのような関係で並んでいるかという構造をブラウザへ伝えます。まずはどの部分が画面に表示されるのかを確認します。", "points": ["ブラウザはHTMLを読み、ページの構造を作ります。", "headには文書情報、bodyには画面に表示する内容を入れます。", "body内の普通の文字もテキストノードとして表示され、自動でp要素になるわけではありません。"], "mission": "body内の案内文の下に「ブラウザに表示される内容」という文字を1行追加してください。", "hint": "新しいタグは不要です。<body>と</body>の間に普通の文字として追加し、実行結果を確認してください。", "explain": [["<!DOCTYPE html>", "このファイルをHTML5文書として解釈するようブラウザに伝えます。"], ["<head>", "タブのタイトルや文字コードなど、本文以外の文書情報を入れます。"], ["<body>", "実際に画面へ表示する内容を入れます。タグのない文字もテキストノードとして表示されます。"]]}, {"title": "タグ・要素・親子関係", "nav": "タグと入れ子", "description": "HTMLはタグを開いて閉じることで要素を作ります。要素の中に別の要素を入れると親子関係が生まれます。この関係が分かると、インデントと文書構造が読みやすくなります。", "points": ["<p>は開始タグ、</p>は終了タグで、内容を含めた全体がp要素です。", "内側の要素は子、外側の要素は親です。", "同じ階層の要素は兄弟要素で、同じ深さにインデントします。"], "mission": "mainの中に<h1>最初の見出し</h1>と<p>HTMLの構造を学んでいます。</p>を自分で書いてください。", "hint": "2つの要素はどちらも<main>と</main>の間に置きます。自動タグ閉じとEnterの自動インデントも使ってみましょう。", "explain": [["タグ", "<h1>のように要素の開始・終了を示す記法です。"], ["要素", "<h1>見出し</h1>のように開始タグ・内容・終了タグを合わせた構造です。"], ["親・子", "mainの中にh1とpがあれば、mainが親、h1とpが子です。"]]}, {"title": "属性と値で情報を追加する", "nav": "属性と値", "description": "タグ名だけでは足りない情報は属性で追加します。属性は通常、開始タグの中に 名前=\"値\" の形で書きます。リンク先や画像説明、言語指定などに使われます。", "points": ["属性は開始タグの中に書きます。", "複数の属性は空白で区切ります。", "初学者のうちは属性値を引用符で囲む習慣をつけましょう。"], "mission": "aタグに href=\"https://example.com\" と target=\"_blank\" の2つの属性を追加してください。", "hint": "開始<a>タグの中に2つの属性を空白で区切って書きます。リンク文字はそのままにします。", "explain": [["href=\"...\"", "リンクの移動先を指定します。"], ["target=\"_blank\"", "リンクを新しいタブで開きます。"], ["lang=\"ja\"", "html要素の主な言語が日本語であることを示します。"]]}, {"title": "見出しと段落", "nav": "テキストタグ", "description": "文章はWebページで最もよく使う内容です。見出しの重要度はh1〜h6、通常の段落はpで表します。", "points": ["h1はページを代表する見出しとして使います。", "h2〜h6は下位の見出しを階層的に表します。", "pは独立した段落を表します。"], "mission": "h1の下に<h2>今日学ぶ内容</h2>と<p>タグの意味を使い分けます。</p>を追加してください。", "hint": "既存のh1の下にh2を書き、その下に新しいp要素を書きます。", "explain": [["<h1>", "最上位の見出しです。"], ["<h2>", "h1の下に置く小見出しなどに使います。"], ["<p>", "ひとまとまりの段落を表します。"]]}, {"title": "リンクでページをつなぐ", "nav": "リンク", "description": "Webの大きな特徴は文書同士をつなげられることです。aタグのhref属性に移動先を書けばリンクになります。", "points": ["aはanchorの略です。", "hrefにはURLやファイルパスを書きます。", "target=\"_blank\"で新しいタブに開けます。"], "mission": "hrefを https://example.com に変更してください。", "hint": "aタグのhref=\"...\"の値だけを変更します。", "explain": [["<a>", "クリックできるリンクを作るタグです。"], ["href", "リンク先を指定する属性です。"], ["https://", "Webアドレスで使われる通信方式を示します。"]]}, {"title": "画像を表示する", "nav": "画像", "description": "imgタグは画像を表示するための空要素です。srcとaltを一緒に使うことが重要です。", "points": ["srcには画像URLやファイルパスを入れます。", "altは画像を表示できないときに代わりに伝える説明です。", "アクセシビリティのため、意味のあるaltを書く習慣をつけます。"], "mission": "altの値を「山の風景」に変更してください。", "hint": "imgタグの alt=\"...\" の部分を変更します。", "explain": [["<img>", "外部画像やプロジェクト内の画像を表示します。"], ["src", "画像ファイルの場所を指定します。"], ["alt", "画像を見られない状況でも内容を伝える代替テキストです。"]]}, {"title": "リストを作る", "nav": "リスト", "description": "複数の項目をまとめるときはリスト要素を使います。順序が重要でなければul、順序が重要ならolです。", "points": ["ulは順序なしリストです。", "olは順序付きリストです。", "各項目はliで作ります。"], "mission": "リストに「JavaScript」の項目を1つ追加してください。", "hint": "<li>JavaScript</li>をulの最後に追加します。", "explain": [["<ul>", "順番を持たないリスト全体を囲みます。"], ["<ol>", "1、2、3のような順番があるリストに使います。"], ["<li>", "リストの1項目を表します。"]]}, {"title": "フォームと入力要素", "nav": "フォーム要素", "description": "ユーザーから値を受け取るときはform、label、input、buttonを組み合わせます。labelをinputに結びつけると意味が明確になり、アクセシビリティも向上します。", "points": ["formは1つの入力操作をまとめます。", "labelのforとinputのidを同じ値にします。", "placeholderはlabelの代わりではなく補助説明として使います。"], "mission": "inputに id=\"name\" を追加し、その直前に <label for=\"name\">名前</label> を書いてください。", "hint": "labelのforとinputのidがどちらもnameになっているか確認してください。", "explain": [["<input>", "1行テキストや数字など、さまざまな入力を受け取ります。"], ["type", "inputが受け取るデータの種類を指定します。"], ["<label>", "入力欄が何のためのものかを明確にします。"]]}, {"title": "classとid", "nav": "要素に名前を付ける", "description": "CSSやJavaScriptで特定の要素を探すには名前が必要です。classは複数要素で共有でき、idは通常1つの要素を一意に識別するために使います。", "points": ["classは複数の要素に同じスタイルや役割を持たせるときに便利です。", "idは文書内で一意の要素を識別するときに使います。", "CSSとJavaScriptで要素を選ぶ基準になります。"], "mission": "2つ目のpタグにも class=\"note\" を追加してください。", "hint": "<p class=\"note\"> の形でclass属性を付けます。", "explain": [["class", "複数の要素が同じグループ名を共有できます。"], ["id", "1つの要素を固有に識別するときに向いています。"], [".note", "CSSではピリオドがclass選択を表します。"]]}, {"title": "表で関連データを表す", "nav": "表を作る", "description": "行と列の関係が重要なデータはtableで表します。レイアウト目的ではなく、時間割や価格表のような表データに使います。", "points": ["tableは表全体を囲みます。", "trは1行、thは見出しセル、tdは通常セルです。", "意味のある表構造はスクリーンリーダーにも伝わりやすくなります。"], "mission": "2行目を追加し、<td>JavaScript</td><td>動作</td> の2セルを書いてください。", "hint": "既存のデータ行の下に新しい<tr>を作り、その中にtdを2つ置きます。", "explain": [["<table>", "表データ全体を囲みます。"], ["<tr>", "table rowの略で、表の1行を作ります。"], ["<th> / <td>", "thは見出しセル、tdは通常のデータセルです。"]]}, {"title": "意味のあるレイアウト", "nav": "セマンティックタグ", "description": "divだけでも画面は作れますが、header、main、section、footerなどを使うと構造の意味が明確になります。", "points": ["headerはヘッダー領域です。", "mainはページの中心となる内容です。", "sectionは主題ごとのまとまり、footerは末尾の情報を表します。"], "mission": "main内のコンテンツをsectionタグで囲んでください。", "hint": "<main>の直後に<section>を開き、内容の後で</section>を閉じます。", "explain": [["<header>", "サイトやセクションの先頭部分を表します。"], ["<main>", "現在の文書の中心コンテンツを表します。"], ["<section>", "同じ主題のコンテンツをまとめます。"]]}, {"title": "HTMLミニプロジェクト", "nav": "紹介ページ", "description": "ここまで学んだHTMLだけで小さな紹介ページを完成させます。見た目よりも、内容の意味と順序を正しく組み立てることに集中します。", "points": ["h1で代表見出しを作ります。", "ul/liでスキル一覧を作ります。", "aで別ページへ移動できるリンクを作ります。"], "mission": "用意されたHTML文書の<main>内に、見出し・紹介文・技術リスト・リンクを自分で書いて紹介ページを完成させてください。", "hint": "<h1>、<p>、<ul>/<li>、<a>を自分で書きます。文書の骨組みは維持してください。", "explain": [["構造", "何を見せるかをまずHTMLで決めます。"], ["階層", "h1を基準に見出しと内容を自然に配置します。"], ["リンク", "最後にユーザーが移動できる経路を用意します。"]]}, {"title": "CSSルールの構造", "nav": "CSS文法", "description": "CSSはセレクタで対象を選び、中括弧の中にプロパティと値を書きます。まず1つのルールを正確に読めるようにします。", "points": ["セレクタはどのHTML要素を装飾するか決めます。", "プロパティは何を変えるか、値はどう変えるかを表します。", "宣言の末尾にセミコロンを書く習慣をつけます。"], "mission": "h1のcolorを#344960に変更し、同じルールに font-size: 36px; を1行追加してください。", "hint": "h1の中括弧の中に プロパティ: 値; の形で2行書きます。", "explain": [["h1", "このルールを適用するHTML要素を選びます。"], ["color", "文字色を変更するCSSプロパティです。"], ["#344960", "16進数で表した色の値です。"]]}, {"title": "色と背景", "nav": "色", "description": "文字色はcolor、背景色はbackground-colorで指定します。色はHEX、RGB、HSLなどで表せます。", "points": ["colorは文字の前景色です。", "background-colorは要素の背景色です。", "デザイン全体で使う色数を絞ると整って見えます。"], "mission": "bodyの背景色を#f2f2f0に変更してください。", "hint": "bodyルールのbackground-colorを変更します。", "explain": [["color", "文字色を決めます。"], ["background-color", "要素の背景色を決めます。"], ["HEX", "#RRGGBB形式で色を表す方法です。"]]}, {"title": "文字サイズと太さ", "nav": "タイポグラフィ", "description": "読みやすいWebサイトでは文字サイズ、太さ、行間が整理されています。font-size、font-weight、line-heightをよく使います。", "points": ["font-sizeは文字サイズです。", "font-weightは文字の太さです。", "line-heightは行と行の高さを決めます。"], "mission": "h1のfont-sizeを42pxに変更してください。", "hint": "h1の28pxを42pxに変更します。", "explain": [["font-size", "文字の大きさを設定します。"], ["font-weight", "文字の太さを調整します。"], ["line-height", "本文の読みやすさに大きく影響する行の高さです。"]]}, {"title": "marginとpadding", "nav": "余白", "description": "Webデザインの完成度は余白で大きく変わります。marginは外側、paddingは内側の余白です。", "points": ["marginは他要素との距離です。", "paddingは境界線と内容の間の距離です。", "8px、16px、24pxのように規則を作ると整います。"], "mission": ".cardのpaddingを24pxに変更してください。", "hint": ".card内を padding: 24px; に変更します。", "explain": [["margin", "要素の外側の空間です。"], ["padding", "要素の内側の空間です。"], ["box model", "content、padding、border、marginで要素のサイズを考えるモデルです。"]]}, {"title": "境界線と角丸", "nav": "カードを作る", "description": "borderは要素の境界、border-radiusは角の丸みを作ります。カードや入力欄、ボタンでよく使います。", "points": ["borderは太さ・種類・色をまとめて指定できます。", "border-radiusは角の丸みを決めます。", "強い影を使わなくても細い境界線だけで整ったUIを作れます。"], "mission": ".cardのborder-radiusを16pxに変更してください。", "hint": ".cardのborder-radiusの値だけを変更します。", "explain": [["border", "要素の境界線を作ります。"], ["border-radius", "要素の角を丸くします。"], ["solid", "実線のborderを指定します。"]]}, {"title": "ボックスモデルとbox-sizing", "nav": "ボックスモデル", "description": "要素の実際の大きさはcontent、padding、borderの組み合わせで決まります。box-sizingを理解すると幅の計算が予測しやすくなります。", "points": ["content-boxではwidthにpaddingとborderが追加されます。", "border-boxでは指定したwidthの中にpaddingとborderを含めます。", "実務ではborder-boxを広く使うことが多いです。"], "mission": ".cardの最終幅320pxにpaddingも含まれるよう box-sizing: border-box; を追加してください。", "hint": ".cardブロック内に box-sizing: border-box; を書きます。", "explain": [["content", "実際の内容が入る領域です。"], ["padding / border", "内容の外側に追加される領域です。"], ["border-box", "指定幅の中にpaddingとborderを含めます。"]]}, {"title": "positionで位置の基準を作る", "nav": "位置指定", "description": "positionを使うと通常の配置から離して要素を置けます。absoluteの基準を作るために親へrelativeを指定する使い方を覚えます。", "points": ["relativeは子absoluteの基準点を作れます。", "absoluteは通常のレイアウトフローから外れて配置されます。", "topやrightで基準からの距離を指定します。"], "mission": ".badgeをcardの右上基準で配置できるよう、.cardにrelative、.badgeにabsoluteを追加してください。", "hint": "2つのセレクタにpositionをそれぞれ追加します。topとrightはすでに用意されています。", "explain": [["position: relative", "absolute子要素の位置基準を作るときによく使います。"], ["position: absolute", "通常の配置フローから外して座標のように配置します。"], ["top / right", "基準要素の上・右からの距離を指定します。"]]}, {"title": "displayとFlexbox", "nav": "横並び", "description": "Flexboxは複数要素を1行または1列に並べるための代表的なレイアウト機能です。", "points": ["親要素にdisplay: flexを指定します。", "gapは子要素同士の間隔です。", "justify-contentとalign-itemsで整列を制御します。"], "mission": ".rowに display: flex; を追加してください。", "hint": ".rowの中括弧の中に display: flex; を書きます。", "explain": [["display: flex", "子要素をFlexboxレイアウトで配置します。"], ["gap", "子要素の間に一定の間隔を作ります。"], ["親/子", "Flexboxのルールは親に書き、実際に並ぶのは子要素です。"]]}, {"title": "Flexの整列を理解する", "nav": "整列", "description": "Flexboxの軸を理解すると、中央揃えから両端配置まで多くのUIを簡単に作れます。", "points": ["justify-contentは主軸方向の整列です。", "align-itemsは交差軸方向の整列です。", "flex-directionを変えると主軸方向も変わります。"], "mission": ".stageに justify-content: center; を追加してください。", "hint": "display: flexの下に justify-content: center; を書きます。", "explain": [["justify-content", "主軸を基準に子要素の位置を決めます。"], ["align-items", "交差軸を基準に子要素を整列します。"], ["center", "軸の中央に要素を配置します。"]]}, {"title": "Gridでカードを並べる", "nav": "Grid", "description": "CSS Gridは行と列を同時に扱うレイアウトに強く、カード一覧やギャラリーに便利です。", "points": ["display: gridでGridを始めます。", "grid-template-columnsで列数と幅を決めます。", "repeatとfrで均等な列を簡単に作れます。"], "mission": ".gridを3列にしてください。", "hint": ".gridに grid-template-columns: repeat(3, 1fr); を追加します。", "explain": [["display: grid", "行と列ベースのレイアウトを有効にします。"], ["repeat(3, 1fr)", "同じ幅の列を3つ作ります。"], ["fr", "Grid内の残り空間の比率を表す単位です。"]]}, {"title": "レスポンシブWebの基本", "nav": "メディアクエリ", "description": "モバイルとデスクトップでは画面幅が異なります。メディアクエリを使うと、特定の幅以下でスタイルを切り替えられます。", "points": ["@mediaで条件付きCSSを書きます。", "max-widthは指定幅以下で適用されます。", "レスポンシブは別ページではなく同じ構造を柔軟に変える考え方です。"], "mission": "600px以下で.gridが1列になるコードを完成させてください。", "hint": "@media内で grid-template-columns: 1fr; を使います。", "explain": [["@media", "条件が成立したときだけ適用するCSS領域です。"], ["max-width: 600px", "ブラウザ幅が600px以下かを判定します。"], ["1fr", "モバイルで1行にカード1枚だけ表示します。"]]}, {"title": "CSSミニプロジェクト", "nav": "ランディングカード", "description": "HTMLで作った構造を実際のサービスのように整えます。正解1つよりも、余白と整列の原則を使うことが目標です。", "points": ["カードに十分なpaddingを与えます。", "ボタンとテキストの間隔を整えます。", "色を増やしすぎず基本色と強調色に絞ります。"], "mission": ".cardにpadding、border-radius、backgroundの3つをすべて使ってください。", "hint": "値は自由です。3つのCSSプロパティが.card内にあれば条件を満たします。", "explain": [["padding", "内容が端に貼り付かないよう内側余白を作ります。"], ["border-radius", "カードの印象を柔らかくします。"], ["background", "カードをページ背景と視覚的に分けます。"]]}, {"title": "JavaScriptを始める", "nav": "JSの開始", "description": "JavaScriptはHTMLとCSSで作った画面に動きを追加します。まずconsole.logでコードが実行されたか確認します。", "points": ["JavaScriptは基本的に上から下へ実行されます。", "console.logは開発中に値を確認する基本ツールです。", "文字列は引用符で囲みます。"], "mission": "console.logで「Hello JavaScript」を出力してください。", "hint": "JSタブで引用符の中の文字だけを変更します。", "explain": [["console.log", "開発者ツールのコンソールに値を表示します。"], ["\"文字列\"", "文字データは引用符で囲みます。"], [";", "文の終わりを明確に示せます。"]]}, {"title": "consoleで値とエラーを確認する", "nav": "コンソールとデバッグ", "description": "JavaScriptでは画面だけでなく、コードが持つ値を確認する習慣が重要です。console.logで処理の流れを追えます。", "points": ["console.logは変数や計算結果を確認する基本的なデバッグ手段です。", "エラーメッセージは失敗ではなく、どこが何故おかしいかを教える情報です。", "小さく実行して値を確認すると問題を早く見つけられます。"], "mission": "message変数の値を console.log(message); で出力する1行を追加してください。", "hint": "変数を作った次の行に console.log(message); を書きます。", "explain": [["console.log(...)", "括弧内の値をブラウザの開発者ツールへ出力します。"], ["エラーメッセージ", "種類と位置を読むと修正箇所を見つけやすくなります。"], ["小さく確認", "長いコードを一気に書かず途中の値をこまめに確認します。"]]}, {"title": "変数で値を覚える", "nav": "変数", "description": "変数は値を保存し、名前を付ける場所です。変更する値にはlet、再代入しない値にはconstをよく使います。", "points": ["letは後で別の値を代入できます。", "constは同じ変数へ別の値を再代入できません。", "良い変数名は値の意味を説明します。"], "mission": "scoreの初期値を10に変更してください。", "hint": "let score = 0 の数字だけを10に変更します。", "explain": [["let score", "scoreという変更可能な変数を作ります。"], ["= 10", "右側の値を左側の変数へ保存します。"], ["textContent", "HTML要素内の文字をJavaScriptで変更します。"]]}, {"title": "数値と文字列", "nav": "データ型", "description": "JavaScriptは数値、文字列、真偽値など複数の種類のデータを扱います。同じ+でもデータ型によって結果が変わります。", "points": ["数値は引用符なしで書きます。", "文字列は引用符で囲みます。", "typeofで値のデータ型を確認できます。"], "mission": "ageを数値20に変更してください。引用符は使いません。", "hint": "const age = \"20\" から引用符を外します。", "explain": [["20", "引用符がないので数値です。"], ["\"20\"", "引用符があれば見た目が数字でも文字列です。"], ["+", "数値では加算、文字列では連結として動作することがあります。"]]}, {"title": "条件で動作を変える", "nav": "条件文", "description": "if文を使うと、条件が真か偽かによって実行するコードを変えられます。", "points": ["ifの括弧内には真偽を判定する条件を書きます。", "===は2つの値が同じか厳密に比較します。", "elseは条件が偽のときに実行されます。"], "mission": "scoreが80以上のとき「PASS」になるよう条件を修正してください。", "hint": "score > 80 ではなく score >= 80 に変更します。", "explain": [["if", "条件がtrueのとき中括弧内を実行します。"], [">=", "左の値が右の値以上かを比較します。"], ["else", "if条件がfalseのときの処理を書きます。"]]}, {"title": "関数でコードをまとめる", "nav": "関数", "description": "関数は複数行の処理を1つの名前にまとめ、必要なときに再実行できるようにします。", "points": ["functionキーワードで関数を作れます。", "括弧内には関数が受け取る値を書けます。", "関数名の後ろに()を付けると実行できます。"], "mission": "関数名をsayHelloに変更し、呼び出し側も同じ名前にそろえてください。", "hint": "function hello と末尾の hello() の両方をsayHelloに変えます。", "explain": [["function sayHello", "sayHelloという名前で処理のまとまりを定義します。"], ["{ ... }", "関数を実行したときの処理です。"], ["sayHello()", "定義した関数を実際に呼び出します。"]]}, {"title": "HTML要素を探す", "nav": "DOM選択", "description": "JavaScriptで画面を変えるには、まずHTML要素を取得します。querySelectorはCSSセレクタと同じ書き方で要素を1つ探します。", "points": ["#はid、.はclassを選びます。", "querySelectorは条件に合う最初の要素を返します。", "取得した要素は変数に保存して再利用できます。"], "mission": "querySelectorが#titleを取得するよう修正してください。", "hint": "\"h1\"の代わりに\"#title\"を入れます。", "explain": [["document", "現在のHTML文書を表します。"], ["querySelector", "CSSセレクタで要素を1つ取得します。"], ["#title", "id=\"title\"の要素を選びます。"]]}, {"title": "クリックイベント", "nav": "イベント", "description": "イベントはユーザーの操作とJavaScriptをつなぎます。クリック、入力、キー操作などを検知できます。", "points": ["addEventListenerでイベントを登録します。", "clickはクリックされたときに発生します。", "イベント内でDOMを変更すると画面が反応します。"], "mission": "ボタンをクリックしたら見出しが「Clicked!」に変わるよう空欄を完成させてください。", "hint": "addEventListenerの1つ目の値に\"click\"を入れます。", "explain": [["addEventListener", "要素にユーザー操作を監視する処理を登録します。"], ["click", "クリック時に発生するイベント名です。"], ["textContent", "要素内の文字を変更します。"]]}, {"title": "入力値を読む", "nav": "入力処理", "description": "inputのvalueを読むと、ユーザーが入力した文字をJavaScriptで利用できます。", "points": ["input.valueで現在の入力値を取得します。", "クリックイベントと組み合わせて値を処理できます。", "取得した値をtextContentで画面へ表示できます。"], "mission": "ボタンをクリックしたとき、messageにinput.valueが表示されるよう空欄を完成させてください。", "hint": "message.textContent = input.value; の形で書きます。", "explain": [["input.value", "入力欄に現在入っている値です。"], ["message.textContent", "取得した値を画面の要素へ表示します。"], ["click", "入力を処理するタイミングを作ります。"]]}, {"title": "配列と繰り返し", "nav": "繰り返しデータ", "description": "配列は複数の値を順番にまとめて保存します。forEachなどと組み合わせると同じ処理を各項目へ実行できます。", "points": ["配列は[]で複数の値をまとめます。", "要素はカンマで区切ります。", "forEachで各要素を順番に処理できます。"], "mission": "skills配列に「JavaScript」を追加してください。", "hint": "配列の最後に , \"JavaScript\" を追加します。", "explain": [["[ ... ]", "複数の値を1つの配列としてまとめます。"], ["forEach", "配列の各要素に同じ処理を実行します。"], ["item", "繰り返し中の現在の要素を受け取る変数として使えます。"]]}, {"title": "JavaScriptミニプロジェクト", "nav": "カウンター", "description": "ボタンと変数、イベントを組み合わせて小さなカウンターを完成させます。", "points": ["変数に現在の数を保存します。", "クリックのたびに値を変更します。", "変更した値をDOMへ反映します。"], "mission": "ボタンを押すたびにcountが2ずつ増えるよう修正してください。", "hint": "count = count + 1 の1を2に変更します。", "explain": [["count", "現在の数を保存する変数です。"], ["addEventListener", "クリックと処理をつなぎます。"], ["textContent", "新しい値を画面へ表示します。"]]}, {"title": "完成イメージを見て作る", "nav": "プロフィールカード", "description": "ここからは説明を減らし、必要な構造を自分で考えます。プロフィールカードに必要なHTMLとCSSを組み立てます。", "points": ["HTMLでプロフィールの構造を作ります。", "classを付けてCSSから選びます。", "余白と角丸を使ってカードらしく整えます。"], "mission": "class=\"profile\"の要素とborder-radiusを使ってプロフィールカードを作ってください。", "hint": "HTMLにclass=\"profile\"を作り、CSSで.profileをスタイリングします。", "explain": [["HTML", "まず内容と構造を作ります。"], [".profile", "classを使ってカード全体をCSSから選びます。"], ["border-radius", "カードの角を整えます。"]]}, {"title": "機能を見て実装する", "nav": "トグルボタン", "description": "必要な機能だけを見て、HTMLとJavaScriptを自分で組み立てる練習です。", "points": ["buttonを用意します。", "addEventListenerでクリックを監視します。", "textContentを変更して反応を見せます。"], "mission": "button、addEventListener、textContentをすべて使い、クリックに反応する機能を作ってください。", "hint": "id名は自由です。3つの要素がコードにすべて登場すれば条件を満たします。", "explain": [["button", "ユーザーが操作を始めるUIです。"], ["addEventListener", "ユーザー操作とコードを結びます。"], ["textContent", "操作の結果を画面に表示します。"]]}, {"title": "小さなWebアプリを作る", "nav": "ミニTodo", "description": "入力欄、ボタン、リストを使って小さなTodo機能を作ります。ここからは開始コードがほとんどありません。", "points": ["inputからTodo内容を受け取ります。", "ボタンを押したら新しいliを作ります。", "作った項目をリストへ追加します。"], "mission": "input、button、ulを作り、JSで createElement(\"li\") を使ってください。", "hint": "document.createElement(\"li\") が中心になります。", "explain": [["input", "ユーザーから新しいTodoの内容を受け取ります。"], ["createElement", "JavaScriptで新しいHTML要素を作ります。"], ["append / appendChild", "作った要素を実際の文書へ追加します。"]]}, {"title": "Final — 空の画面から始める", "nav": "自由制作", "description": "最後のレッスンには正解も開始コードもほとんどありません。HTML、CSS、JavaScriptを使って自分で1ページ完成させます。", "points": ["作りたい画面をまず1文で決めます。", "HTML構造を作ってからCSSを適用します。", "最後にボタンや入力などJavaScriptの動作を1つ以上追加します。"], "mission": "h1、button、addEventListenerを含む自分だけのWebページを完成させてください。", "hint": "最小の機能から始めましょう。見出し1つとボタン1つでも十分です。", "explain": [["1. 構造", "まずHTMLだけでも内容が理解できるページを作ります。"], ["2. デザイン", "CSSで読みやすく整った画面にします。"], ["3. 動作", "JavaScriptでユーザーが体験できる機能を1つ追加します。"]]}];
+
+const jaSyntaxOverrides = {
+  0:'HTML文書 → head(文書情報) + body(画面内容)',
+  1:'<main>  <h1>見出し</h1>  <p>文章</p>  </main>',
+  2:'<タグ 属性="値">内容</タグ>',
+  3:'<h1>見出し</h1>  <p>段落</p>',
+  4:'<a href="URL">リンク名</a>',
+  5:'<img src="image.jpg" alt="画像の説明">',
+  6:'<ul><li>項目</li></ul>',
+  7:'<label for="name">名前</label>  <input id="name">',
+  9:'<table> <tr> <th>見出し</th> <td>値</td> </tr> </table>',
+  11:'構造を先に → デザインは後',
+  12:'セレクタ { プロパティ: 値; }',
+  23:'整った見た目 = 規則的な余白 + 少ない色 + 明確な階層',
+  25:'console.log("確認する値");',
+  28:'if (条件) { ... } else { ... }',
+  34:'状態 → イベント → 画面更新',
+  37:'入力 → イベント → 新しい要素を作る → リストへ追加',
+  38:'考える → 構造 → スタイル → 動作 → 修正'
+};
+const courseInfoJa = {"HTML": {"title": "1. HTML — 構造を作る", "color": "HTML"}, "CSS": {"title": "2. CSS — 見た目を整える", "color": "CSS"}, "JS": {"title": "3. JavaScript — 動きを作る", "color": "JavaScript"}, "PROJECT": {"title": "4. 実践 — 自分で作る", "color": "Project"}};
+const uiJa = {"close": "閉じる", "free": "全チャプター自由移動", "chapter": "チャプター", "reset": "現在のコードをリセット", "concept": "概念説明", "understand": "まず理解してから始めましょう", "learn": "このレッスンで学ぶこと", "syntax": "基本形", "read": "コードを読む", "practice": "自分で解く", "write": "コードを自分で書いてみましょう", "incomplete": "未完了", "done": "完了", "codeError": "コードエラー", "task": "やること", "file": "編集するファイル", "success": "成功条件", "feedbackDefault": "コードを実行すると検査結果がここに表示されます。", "feedbackSub": "文法と問題条件の両方を確認します。", "hintOpen": "ヒントを見る", "hintClose": "ヒントを閉じる", "run": "実行する", "preview": "プレビュー", "saveDefault": "自動保存 · シンタックスハイライト · 自動閉じ · 自動インデント ON", "saved": "保存済み · シンタックスハイライト ON", "prev": "前のチャプター", "next": "次のチャプター", "last": "最後のチャプター", "problem": "問題", "condition": "上の要件を{file}コードに正確に反映してから「実行する」を押してください。", "previewErrorTitle": "まずコードエラーを修正してください。", "previewErrorBody": "文法が正しければ、正解かどうかに関係なくプレビューが表示されます。", "feedbackCodeError": "コードエラー", "feedbackRuntime": "JavaScript実行エラー", "feedbackJudgeError": "判定エラー", "feedbackJudgeErrorBody": "プレビューは正常ですが、このレッスンの正解判定コードに問題があります。", "feedbackCorrect": "正解です", "feedbackCorrectBody": "文法と実行状態が正常で、問題の成功条件も満たしています。", "feedbackPreviewOk": "プレビューは正常です", "feedbackPreviewOkBody": "コードの文法に問題はありません。結果を確認し、「やること」と「成功条件」を満たすよう修正してください。", "feedbackRunning": "プレビューを実行中", "feedbackRunningBody": "文法チェックを通過しました。正解かどうかに関係なく現在のコードを表示します。", "toast": "この問題を完了しました。", "kindConcept": "概念", "kindBasic": "基礎", "kindCore": "重要", "kindAdvanced": "応用", "kindProject": "プロジェクト", "kindPractice": "練習", "kindChallenge": "チャレンジ", "kindFinal": "最終"};
+const jaCodeTextMap = {"첫 HTML 문서": "最初のHTML文書", "이 문장은 body 안에 있어서 화면에 보입니다.": "この文はbodyの中にあるため画面に表示されます。", "태그와 요소": "タグと要素", "속성과 값": "属性と値", "속성 연습": "属性の練習", "Example 사이트 열기": "Exampleサイトを開く", "제목과 문단": "見出しと段落", "HTML 텍스트": "HTMLテキスト", "제목과 문단을 구분해봅니다.": "見出しと段落を使い分けます。", "링크 연습": "リンクの練習", "유용한 링크": "便利なリンク", "Example 사이트": "Exampleサイト", "이미지 연습": "画像の練習", "여행 사진": "旅行写真", "alt=\"사진\"": "alt=\"写真\"", "목록 연습": "リストの練習", "배울 언어": "学ぶ言語", "입력 요소 연습": "入力要素の練習", "프로필": "プロフィール", "이름을 입력하세요": "名前を入力してください", ">저장<": ">保存<", "class와 id": "classとid", "메모": "メモ", "첫 번째 메모": "1つ目のメモ", "두 번째 메모": "2つ目のメモ", "표 연습": "表の練習", "웹 기술 역할": "Web技術の役割", ">기술<": ">技術<", ">역할<": ">役割<", ">구조<": ">構造<", "의미 있는 레이아웃": "意味のあるレイアウト", "나의 사이트": "私のサイト", ">소개<": ">紹介<", "의미 있는 구조를 연습합니다.": "意味のある構造を練習します。", "나의 소개 페이지": "自己紹介ページ", "여기부터 직접 소개 페이지의 전체 콘텐츠를 작성하세요.": "ここから自己紹介ページの内容を自分で書いてください。", "CSS 시작": "CSSを始める", "이제 화면을 꾸며봅니다.": "これから画面をスタイリングします。", "차분한 화면": "落ち着いた画面", "배경색을 바꿔보세요.": "背景色を変えてみましょう。", "좋은 타이포그래피": "読みやすいタイポグラフィ", "본문은 충분한 줄간격을 주면 읽기 편합니다.": "本文は十分な行間を取ると読みやすくなります。", "안쪽 여백을 확인해보세요.": "内側の余白を確認してみましょう。", "깔끔한 카드 UI입니다.": "シンプルなカードUIです。", "박스 모델": "ボックスモデル", ">카드<": ">カード<", "위치 기준을 연습합니다.": "位置の基準を練習します。", "가운데 버튼": "中央のボタン", "모바일에서는 1열": "モバイルでは1列", "HTML과 CSS를 이용해 작은 화면을 완성해보세요.": "HTMLとCSSで小さな画面を完成させてみましょう。", "시작하기": "始める", "여기에 스타일을 완성하세요": "ここにスタイルを完成させてください", "개발자 도구의 콘솔도 확인해보세요.": "開発者ツールのコンソールも確認してみましょう。", "콘솔 연습": "コンソール練習", "JavaScript 실행 확인": "JavaScriptの実行確認", "안녕하세요!": "こんにちは！", ">이름<": ">名前<", ">표시<": ">表示<", "프로필 카드 구조를 직접 작성하세요": "プロフィールカードの構造を自分で書いてください", "스타일을 작성하세요": "スタイルを書いてください", "버튼과 결과 문구를 만드세요": "ボタンと結果メッセージを作ってください", "클릭 이벤트를 직접 작성하세요": "クリックイベントを自分で書いてください", "Todo의 HTML을 직접 작성하세요": "TodoのHTMLを自分で書いてください", "Todo 동작을 직접 작성하세요": "Todoの動作を自分で書いてください"};
+
+const uiKo = {
+  close:'닫기', free:'전체 챕터 자유 이동', chapter:'챕터', reset:'현재 코드 초기화', concept:'개념 설명', understand:'먼저 이해하고 시작하세요', learn:'이 레슨에서 배우는 것', syntax:'기본 형태', read:'코드 읽기', practice:'직접 풀기', write:'이제 코드를 직접 작성해보세요', incomplete:'미완료', done:'완료', codeError:'코드 오류', task:'해야 할 일', file:'수정할 파일', success:'성공 조건', feedbackDefault:'코드를 실행하면 검사 결과가 여기에 표시됩니다.', feedbackSub:'문법과 문제 조건을 모두 확인합니다.', hintOpen:'힌트 보기', hintClose:'힌트 닫기', run:'실행하기', preview:'미리보기', saveDefault:'자동 저장 · 구문 강조 · 자동 닫기 · 자동 들여쓰기 ON', saved:'저장됨 · 구문 강조 ON', prev:'이전 챕터', next:'다음 챕터', last:'마지막 챕터', problem:'문제', condition:'위 요구사항을 {file} 코드에 정확히 반영한 뒤 ‘실행하기’를 누르세요.', previewErrorTitle:'코드 오류를 먼저 수정하세요.', previewErrorBody:'문법이 올바르면 정답 여부와 관계없이 미리보기가 표시됩니다.', feedbackCodeError:'코드 오류', feedbackRuntime:'JavaScript 실행 오류', feedbackJudgeError:'문제 판정 오류', feedbackJudgeErrorBody:'미리보기는 정상적으로 실행됐지만 이 레슨의 정답 검사 코드에 문제가 있습니다.', feedbackCorrect:'정답입니다', feedbackCorrectBody:'문법과 실행 상태가 정상이고 문제의 성공 조건도 만족했습니다.', feedbackPreviewOk:'미리보기는 정상입니다', feedbackPreviewOkBody:'코드 문법에는 문제가 없습니다. 결과를 확인한 뒤 위의 “해야 할 일”과 “성공 조건”을 만족하도록 코드를 수정하세요.', feedbackRunning:'미리보기 실행', feedbackRunningBody:'문법 검사를 통과했습니다. 정답 여부와 관계없이 현재 코드를 미리보기에 표시합니다.', toast:'이 문제를 완료했습니다.', kindConcept:'개념', kindBasic:'기초', kindCore:'핵심', kindAdvanced:'심화', kindProject:'프로젝트', kindPractice:'연습', kindChallenge:'도전', kindFinal:'최종'
+};
+const kindMapJa = { '개념':'概念', '기초':'基礎', '핵심':'重要', '심화':'応用', '프로젝트':'プロジェクト', '연습':'練習', '도전':'チャレンジ', '최종':'最終' };
+function t(key) { return (state && state.locale === 'ja' ? uiJa : uiKo)[key] || key; }
+function courseFor(group) { return state && state.locale === 'ja' ? courseInfoJa[group] : courseInfo[group]; }
+function localizeStarterFiles(files) {
+  const out = structuredClone(files);
+  if (!state || state.locale !== 'ja') return out;
+  for (const key of Object.keys(out)) {
+    let text = String(out[key] || '');
+    for (const [from,to] of Object.entries(jaCodeTextMap)) text = text.split(from).join(to);
+    if (key === 'html') text = text.replace(/<html lang="ko">/g, '<html lang="ja">');
+    out[key] = text;
+  }
+  return out;
+}
+const jaValidationOverrides = {
+  0: f => /<body>[\s\S]*ブラウザに表示される内容[\s\S]*<\/body>/i.test(f.html),
+  1: f => /<main>[\s\S]*<h1>\s*最初の見出し\s*<\/h1>[\s\S]*<p>\s*HTMLの構造を学んでいます。?\s*<\/p>[\s\S]*<\/main>/i.test(f.html),
+  3: f => /<h2>\s*今日学ぶ内容\s*<\/h2>/i.test(f.html) && /<p>\s*タグの意味を使い分けます。?\s*<\/p>/i.test(f.html),
+  5: f => /alt\s*=\s*["']山の風景["']/i.test(f.html),
+  7: f => /<label\s+[^>]*for\s*=\s*["']name["'][^>]*>\s*名前\s*<\/label>/i.test(f.html) && /<input\s+[^>]*id\s*=\s*["']name["'][^>]*>/i.test(f.html),
+  9: f => /<tr>[\s\S]*<td>\s*JavaScript\s*<\/td>[\s\S]*<td>\s*動作\s*<\/td>[\s\S]*<\/tr>/i.test(f.html)
+};
+function lessonFor(index) {
+  const base = lessons[index];
+  if (!state || state.locale !== 'ja') return base;
+  const tr = jaLessonData[index] || {};
+  return {
+    ...base,
+    ...tr,
+    kind: kindMapJa[base.kind] || base.kind,
+    syntax: jaSyntaxOverrides[index] || base.syntax,
+    files: localizeStarterFiles(base.files),
+    validate: jaValidationOverrides[index] || base.validate
+  };
+}
+function translateValidationMessage(message) {
+  if (!state || state.locale !== 'ja') return message;
+  let s = String(message || '');
+  const replacements = [
+    ['태그의 < 또는 >가 올바르게 닫히지 않았습니다.','タグの < または > が正しく閉じられていません。'],
+    ['태그 문법을 확인하세요.','タグの文法を確認してください。'],
+    ['완성되지 않은 HTML 태그가 있습니다.','未完成のHTMLタグがあります。'],
+    ['전체 HTML 문서에는 <!DOCTYPE html> 선언이 필요합니다.','完全なHTML文書には <!DOCTYPE html> 宣言が必要です。'],
+    ['<head>...</head> 구조가 필요합니다.','<head>...</head> の構造が必要です。'],
+    ['<body>...</body> 구조가 필요합니다.','<body>...</body> の構造が必要です。'],
+    ['닫는 괄호가 너무 많습니다.','閉じ括弧が多すぎます。'],
+    ['닫는 중괄호 }에 대응하는 여는 중괄호 {가 없습니다.','閉じ中括弧 } に対応する開き中括弧 { がありません。'],
+    ['문자열 따옴표가 닫히지 않았습니다.','文字列の引用符が閉じられていません。'],
+    ['CSS 괄호의 짝이 맞지 않습니다.','CSSの括弧の対応が正しくありません。'],
+    ['CSS 중괄호 { }의 짝이 맞지 않습니다.','CSSの中括弧 { } の対応が正しくありません。'],
+    ['선택자 뒤에 { } 블록이 필요합니다.','セレクタの後に { } ブロックが必要です。'],
+    ['CSS 선택자가 비어 있습니다.','CSSセレクタが空です。'],
+    ['JavaScript 문법 오류가 있습니다.','JavaScriptの構文エラーがあります。']
+  ];
+  for (const [a,b] of replacements) s = s.replace(a,b);
+  s = s.replace(/닫는 태그 <\/(.+?)>에 대응하는 여는 태그가 없습니다\./, '終了タグ </$1> に対応する開始タグがありません。');
+  s = s.replace(/<(.+?)>를 닫아야 하는데 <\/(.+?)>가 입력되었습니다\./, '<$1> を閉じる必要がありますが </$2> が入力されています。');
+  s = s.replace(/<(.+?)>의 속성 따옴표가 닫히지 않았습니다\./, '<$1> の属性の引用符が閉じられていません。');
+  s = s.replace(/<(.+?)> 태그를 닫는 <\/(.+?)>가 없습니다\./, '<$1> を閉じる </$2> がありません。');
+  s = s.replace(/CSS 선언에 ':'가 없습니다: /, "CSS宣言に ':' がありません: ");
+  s = s.replace(/CSS 속성 이름이 올바르지 않습니다: /, 'CSSプロパティ名が正しくありません: ');
+  s = s.replace(/(.+) 속성의 값이 비어 있습니다\./, '$1 の値が空です。');
+  s = s.replace(/브라우저가 이해할 수 없는 CSS입니다: /, 'ブラウザが解釈できないCSSです: ');
+  return s;
+}
+function applyStaticLanguage() {
+  const ja = state.locale === 'ja';
+  document.documentElement.lang = ja ? 'ja' : 'ko';
+  document.title = ja ? 'Frame — 作りながら学ぶWeb開発' : 'Frame — 웹 개발을 직접 만들며 배우기';
+  el.sidebarClose.textContent = t('close');
+  document.querySelector('.course-summary span').textContent = t('free');
+  const menuLabel = el.menuButton.querySelector('span:last-child'); if (menuLabel) menuLabel.textContent = t('chapter');
+  el.resetButton.textContent = t('reset');
+  const studyKicker = document.querySelector('.study-section .section-kicker'); if (studyKicker) studyKicker.textContent = t('concept');
+  const studyHeading = document.querySelector('.study-section .section-heading h2'); if (studyHeading) studyHeading.textContent = t('understand');
+  const noteTitle = document.querySelector('.note-title'); if (noteTitle) noteTitle.textContent = t('learn');
+  const syntaxLabel = document.querySelector('.syntax-row > span'); if (syntaxLabel) syntaxLabel.textContent = t('syntax');
+  const readLabel = document.querySelector('.explain > .section-label'); if (readLabel) readLabel.textContent = t('read');
+  const practiceKicker = document.querySelector('.practice-title-row .section-kicker'); if (practiceKicker) practiceKicker.textContent = t('practice');
+  const practiceHeading = document.querySelector('.practice-title-row h2'); if (practiceHeading) practiceHeading.textContent = t('write');
+  const problemLabels = document.querySelectorAll('.problem-card .problem-main > span, .problem-card .problem-details > div > span');
+  if (problemLabels[0]) problemLabels[0].textContent = t('task');
+  if (problemLabels[1]) problemLabels[1].textContent = t('file');
+  if (problemLabels[2]) problemLabels[2].textContent = t('success');
+  const previewLabel = document.querySelector('.preview-head > span:first-child'); if (previewLabel) previewLabel.textContent = t('preview');
+  document.querySelectorAll('.language-option').forEach(btn => {
+    const active = btn.dataset.locale === state.locale;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
+  const switcher = document.getElementById('languageSwitch'); if (switcher) switcher.setAttribute('aria-label', ja ? '言語を選択' : '언어 선택');
+  el.sidebarClose.setAttribute('aria-label', ja ? 'チャプターメニューを閉じる' : '챕터 메뉴 닫기');
+  el.menuButton.setAttribute('aria-label', ja ? 'チャプターメニューを開く' : '챕터 메뉴 열기');
+  el.codeEditor.setAttribute('aria-label', ja ? 'コードエディター' : '코드 편집기');
+  el.previewFrame.setAttribute('title', ja ? '練習結果' : '실습 결과');
+}
+
 const storageKey = 'frame-study-v10';
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch { saved = {}; }
 
+const initialLocale = saved.locale === 'ja' ? 'ja' : 'ko';
 const state = {
   current: Math.min(Number(saved.current || 0), lessons.length - 1),
   unlocked: lessons.length - 1,
   completed: Array.isArray(saved.completed) ? saved.completed.filter(i => i >= 0 && i < lessons.length) : [],
-  code: saved.code && typeof saved.code === 'object' ? saved.code : {},
+  locale: initialLocale,
+  codeLocales: {
+    ko: saved.codeKo && typeof saved.codeKo === 'object' ? saved.codeKo : (saved.code && typeof saved.code === 'object' ? saved.code : {}),
+    ja: saved.codeJa && typeof saved.codeJa === 'object' ? saved.codeJa : {}
+  },
+  code: null,
   activeFile: 'html'
 };
+state.code = state.codeLocales[state.locale];
 
 const el = Object.fromEntries([
   'sidebar','sidebarClose','sidebarOverlay','curriculum','summaryProgress','progressBar','crumb','lessonNumber','lessonKind','lessonTitle','lessonDescription','learningPoints','syntaxCode','missionText','problemNumber','problemFile','successCondition','missionResult','codeFeedback','feedbackTitle','feedbackMessage','editorTabs','codeEditor','lineNumbers','languageBadge','hintButton','hintBox','runButton','previewFrame','explanationList','prevButton','nextButton','resetButton','menuButton','toast','saveState'
 ].map(id => [id, document.getElementById(id)]));
 
 function filesFor(index) {
-  if (!state.code[index]) state.code[index] = structuredClone(lessons[index].files);
+  if (!state.code[index]) state.code[index] = localizeStarterFiles(lessons[index].files);
   return state.code[index];
 }
 
@@ -433,11 +565,13 @@ function save() {
     current: state.current,
     unlocked: lessons.length - 1,
     completed: state.completed,
-    code: state.code
+    locale: state.locale,
+    codeKo: state.codeLocales.ko,
+    codeJa: state.codeLocales.ja
   }));
-  el.saveState.textContent = '저장됨 · 구문 강조 ON';
+  el.saveState.textContent = t('saved');
   clearTimeout(save.timer);
-  save.timer = setTimeout(() => el.saveState.textContent = '자동 저장 · 구문 강조 · 자동 닫기 · 자동 들여쓰기 ON', 900);
+  save.timer = setTimeout(() => el.saveState.textContent = t('saveDefault'), 900);
 }
 
 function saveEditor() {
@@ -458,19 +592,19 @@ function renderCurriculum() {
 
     const head = document.createElement('div');
     head.className = 'course-button';
-    head.innerHTML = `<span>${courseInfo[group].title}</span><span>${indices.length}</span>`;
+    head.innerHTML = `<span>${courseFor(group).title}</span><span>${indices.length}</span>`;
 
     const list = document.createElement('div');
     list.className = 'lesson-list';
 
     indices.forEach((index, localIndex) => {
-      const item = lessons[index];
+      const item = lessonFor(index);
       const done = state.completed.includes(index);
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = `lesson-link ${index === state.current ? 'active' : ''}`;
       btn.dataset.lessonIndex = String(index);
-      btn.innerHTML = `<span class="index">${String(localIndex + 1).padStart(2,'0')}</span><span>${item.nav}</span><span class="state">${done ? '완료' : ''}</span>`;
+      btn.innerHTML = `<span class="index">${String(localIndex + 1).padStart(2,'0')}</span><span>${item.nav}</span><span class="state">${done ? t('done') : ''}</span>`;
       list.appendChild(btn);
     });
 
@@ -504,10 +638,11 @@ function bestFile(index) {
 }
 
 function renderLesson() {
-  const l = lessons[state.current];
+  const l = lessonFor(state.current);
   const groupIndices = lessons.map((x,i) => x.group === l.group ? i : -1).filter(i => i >= 0);
   const localNo = groupIndices.indexOf(state.current) + 1;
-  el.crumb.textContent = `${courseInfo[l.group].color} · ${String(localNo).padStart(2,'0')}`;
+  applyStaticLanguage();
+  el.crumb.textContent = `${courseFor(l.group).color} · ${String(localNo).padStart(2,'0')}`;
   el.lessonNumber.textContent = String(localNo).padStart(2,'0');
   el.lessonKind.textContent = l.kind;
   el.lessonTitle.textContent = l.title;
@@ -515,20 +650,24 @@ function renderLesson() {
   el.learningPoints.innerHTML = l.points.map(p => `<li>${escapeHtml(p)}</li>`).join('');
   el.syntaxCode.textContent = l.syntax;
   el.missionText.textContent = l.mission;
-  el.problemNumber.textContent = `문제 ${String(localNo).padStart(2,'0')}`;
+  el.problemNumber.textContent = `${t('problem')} ${String(localNo).padStart(2,'0')}`;
   const editable = editableFiles(state.current);
   el.problemFile.textContent = editable.map(f => f === 'js' ? 'JavaScript' : f.toUpperCase()).join(' / ');
-  el.successCondition.textContent = `위 요구사항을 ${el.problemFile.textContent} 코드에 정확히 반영한 뒤 ‘실행’을 누르세요.`;
+  el.successCondition.textContent = t('condition').replace('{file}', el.problemFile.textContent);
   el.hintBox.textContent = l.hint;
   el.hintBox.classList.remove('show');
-  el.hintButton.textContent = '힌트 보기';
+  el.hintButton.textContent = t('hintOpen');
   renderTabs();
   loadEditor();
   renderExplain();
   runPreview(false);
   renderCurriculum();
   el.prevButton.disabled = state.current === 0;
+  el.prevButton.textContent = t('prev');
+  el.runButton.textContent = t('run');
+  el.saveState.textContent = t('saveDefault');
 }
+
 
 function editableFiles(index) {
   const group = lessons[index].group;
@@ -719,7 +858,7 @@ function replaceEditorRange(text, start, end, caret = start + text.length) {
 }
 
 function renderExplain() {
-  el.explanationList.innerHTML = lessons[state.current].explain.map(([code, text]) => `
+  el.explanationList.innerHTML = lessonFor(state.current).explain.map(([code, text]) => `
     <div class="explanation-item"><code>${escapeHtml(code)}</code><p>${escapeHtml(text)}</p></div>
   `).join('');
 }
@@ -734,7 +873,7 @@ function makePreview(files) {
   if (hasFullDocument) {
     return files.html.replace(/<\/head>/i, `<style>${files.css}</style>${runtimeGuard}</head>`).replace(/<\/body>/i, `<script>${safeJs(files.js)}<\/script></body>`);
   }
-  return `<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${files.css}</style>${runtimeGuard}</head><body>${files.html}<script>${safeJs(files.js)}<\/script></body></html>`;
+  return `<!doctype html><html lang="${state.locale}"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${files.css}</style>${runtimeGuard}</head><body>${files.html}<script>${safeJs(files.js)}<\/script></body></html>`;
 }
 
 function safeJs(js) { return String(js).replace(/<\/script>/gi, '<\\/script>'); }
@@ -958,9 +1097,9 @@ function runPreview(check = true) {
   // 1. 문법이 잘못된 경우에만 미리보기를 중단합니다.
   if (!syntax.ok) {
     el.previewFrame.onload = null;
-    el.previewFrame.srcdoc = '<!doctype html><html lang="ko"><body style="font-family:system-ui;padding:32px;color:#666"><strong>코드 오류를 먼저 수정하세요.</strong><p>문법이 올바르면 정답 여부와 관계없이 미리보기가 표시됩니다.</p></body></html>';
+    el.previewFrame.srcdoc = `<!doctype html><html lang="${state.locale}"><body style="font-family:system-ui;padding:32px;color:#666"><strong>${escapeHtml(t('previewErrorTitle'))}</strong><p>${escapeHtml(t('previewErrorBody'))}</p></body></html>`;
     const location = syntax.line ? `${syntax.file} ${syntax.line}줄 · ` : `${syntax.file} · `;
-    showFeedback('error', '코드 오류', location + syntax.message);
+    showFeedback('error', t('feedbackCodeError'), location + translateValidationMessage(syntax.message));
     updateMission(false, true);
     return;
   }
@@ -974,7 +1113,7 @@ function runPreview(check = true) {
     // JavaScript 과정에서는 문법이 맞아도 실행 중 오류가 날 수 있습니다.
     // 이 경우 화면은 그대로 보여주되 문제는 통과시키지 않습니다.
     if (runtimeErrors.length) {
-      showFeedback('error', 'JavaScript 실행 오류', runtimeErrors[0]);
+      showFeedback('error', t('feedbackRuntime'), runtimeErrors[0]);
       updateMission(false, true);
       return;
     }
@@ -983,36 +1122,36 @@ function runPreview(check = true) {
     let requirementSuccess = false;
     try {
       const checkedFiles = filesForRequirementCheck(files);
-      requirementSuccess = Boolean(lessons[state.current].validate(checkedFiles));
+      requirementSuccess = Boolean(lessonFor(state.current).validate(checkedFiles));
     } catch (err) {
       console.error('Lesson validation error:', err);
-      showFeedback('error', '문제 판정 오류', '미리보기는 정상적으로 실행됐지만 이 레슨의 정답 검사 코드에 문제가 있습니다.');
+      showFeedback('error', t('feedbackJudgeError'), t('feedbackJudgeErrorBody'));
       updateMission(false, true);
       return;
     }
 
     if (requirementSuccess) {
-      showFeedback('success', '정답입니다', '문법과 실행 상태가 정상이고 문제의 성공 조건도 만족했습니다.');
+      showFeedback('success', t('feedbackCorrect'), t('feedbackCorrectBody'));
       updateMission(true, false);
       if (check) completeLesson();
     } else {
-      showFeedback('', '미리보기는 정상입니다', '코드 문법에는 문제가 없습니다. 결과를 확인한 뒤 위의 “해야 할 일”과 “성공 조건”을 만족하도록 코드를 수정하세요.');
+      showFeedback('', t('feedbackPreviewOk'), t('feedbackPreviewOkBody'));
       updateMission(false, false);
     }
   };
 
-  showFeedback('', '미리보기 실행', '문법 검사를 통과했습니다. 정답 여부와 관계없이 현재 코드를 미리보기에 표시합니다.');
+  showFeedback('', t('feedbackRunning'), t('feedbackRunningBody'));
   updateMission(false, false);
   el.previewFrame.srcdoc = makePreview(files);
 }
 
 function updateMission(success, hasError = false) {
-  el.missionResult.textContent = success ? '완료' : hasError ? '코드 오류' : '미완료';
+  el.missionResult.textContent = success ? t('done') : hasError ? t('codeError') : t('incomplete');
   el.missionResult.classList.toggle('done', success);
   el.missionResult.classList.toggle('error', hasError);
   const isLast = state.current === lessons.length - 1;
   el.nextButton.disabled = isLast;
-  el.nextButton.textContent = isLast ? '마지막 챕터' : '다음 챕터 →';
+  el.nextButton.textContent = isLast ? t('last') : t('next');
 }
 
 function completeLesson() {
@@ -1020,7 +1159,7 @@ function completeLesson() {
   save();
   renderCurriculum();
   updateMission(true);
-  el.toast.textContent = '이 문제를 완료했습니다.';
+  el.toast.textContent = t('toast');
   el.toast.classList.add('show');
   clearTimeout(completeLesson.timer);
   completeLesson.timer = setTimeout(() => el.toast.classList.remove('show'), 1600);
@@ -1202,10 +1341,10 @@ el.runButton.addEventListener('click', () => runPreview(true));
 el.hintButton.addEventListener('click', () => {
   const show = !el.hintBox.classList.contains('show');
   el.hintBox.classList.toggle('show', show);
-  el.hintButton.textContent = show ? '힌트 닫기' : '힌트 보기';
+  el.hintButton.textContent = show ? t('hintClose') : t('hintOpen');
 });
 el.resetButton.addEventListener('click', () => {
-  state.code[state.current] = structuredClone(lessons[state.current].files);
+  state.code[state.current] = localizeStarterFiles(lessons[state.current].files);
   loadEditor(); runPreview(false); save();
 });
 el.prevButton.addEventListener('click', () => {
@@ -1216,6 +1355,24 @@ el.nextButton.addEventListener('click', () => {
   if (el.nextButton.disabled || state.current >= lessons.length - 1) return;
   saveEditor(); state.current += 1; state.activeFile = bestFile(state.current); renderLesson(); window.scrollTo({top:0, behavior:'smooth'});
 });
+
+const languageSwitch = document.getElementById('languageSwitch');
+if (languageSwitch) {
+  languageSwitch.addEventListener('click', event => {
+    const button = event.target.closest('.language-option[data-locale]');
+    if (!button || !languageSwitch.contains(button)) return;
+    const nextLocale = button.dataset.locale === 'ja' ? 'ja' : 'ko';
+    if (nextLocale === state.locale) return;
+    saveEditor();
+    state.codeLocales[state.locale] = state.code;
+    state.locale = nextLocale;
+    state.code = state.codeLocales[state.locale];
+    state.activeFile = bestFile(state.current);
+    save();
+    renderLesson();
+  });
+}
+
 let drawerScrollY = 0;
 
 function openSidebar() {

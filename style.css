@@ -1140,3 +1140,32 @@ body.drawer-open {
 .sidebar-overlay.show {
   pointer-events: auto !important;
 }
+
+
+/* v19 language switch */
+.top-actions { display: flex; align-items: center; gap: 10px; }
+.language-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255,255,255,.72);
+}
+.language-option {
+  min-height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+.language-option:hover { color: var(--text); }
+.language-option.active { background: #25272b; color: #fff; }
+@media (max-width: 720px) {
+  .top-actions { gap: 6px; }
+  .language-option { min-height: 32px; padding: 0 8px; }
+  .reset-button { display: none; }
+}
