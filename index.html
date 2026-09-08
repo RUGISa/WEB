@@ -18,7 +18,7 @@
       </div>
 
       <div class="course-summary">
-        <span>웹 프론트엔드 기초</span>
+        <span>전체 챕터 자유 이동</span>
         <strong id="summaryProgress">0 / 0</strong>
       </div>
       <div class="progress"><span id="progressBar"></span></div>
@@ -28,16 +28,16 @@
 
     <main class="main">
       <header class="topbar">
-        <button class="menu-button" id="menuButton" aria-label="메뉴 열기">☰</button>
+        <button class="menu-button" id="menuButton" aria-label="챕터 메뉴 열기"><span class="menu-icon">☰</span><span>챕터</span></button>
         <div class="crumb" id="crumb">HTML · 01</div>
         <div class="top-actions">
-          <button class="text-button" id="resetButton">초기화</button>
+          <button class="text-button reset-button" id="resetButton">↻ 현재 코드 초기화</button>
         </div>
       </header>
 
       <article class="lesson">
         <section class="study-section">
-          <div class="section-kicker">학습하기</div>
+          <div class="section-heading"><span class="section-number">01</span><div><div class="section-kicker">개념 설명</div><h2>먼저 이해하고 시작하세요</h2></div></div>
           <section class="lesson-head">
             <div class="lesson-meta"><span id="lessonNumber">01</span><span id="lessonKind">기초</span></div>
             <h1 id="lessonTitle"></h1>
@@ -62,8 +62,8 @@
         <section class="practice">
           <div class="practice-title-row">
             <div>
-              <div class="section-kicker">실습 문제</div>
-              <h2>배운 내용을 직접 코드로 확인해보세요.</h2>
+              <div class="section-kicker">직접 풀기</div>
+              <h2>이제 코드를 직접 작성해보세요</h2>
             </div>
             <div class="mission-result" id="missionResult">미완료</div>
           </div>
@@ -91,7 +91,7 @@
                 <div class="tabs" id="editorTabs"></div>
                 <div class="editor-actions">
                   <span class="language-badge" id="languageBadge">HTML</span>
-                  <button class="hint-button" id="hintButton">힌트</button>
+                  <button class="hint-button" id="hintButton">💡 힌트 보기</button>
                 </div>
               </div>
               <div class="editor-wrap">
@@ -103,7 +103,7 @@
               <div class="hint" id="hintBox"></div>
               <div class="run-row">
                 <span id="saveState">자동 저장 · 구문 강조 · 자동 닫기 · 자동 들여쓰기 ON</span>
-                <button class="run-button" id="runButton">실행</button>
+                <button class="run-button" id="runButton">▶ 실행하기</button>
               </div>
             </section>
 
@@ -126,8 +126,8 @@
         </section>
 
         <footer class="lesson-footer">
-          <button class="prev-button" id="prevButton">← 이전 레슨</button>
-          <button class="next-button" id="nextButton" disabled>다음 레슨 →</button>
+          <button class="prev-button" id="prevButton">← 이전 챕터</button>
+          <button class="next-button" id="nextButton">다음 챕터 →</button>
         </footer>
       </article>
     </main>

@@ -413,7 +413,7 @@ try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch { sa
 
 const state = {
   current: Math.min(Number(saved.current || 0), lessons.length - 1),
-  unlocked: Math.max(0, Math.min(Number(saved.unlocked || 0), lessons.length - 1)),
+  unlocked: lessons.length - 1,
   completed: Array.isArray(saved.completed) ? saved.completed.filter(i => i >= 0 && i < lessons.length) : [],
   code: saved.code && typeof saved.code === 'object' ? saved.code : {},
   activeFile: 'html'
@@ -431,7 +431,7 @@ function filesFor(index) {
 function save() {
   localStorage.setItem(storageKey, JSON.stringify({
     current: state.current,
-    unlocked: state.unlocked,
+    unlocked: lessons.length - 1,
     completed: state.completed,
     code: state.code
   }));
@@ -458,13 +458,11 @@ function renderCurriculum() {
     list.className = 'lesson-list';
     indices.forEach(index => {
       const item = lessons[index];
-      const locked = index > state.unlocked;
       const done = state.completed.includes(index);
       const btn = document.createElement('button');
-      btn.className = `lesson-link ${index === state.current ? 'active' : ''} ${locked ? 'locked' : ''}`;
-      btn.innerHTML = `<span class="index">${String(indices.indexOf(index)+1).padStart(2,'0')}</span><span>${item.nav}</span><span class="state">${done ? '✓' : locked ? '·' : ''}</span>`;
+      btn.className = `lesson-link ${index === state.current ? 'active' : ''}`;
+      btn.innerHTML = `<span class="index">${String(indices.indexOf(index)+1).padStart(2,'0')}</span><span>${item.nav}</span><span class="state">${done ? '✓' : '›'}</span>`;
       btn.addEventListener('click', () => {
-        if (locked) return;
         saveEditor();
         state.current = index;
         state.activeFile = bestFile(index);
@@ -506,7 +504,7 @@ function renderLesson() {
   el.successCondition.textContent = `위 요구사항을 ${el.problemFile.textContent} 코드에 정확히 반영한 뒤 ‘실행’을 누르세요.`;
   el.hintBox.textContent = l.hint;
   el.hintBox.classList.remove('show');
-  el.hintButton.textContent = '힌트';
+  el.hintButton.textContent = '💡 힌트 보기';
   renderTabs();
   loadEditor();
   renderExplain();
@@ -996,16 +994,16 @@ function updateMission(success, hasError = false) {
   el.missionResult.classList.toggle('done', success);
   el.missionResult.classList.toggle('error', hasError);
   const isLast = state.current === lessons.length - 1;
-  el.nextButton.disabled = !success || isLast;
-  el.nextButton.textContent = isLast && success ? '전체 과정 완료' : '다음 레슨 →';
+  el.nextButton.disabled = isLast;
+  el.nextButton.textContent = isLast ? '마지막 챕터' : '다음 챕터 →';
 }
 
 function completeLesson() {
   if (!state.completed.includes(state.current)) state.completed.push(state.current);
-  if (state.current < lessons.length - 1) state.unlocked = Math.max(state.unlocked, state.current + 1);
   save();
   renderCurriculum();
   updateMission(true);
+  el.toast.textContent = '이 문제를 완료했습니다.';
   el.toast.classList.add('show');
   clearTimeout(completeLesson.timer);
   completeLesson.timer = setTimeout(() => el.toast.classList.remove('show'), 1600);
@@ -1187,7 +1185,7 @@ el.runButton.addEventListener('click', () => runPreview(true));
 el.hintButton.addEventListener('click', () => {
   const show = !el.hintBox.classList.contains('show');
   el.hintBox.classList.toggle('show', show);
-  el.hintButton.textContent = show ? '힌트 닫기' : '힌트';
+  el.hintButton.textContent = show ? '힌트 닫기' : '💡 힌트 보기';
 });
 el.resetButton.addEventListener('click', () => {
   state.code[state.current] = structuredClone(lessons[state.current].files);
