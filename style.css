@@ -941,3 +941,31 @@ body.drawer-open {
   scrollbar-gutter: stable;
   touch-action: pan-y;
 }
+
+
+/* v15: chapter drawer owns scrolling while open */
+.sidebar {
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Let the entire drawer scroll as one surface. This avoids dead wheel zones
+   over the brand/progress area and prevents the page behind from receiving it. */
+.curriculum {
+  flex: none !important;
+  min-height: auto !important;
+  overflow: visible !important;
+  overscroll-behavior: auto;
+  scrollbar-gutter: auto;
+}
+
+html.drawer-open,
+body.drawer-open {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}

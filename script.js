@@ -1200,22 +1200,28 @@ el.nextButton.addEventListener('click', () => {
   saveEditor(); state.current += 1; state.activeFile = bestFile(state.current); renderLesson(); window.scrollTo({top:0, behavior:'smooth'});
 });
 let drawerScrollY = 0;
+let drawerTouchY = null;
 
 function openSidebar() {
   if (el.sidebar.classList.contains('open')) return;
 
   drawerScrollY = window.scrollY || window.pageYOffset || 0;
-  document.body.style.top = `-${drawerScrollY}px`;
+  document.documentElement.classList.add('drawer-open');
   document.body.classList.add('drawer-open');
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${drawerScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
 
   el.sidebar.classList.add('open');
   el.sidebar.setAttribute('aria-hidden', 'false');
   el.sidebarOverlay.classList.add('show');
 
-  // Keep keyboard focus and wheel/touch scrolling inside the drawer.
   requestAnimationFrame(() => {
-    const active = el.curriculum.querySelector('.lesson-link.active');
+    const active = el.sidebar.querySelector('.lesson-link.active');
     if (active) active.scrollIntoView({ block: 'nearest' });
+    el.sidebar.focus?.({ preventScroll: true });
   });
 }
 
@@ -1226,8 +1232,13 @@ function closeSidebar() {
   el.sidebar.setAttribute('aria-hidden', 'true');
   el.sidebarOverlay.classList.remove('show');
 
+  document.documentElement.classList.remove('drawer-open');
   document.body.classList.remove('drawer-open');
+  document.body.style.position = '';
   document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
   window.scrollTo(0, drawerScrollY);
 }
 
@@ -1238,33 +1249,44 @@ el.sidebarClose.addEventListener('click', closeSidebar);
 el.sidebarOverlay.addEventListener('click', closeSidebar);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 
-// Prevent scroll chaining from the drawer to the page behind it.
-el.sidebar.addEventListener('wheel', e => {
+/*
+  While the drawer is open, wheel input is captured before the document can
+  scroll. The drawer itself is the only scroll target. This is intentionally
+  manual so trackpads behave the same in Chrome/Safari/Firefox.
+*/
+document.addEventListener('wheel', e => {
   if (!el.sidebar.classList.contains('open')) return;
-  const scroller = el.curriculum;
-  const atTop = scroller.scrollTop <= 0;
-  const atBottom = Math.ceil(scroller.scrollTop + scroller.clientHeight) >= scroller.scrollHeight;
-  if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) e.preventDefault();
-}, { passive: false });
 
-let drawerTouchY = null;
-el.sidebar.addEventListener('touchstart', e => {
+  if (el.sidebar.contains(e.target)) {
+    e.preventDefault();
+    el.sidebar.scrollTop += e.deltaY;
+    el.sidebar.scrollLeft += e.deltaX;
+  } else {
+    e.preventDefault();
+  }
+}, { passive: false, capture: true });
+
+document.addEventListener('touchstart', e => {
   if (!el.sidebar.classList.contains('open') || !e.touches.length) return;
   drawerTouchY = e.touches[0].clientY;
-}, { passive: true });
+}, { passive: true, capture: true });
 
-el.sidebar.addEventListener('touchmove', e => {
+document.addEventListener('touchmove', e => {
   if (!el.sidebar.classList.contains('open') || drawerTouchY == null || !e.touches.length) return;
-  const scroller = el.curriculum;
-  const currentY = e.touches[0].clientY;
-  const delta = currentY - drawerTouchY;
-  drawerTouchY = currentY;
-  const atTop = scroller.scrollTop <= 0;
-  const atBottom = Math.ceil(scroller.scrollTop + scroller.clientHeight) >= scroller.scrollHeight;
-  if ((delta > 0 && atTop) || (delta < 0 && atBottom)) e.preventDefault();
-}, { passive: false });
 
-el.sidebar.addEventListener('touchend', () => { drawerTouchY = null; }, { passive: true });
+  const currentY = e.touches[0].clientY;
+  const delta = drawerTouchY - currentY;
+  drawerTouchY = currentY;
+
+  e.preventDefault();
+  if (el.sidebar.contains(e.target)) {
+    el.sidebar.scrollTop += delta;
+  }
+}, { passive: false, capture: true });
+
+document.addEventListener('touchend', () => {
+  drawerTouchY = null;
+}, { passive: true, capture: true });
 
 if (!state.code[state.current]) state.activeFile = bestFile(state.current);
 renderLesson();
