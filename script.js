@@ -544,12 +544,21 @@ const jaValidationOverrides = {
 function lessonFor(index) {
   const base = lessons[index];
   const practice = (state && state.locale === 'ja' ? jaPracticeCopy : koPracticeCopy)[index] || {};
-  if (!state || state.locale !== 'ja') return { ...base, ...practice };
+
+  // 문제 문장은 '무엇을 해야 하는지'를 정확히 보여주고,
+  // 힌트만 정답 코드를 직접 노출하지 않는 개념형 문장으로 사용합니다.
+  if (!state || state.locale !== 'ja') {
+    return {
+      ...base,
+      hint: practice.hint || base.hint
+    };
+  }
+
   const tr = jaLessonData[index] || {};
   return {
     ...base,
     ...tr,
-    ...practice,
+    hint: practice.hint || tr.hint || base.hint,
     kind: kindMapJa[base.kind] || base.kind,
     syntax: jaSyntaxOverrides[index] || base.syntax,
     files: localizeStarterFiles(base.files),
