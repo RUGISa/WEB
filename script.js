@@ -16,7 +16,20 @@ const lessons = [
     'body 안의 안내 문장 아래에 “브라우저에 보이는 내용”이라는 텍스트를 한 줄 더 직접 입력하세요.',
     '새 태그를 만들 필요는 없습니다. <body>와 </body> 사이에 일반 텍스트를 추가하고 실행 결과를 확인하세요.',
     {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>첫 HTML 문서</title>\n  </head>\n  <body>\n    이 문장은 body 안에 있어서 화면에 보입니다.\n    \n  </body>\n</html>', css:'', js:''},
-    f => /<body>[\s\S]*브라우저에 보이는 내용[\s\S]*<\/body>/i.test(f.html),
+    f => {
+      const match = String(f.html || '').match(/<body\b[^>]*>([\s\S]*?)<\/body>/i);
+      if (!match) return false;
+      const bodyText = match[1]
+        .replace(/<!--[\s\S]*?-->/g, ' ')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      const withoutStarter = bodyText
+        .replace('이 문장은 body 안에 있어서 화면에 보입니다.', '')
+        .replace('この文はbodyの中にあるため画面に表示されます。', '')
+        .trim();
+      return withoutStarter.length > 0;
+    },
     [['<!DOCTYPE html>','현재 파일을 HTML5 문서로 해석하라고 브라우저에 알려줍니다.'],['<head>','브라우저 탭 제목, 문자 인코딩처럼 화면 본문이 아닌 문서 정보를 담습니다.'],['<body>','실제 화면에 표시할 내용이 들어갑니다. 태그 없이 적은 글자도 텍스트 노드로 표시됩니다.']]),
 
   lesson('HTML','태그, 요소 그리고 부모·자식','태그와 중첩','기초',
@@ -26,7 +39,7 @@ const lessons = [
     'main 안에 <h1>나의 첫 제목</h1>과 <p>HTML 구조를 배우는 중입니다.</p>를 직접 작성하세요.',
     '두 요소 모두 <main>과 </main> 사이에 있어야 합니다. 자동 태그 닫기와 Enter 자동 들여쓰기를 사용해보세요.',
     {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>태그와 요소</title>\n  </head>\n  <body>\n    <main>\n      \n    </main>\n  </body>\n</html>', css:'', js:''},
-    f => /<main>[\s\S]*<h1>\s*나의 첫 제목\s*<\/h1>[\s\S]*<p>\s*HTML 구조를 배우는 중입니다\.\s*<\/p>[\s\S]*<\/main>/i.test(f.html),
+    f => /<main\b[^>]*>[\s\S]*?<h1\b[^>]*>\s*[^<\s][^<]*<\/h1>[\s\S]*?<p\b[^>]*>\s*[^<\s][^<]*<\/p>[\s\S]*?<\/main>/i.test(f.html),
     [['태그','<h1>처럼 요소의 시작이나 끝을 표시하는 문법입니다.'],['요소','<h1>제목</h1>처럼 여는 태그, 내용, 닫는 태그를 합친 하나의 구조입니다.'],['부모·자식','main 안에 h1과 p가 들어가면 main은 부모, h1과 p는 자식입니다.']]),
 
   lesson('HTML','속성과 값으로 정보 더하기','속성과 값','기초',
@@ -46,7 +59,7 @@ const lessons = [
     'h1 아래에 h2 소제목과 p 문단을 각각 한 줄씩 직접 추가하세요. h2 내용은 “오늘 배울 내용”, p 내용은 “태그의 의미를 구분합니다.”로 작성하세요.',
     '기존 h1과 p 사이에 h2를 추가하고, 그 아래에 새 p 요소도 직접 작성하세요.',
     {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>제목과 문단</title>\n  </head>\n  <body>\n    <main>\n      <h1>HTML 텍스트</h1>\n      <p>제목과 문단을 구분해봅니다.</p>\n    </main>\n  </body>\n</html>', css:'', js:''},
-    f => /<h2>\s*오늘 배울 내용\s*<\/h2>/i.test(f.html) && /<p>\s*태그의 의미를 구분합니다\.\s*<\/p>/i.test(f.html),
+    f => /<main\b[^>]*>[\s\S]*?<h1\b[^>]*>[\s\S]*?<\/h1>[\s\S]*?<h2\b[^>]*>\s*[^<\s][^<]*<\/h2>[\s\S]*?<p\b[^>]*>\s*[^<\s][^<]*<\/p>[\s\S]*?<\/main>/i.test(f.html),
     [['<h1>','가장 높은 단계의 제목입니다.'],['<h2>','h1 아래의 소제목처럼 사용합니다.'],['<p>','한 덩어리의 문단을 의미합니다.']]),
 
   lesson('HTML','링크로 페이지 연결하기','링크','기초',
@@ -56,7 +69,7 @@ const lessons = [
     'href를 https://example.com 으로 바꾸세요.',
     'a 태그 안의 href="..." 값만 바꾸면 됩니다.',
     {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>링크 연습</title>\n  </head>\n  <body>\n    <main>\n      <h1>유용한 링크</h1>\n      <a href="#">Example 사이트</a>\n    </main>\n  </body>\n</html>', css:'', js:''},
-    f => /href\s*=\s*["']https:\/\/example\.com\/?["']/i.test(f.html),
+    f => /<a\b[^>]*href\s*=\s*["']https:\/\/example\.com\/?["'][^>]*>/i.test(f.html),
     [['<a>','클릭 가능한 링크를 만드는 태그입니다.'],['href','링크가 이동할 목적지를 지정하는 속성입니다.'],['https://','웹 주소의 통신 방식을 나타냅니다.']]),
 
   lesson('HTML','이미지 보여주기','이미지','기초',
@@ -66,7 +79,7 @@ const lessons = [
     'alt 값을 “산 풍경”으로 바꾸세요.',
     'img 태그의 alt="..." 부분을 수정하세요.',
     {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>이미지 연습</title>\n  </head>\n  <body>\n    <main>\n      <h1>여행 사진</h1>\n      <img src="https://picsum.photos/420/220" alt="사진">\n    </main>\n  </body>\n</html>', css:'', js:''},
-    f => /alt\s*=\s*["']산 풍경["']/i.test(f.html),
+    f => /<img\b[^>]*alt\s*=\s*["']산 풍경["'][^>]*>/i.test(f.html),
     [['<img>','외부 이미지나 프로젝트 안의 이미지를 화면에 표시합니다.'],['src','source의 약자로 이미지 파일의 위치입니다.'],['alt','이미지를 볼 수 없는 상황에서도 내용을 전달하는 대체 텍스트입니다.']]),
 
   lesson('HTML','목록 만들기','목록','기초',
@@ -76,7 +89,7 @@ const lessons = [
     '목록에 “JavaScript” 항목을 하나 더 추가하세요.',
     '<li>JavaScript</li>를 ul 안쪽 마지막에 추가하세요.',
     {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>목록 연습</title>\n  </head>\n  <body>\n    <main>\n      <h1>배울 언어</h1>\n      <ul>\n        <li>HTML</li>\n        <li>CSS</li>\n      </ul>\n    </main>\n  </body>\n</html>', css:'', js:''},
-    f => /<li>\s*JavaScript\s*<\/li>/i.test(f.html),
+    f => /<ul\b[^>]*>[\s\S]*?<li\b[^>]*>\s*JavaScript\s*<\/li>[\s\S]*?<\/ul>/i.test(f.html),
     [['<ul>','순서가 중요하지 않은 목록 전체를 감쌉니다.'],['<ol>','1, 2, 3처럼 순서가 있는 목록에 사용합니다.'],['<li>','목록 안의 한 항목을 나타냅니다.']]),
 
   lesson('HTML','폼과 입력 요소','폼 요소','기초',
@@ -96,7 +109,7 @@ const lessons = [
     '두 번째 p 태그에도 class="note"를 추가하세요.',
     '<p class="note">처럼 class 속성을 붙여보세요.',
     {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>class와 id</title>\n  </head>\n  <body>\n    <main>\n      <h1>메모</h1>\n      <p class="note">첫 번째 메모</p>\n      <p>두 번째 메모</p>\n    </main>\n  </body>\n</html>', css:'', js:''},
-    f => (f.html.match(/class\s*=\s*["']note["']/gi)||[]).length >= 2,
+    f => (f.html.match(/<p\b[^>]*class\s*=\s*["'][^"']*\bnote\b[^"']*["'][^>]*>/gi) || []).length >= 2,
     [['class','여러 요소가 같은 그룹 이름을 공유할 수 있습니다.'],['id','한 요소를 고유하게 찾을 때 적합합니다.'],['.note','CSS에서 점(.)은 class를 선택한다는 뜻입니다.']]),
 
   lesson('HTML','표로 관계 있는 데이터 표현하기','표 만들기','핵심',
@@ -106,7 +119,7 @@ const lessons = [
     '두 번째 행을 추가하고 <td>JavaScript</td><td>동작</td> 두 셀을 작성하세요.',
     '기존 첫 번째 데이터 행 아래에 새로운 <tr>을 만들고 그 안에 td 두 개를 넣으세요.',
     {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>표 연습</title>\n  </head>\n  <body>\n    <main>\n      <h1>웹 기술 역할</h1>\n      <table>\n        <tr>\n          <th>기술</th>\n          <th>역할</th>\n        </tr>\n        <tr>\n          <td>HTML</td>\n          <td>구조</td>\n        </tr>\n      </table>\n    </main>\n  </body>\n</html>', css:'', js:''},
-    f => /<tr>[\s\S]*<td>\s*JavaScript\s*<\/td>[\s\S]*<td>\s*동작\s*<\/td>[\s\S]*<\/tr>/i.test(f.html),
+    f => /<table\b[^>]*>[\s\S]*?<tr\b[^>]*>[\s\S]*?<td\b[^>]*>\s*JavaScript\s*<\/td>\s*<td\b[^>]*>\s*동작\s*<\/td>[\s\S]*?<\/tr>[\s\S]*?<\/table>/i.test(f.html),
     [['<table>','표 데이터 전체를 감싸는 요소입니다.'],['<tr>','table row의 약자로 표의 한 행을 만듭니다.'],['<th> / <td>','th는 제목 셀, td는 실제 데이터 셀을 의미합니다.']]),
 
   lesson('HTML','의미 있는 레이아웃','시맨틱 태그','핵심',
@@ -116,7 +129,7 @@ const lessons = [
     'main 안의 콘텐츠를 section 태그로 감싸세요.',
     '<main> 바로 안쪽에 <section>을 열고, 내용 뒤에서 </section>으로 닫아주세요.',
     {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>의미 있는 레이아웃</title>\n  </head>\n  <body>\n    <header>\n      <h1>나의 사이트</h1>\n    </header>\n    <main>\n      <h2>소개</h2>\n      <p>의미 있는 구조를 연습합니다.</p>\n    </main>\n    <footer>2026</footer>\n  </body>\n</html>', css:'', js:''},
-    f => /<main>[\s\S]*<section>[\s\S]*<\/section>[\s\S]*<\/main>/i.test(f.html),
+    f => /<main\b[^>]*>\s*<section\b[^>]*>[\s\S]*?<h2\b[^>]*>\s*[^<\s][^<]*<\/h2>[\s\S]*?<p\b[^>]*>\s*[^<\s][^<]*<\/p>[\s\S]*?<\/section>\s*<\/main>/i.test(f.html),
     [['<header>','사이트나 섹션의 시작 부분을 의미합니다.'],['<main>','현재 문서의 중심 콘텐츠를 나타냅니다.'],['<section>','같은 주제의 콘텐츠 묶음을 만듭니다.']]),
 
   lesson('HTML','HTML 미니 프로젝트','소개 페이지','프로젝트',
@@ -126,7 +139,7 @@ const lessons = [
     '제공된 전체 HTML 문서의 <main> 안에 제목, 소개 문단, 기술 목록, 링크를 직접 작성해 소개 페이지를 완성하세요.',
     '<h1>, <p>, <ul>/<li>, <a>를 직접 작성하세요. 기존 문서 골격은 유지하고 <main> 안의 콘텐츠는 스스로 구성합니다.',
     {html:'<!DOCTYPE html>\n<html lang="ko">\n  <head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>나의 소개 페이지</title>\n  </head>\n  <body>\n    <main>\n      <!-- 여기부터 직접 소개 페이지의 전체 콘텐츠를 작성하세요. -->\n\n    </main>\n  </body>\n</html>', css:'', js:''},
-    f => /<h1[\s>]/i.test(f.html) && /<p[\s>]/i.test(f.html) && /<ul[\s>]/i.test(f.html) && /<li[\s>]/i.test(f.html) && /<a[\s>]/i.test(f.html),
+    f => /<main\b[^>]*>[\s\S]*?<h1\b[^>]*>[\s\S]*?<\/h1>[\s\S]*?<p\b[^>]*>[\s\S]*?<\/p>[\s\S]*?<ul\b[^>]*>[\s\S]*?<li\b[^>]*>[\s\S]*?<\/li>[\s\S]*?<\/ul>[\s\S]*?<a\b[^>]*href\s*=\s*["'][^"']+["'][^>]*>[\s\S]*?<\/a>[\s\S]*?<\/main>/i.test(f.html),
     [['구조','무엇을 보여줄지 먼저 HTML로 정합니다.'],['계층','h1 아래에 제목과 내용을 자연스럽게 배치합니다.'],['링크','마지막에 사용자가 이동할 수 있는 경로를 제공합니다.']]),
 
   // CSS — 스타일의 원리와 레이아웃
@@ -147,7 +160,7 @@ const lessons = [
     'body 배경색을 #f2f2f0으로 바꾸세요.',
     'body 규칙 안에 background-color를 수정하세요.',
     {html:'<main>\n  <h1>차분한 화면</h1>\n  <p>배경색을 바꿔보세요.</p>\n</main>', css:'body {\n  margin: 0;\n  padding: 40px;\n  background-color: white;\n  color: #222;\n  font-family: Arial, sans-serif;\n}', js:''},
-    f => /background-color\s*:\s*#f2f2f0\s*;?/i.test(f.css),
+    f => /body\s*\{[^}]*background-color\s*:\s*#f2f2f0\s*;?[^}]*\}/i.test(f.css),
     [['color','텍스트의 색을 결정합니다.'],['background-color','요소의 안쪽 배경색을 결정합니다.'],['HEX','웹에서 자주 쓰는 #RRGGBB 형태의 색상 표현입니다.']]),
 
   lesson('CSS','글자 크기와 굵기','타이포그래피','기초',
@@ -177,7 +190,7 @@ const lessons = [
     '.card의 border-radius를 16px로 바꾸세요.',
     '.card의 border-radius 값만 수정하세요.',
     {html:'<div class="card">\n  <strong>Simple Card</strong>\n  <p>깔끔한 카드 UI입니다.</p>\n</div>', css:'body { padding: 40px; background: #f3f3f1; font-family: Arial, sans-serif; }\n.card { max-width: 320px; padding: 24px; background: white; border: 1px solid #ddd; border-radius: 0; }', js:''},
-    f => /border-radius\s*:\s*16px/i.test(f.css),
+    f => /\.card\s*\{[^}]*border-radius\s*:\s*16px\b[^}]*\}/i.test(f.css),
     [['border','요소 외곽에 선을 표시합니다.'],['solid','끊기지 않은 일반 실선입니다.'],['border-radius','값이 커질수록 모서리가 더 둥글어집니다.']]),
 
   lesson('CSS','박스 모델과 box-sizing','박스 모델','핵심',
@@ -217,7 +230,7 @@ const lessons = [
     '.stage에 justify-content: center를 추가하세요.',
     'display: flex 아래에 justify-content: center;를 입력하세요.',
     {html:'<div class="stage">\n  <button>가운데 버튼</button>\n</div>', css:'body { margin: 0; font-family: Arial, sans-serif; }\n.stage { height: 100vh; display: flex; align-items: center; }\nbutton { padding: 12px 18px; }', js:''},
-    f => /justify-content\s*:\s*center/i.test(f.css),
+    f => /\.stage\s*\{[^}]*justify-content\s*:\s*center\b[^}]*\}/i.test(f.css),
     [['justify-content','주축을 기준으로 자식 요소의 위치를 정합니다.'],['align-items','교차축을 기준으로 자식 요소를 정렬합니다.'],['center','축의 중앙에 요소를 배치합니다.']]),
 
   lesson('CSS','Grid로 카드 배열하기','Grid','핵심',
@@ -227,7 +240,7 @@ const lessons = [
     '.grid를 3열로 만드세요.',
     '.grid에 grid-template-columns: repeat(3, 1fr);를 추가하세요.',
     {html:'<div class="grid">\n  <div>1</div><div>2</div><div>3</div>\n  <div>4</div><div>5</div><div>6</div>\n</div>', css:'body { padding: 40px; font-family: Arial, sans-serif; }\n.grid { display: grid; gap: 10px; }\n.grid div { padding: 28px; background: #ececea; text-align: center; border-radius: 10px; }', js:''},
-    f => /grid-template-columns\s*:\s*repeat\(\s*3\s*,\s*1fr\s*\)/i.test(f.css),
+    f => /\.grid\s*\{[^}]*grid-template-columns\s*:\s*(?:repeat\(\s*3\s*,\s*1fr\s*\)|1fr\s+1fr\s+1fr)\s*;?[^}]*\}/i.test(f.css),
     [['display: grid','행과 열 기반 레이아웃을 활성화합니다.'],['repeat(3, 1fr)','같은 너비의 열 3개를 만듭니다.'],['fr','Grid에서 남은 공간의 비율을 나타내는 단위입니다.']]),
 
   lesson('CSS','반응형 웹의 기본','미디어 쿼리','심화',
@@ -237,7 +250,7 @@ const lessons = [
     '600px 이하에서 .grid를 1열로 바꾸는 코드를 완성하세요.',
     '@media 안에서 grid-template-columns: 1fr;를 사용하세요.',
     {html:'<div class="grid">\n  <div>A</div><div>B</div><div>C</div>\n</div>', css:'body { padding: 24px; font-family: Arial, sans-serif; }\n.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }\n.grid div { padding: 30px; background: #eee; }\n\n@media (max-width: 600px) {\n  .grid {\n    /* 모바일에서는 1열 */\n  }\n}', js:''},
-    f => /@media\s*\(\s*max-width\s*:\s*600px\s*\)[\s\S]*grid-template-columns\s*:\s*1fr/i.test(f.css),
+    f => /@media\s*\(\s*max-width\s*:\s*600px\s*\)\s*\{[\s\S]*?\.grid\s*\{[^}]*grid-template-columns\s*:\s*1fr\s*;?[^}]*\}[\s\S]*?\}/i.test(f.css),
     [['@media','조건이 맞을 때만 적용되는 CSS 영역입니다.'],['max-width: 600px','브라우저 폭이 600px 이하인지 확인합니다.'],['1fr','모바일에서 한 줄에 카드 하나만 표시하게 만듭니다.']]),
 
   lesson('CSS','CSS 미니 프로젝트','랜딩 카드','프로젝트',
@@ -298,7 +311,7 @@ const lessons = [
     'score가 80 이상일 때 “PASS”가 나오도록 조건을 수정하세요.',
     'score > 80이 아니라 score >= 80으로 바꿔보세요.',
     {html:'<strong id="result"></strong>', css:baseCss, js:'const score = 80;\nconst result = document.querySelector("#result");\n\nif (score > 80) {\n  result.textContent = "PASS";\n} else {\n  result.textContent = "TRY AGAIN";\n}'},
-    f => /if\s*\(\s*score\s*>=\s*80\s*\)/i.test(f.js),
+    f => /if\s*\(\s*score\s*>=\s*80\s*\)\s*\{[^}]*result\.textContent\s*=\s*["']PASS["'][^}]*\}/i.test(f.js),
     [['if','조건이 true일 때 중괄호 안의 코드를 실행합니다.'],['>=','왼쪽 값이 오른쪽 값보다 크거나 같은지 비교합니다.'],['else','if 조건이 false일 때 실행할 코드를 작성합니다.']]),
 
   lesson('JS','함수로 코드 묶기','함수','핵심',
@@ -308,7 +321,7 @@ const lessons = [
     '함수 이름을 sayHello로 바꾸고 호출 부분도 같은 이름으로 맞추세요.',
     'function hello와 맨 아래 hello()를 둘 다 sayHello로 바꾸세요.',
     {html:'<p id="message"></p>', css:baseCss, js:'function hello() {\n  document.querySelector("#message").textContent = "안녕하세요!";\n}\n\nhello();'},
-    f => /function\s+sayHello\s*\(/i.test(f.js) && /sayHello\s*\(\s*\)\s*;?/i.test(f.js),
+    f => /function\s+sayHello\s*\([^)]*\)\s*\{[\s\S]*?message[\s\S]*?\}/i.test(f.js) && /(?:^|[;}\n])\s*sayHello\s*\(\s*\)\s*;?/im.test(f.js),
     [['function sayHello','sayHello라는 이름으로 코드 묶음을 정의합니다.'],['{ ... }','함수를 실행했을 때 수행할 코드입니다.'],['sayHello()','정의한 함수를 실제로 호출합니다.']]),
 
   lesson('JS','HTML 요소 찾기','DOM 선택','핵심',
@@ -318,7 +331,7 @@ const lessons = [
     'querySelector가 #title을 찾도록 수정하세요.',
     '"h1" 대신 "#title"을 넣으세요.',
     {html:'<h1 id="title">Before</h1>', css:baseCss, js:'const title = document.querySelector("h1");\ntitle.textContent = "After";'},
-    f => /querySelector\(\s*["']#title["']\s*\)/i.test(f.js),
+    f => /const\s+title\s*=\s*document\.querySelector\(\s*["']#title["']\s*\)\s*;?/i.test(f.js),
     [['document','현재 브라우저에 열린 HTML 문서를 의미합니다.'],['querySelector','CSS 선택자를 사용해 HTML 요소를 찾습니다.'],['#title','id가 title인 요소를 선택합니다.']]),
 
   lesson('JS','클릭 이벤트','이벤트','핵심',
@@ -328,7 +341,7 @@ const lessons = [
     '버튼을 클릭하면 제목이 “Clicked!”로 바뀌도록 빈칸을 완성하세요.',
     'addEventListener의 첫 번째 값에 "click"을 넣으세요.',
     {html:'<h1 id="title">Ready</h1>\n<button id="button">Click</button>', css:baseCss + '\nbutton { padding: 10px 16px; }', js:'const title = document.querySelector("#title");\nconst button = document.querySelector("#button");\n\nbutton.addEventListener("", () => {\n  title.textContent = "Clicked!";\n});'},
-    f => /addEventListener\(\s*["']click["']/i.test(f.js),
+    f => /button\.addEventListener\(\s*["']click["']\s*,[\s\S]*?=>\s*\{[\s\S]*?title\.textContent\s*=\s*["']Clicked!["'][\s\S]*?\}\s*\)/i.test(f.js),
     [['addEventListener','특정 이벤트가 발생할 때 실행할 함수를 등록합니다.'],['"click"','마우스나 터치로 클릭했을 때 발생하는 이벤트입니다.'],['() => { }','이벤트가 발생했을 때 실행할 함수입니다.']]),
 
   lesson('JS','입력값 읽기','입력 처리','핵심',
@@ -338,7 +351,7 @@ const lessons = [
     '버튼 클릭 시 message에 input.value가 표시되도록 빈칸을 완성하세요.',
     'message.textContent = input.value; 형태로 작성하세요.',
     {html:'<input id="name" placeholder="이름">\n<button id="show">표시</button>\n<p id="message"></p>', css:baseCss + '\ninput, button { padding: 10px; }', js:'const input = document.querySelector("#name");\nconst button = document.querySelector("#show");\nconst message = document.querySelector("#message");\n\nbutton.addEventListener("click", () => {\n  message.textContent = "";\n});'},
-    f => /message\.textContent\s*=\s*input\.value\s*;?/i.test(f.js),
+    f => /button\.addEventListener\(\s*["']click["']\s*,[\s\S]*?=>\s*\{[\s\S]*?message\.textContent\s*=\s*input\.value\s*;?[\s\S]*?\}\s*\)/i.test(f.js),
     [['input.value','사용자가 입력한 현재 글자를 가져옵니다.'],['textContent','가져온 값을 다른 요소의 텍스트로 표시할 수 있습니다.'],['이벤트 흐름','클릭 → 값 읽기 → 화면 변경 순서로 생각하면 쉽습니다.']]),
 
   lesson('JS','배열과 반복','반복 데이터','심화',
@@ -358,7 +371,7 @@ const lessons = [
     '버튼을 누를 때마다 count가 2씩 증가하도록 수정하세요.',
     'count = count + 1의 숫자 1을 2로 바꾸세요.',
     {html:'<main>\n  <span>COUNT</span>\n  <strong id="count">0</strong>\n  <button id="plus">+2</button>\n</main>', css:'body { min-height: 100vh; margin: 0; display: grid; place-items: center; font-family: Arial, sans-serif; background: #f3f3f0; }\nmain { text-align: center; }\nstrong { display: block; margin: 12px 0; font-size: 64px; }\nbutton { padding: 11px 18px; }', js:'let count = 0;\nconst countText = document.querySelector("#count");\nconst plusButton = document.querySelector("#plus");\n\nplusButton.addEventListener("click", () => {\n  count = count + 1;\n  countText.textContent = count;\n});'},
-    f => /count\s*=\s*count\s*\+\s*2\s*;?/i.test(f.js),
+    f => /[A-Za-z_$][\w$]*\.addEventListener\(\s*["']click["']\s*,[\s\S]*?=>\s*\{[\s\S]*?(?:count\s*=\s*count\s*\+\s*2|count\s*\+=\s*2)\s*;?[\s\S]*?[A-Za-z_$][\w$]*\.textContent\s*=\s*count[\s\S]*?\}\s*\)/i.test(f.js),
     [['count','현재 숫자를 기억하는 상태 변수입니다.'],['click','사용자의 행동이 상태를 바꾸는 시작점입니다.'],['textContent','새로운 상태를 화면에 다시 그려줍니다.']]),
 
   // PROJECT 01-04
@@ -379,7 +392,7 @@ const lessons = [
     'button, addEventListener, textContent를 모두 사용해 클릭 반응을 만드세요.',
     'id 이름은 자유롭습니다. 세 요소가 코드에 모두 등장하면 됩니다.',
     {html:'<!-- 버튼과 결과 문구를 만드세요 -->\n', css:baseCss, js:'// 클릭 이벤트를 직접 작성하세요\n'},
-    f => /<button[\s>]/i.test(f.html) && /addEventListener\s*\(/i.test(f.js) && /textContent\s*=/i.test(f.js),
+    f => /<button\b[^>]*>/i.test(f.html) && /addEventListener\s*\(\s*["']click["']\s*,[\s\S]*?(?:function\s*\([^)]*\)|\([^)]*\)\s*=>|[A-Za-z_$][\w$]*\s*=>)[\s\S]*?\{[\s\S]*?(?:textContent|innerText)\s*=[\s\S]*?\}/i.test(f.js),
     [['button','사용자가 행동을 시작하는 UI입니다.'],['addEventListener','사용자 행동과 코드를 연결합니다.'],['textContent','행동 결과를 화면에 보여줍니다.']]),
 
   lesson('PROJECT','작은 웹앱 만들기','미니 Todo','도전',
@@ -389,7 +402,7 @@ const lessons = [
     'input, button, ul을 만들고 JS에서 createElement("li")를 사용하세요.',
     'document.createElement("li")가 핵심입니다.',
     {html:'<!-- Todo의 HTML을 직접 작성하세요 -->\n', css:'body { padding: 40px; font-family: Arial, sans-serif; background: #f4f4f2; }\n', js:'// Todo 동작을 직접 작성하세요\n'},
-    f => /<input[\s>]/i.test(f.html) && /<button[\s>]/i.test(f.html) && /<ul[\s>]/i.test(f.html) && /createElement\(\s*["']li["']\s*\)/i.test(f.js),
+    f => /<input\b[^>]*>/i.test(f.html) && /<button\b[^>]*>/i.test(f.html) && /<ul\b[^>]*>/i.test(f.html) && /addEventListener\s*\(\s*["']click["']/i.test(f.js) && /createElement\(\s*["']li["']\s*\)/i.test(f.js) && /(?:appendChild|append)\s*\(/i.test(f.js) && /\.value\b/i.test(f.js),
     [['input','사용자에게 새 할 일의 내용을 받습니다.'],['createElement','JavaScript로 새로운 HTML 요소를 생성합니다.'],['append / appendChild','생성한 요소를 실제 문서 안에 추가할 때 사용합니다.']]),
 
   lesson('PROJECT','Final — 빈 화면에서 시작하기','자유 제작','최종',
@@ -399,7 +412,7 @@ const lessons = [
     'h1, button, addEventListener를 포함한 나만의 웹페이지를 완성하세요.',
     '가장 작은 기능부터 시작하세요. 제목 하나, 버튼 하나면 충분합니다.',
     {html:'<!-- HTML -->\n', css:'/* CSS */\n', js:'// JavaScript\n'},
-    f => /<h1[\s>]/i.test(f.html) && /<button[\s>]/i.test(f.html) && /addEventListener\s*\(/i.test(f.js),
+    f => /<h1\b[^>]*>[\s\S]*?<\/h1>/i.test(f.html) && /<button\b[^>]*>[\s\S]*?<\/button>/i.test(f.html) && /addEventListener\s*\(\s*["']click["']/i.test(f.js) && /[^\s/*][\s\S]*\{[^}]+:[^}]+\}/.test(f.css),
     [['1. 구조','먼저 HTML만으로 내용이 이해되는 페이지를 만듭니다.'],['2. 디자인','CSS로 읽기 쉽고 정돈된 화면을 만듭니다.'],['3. 동작','JavaScript로 사용자가 직접 경험할 기능을 하나 추가합니다.']])
 ];
 
@@ -455,18 +468,18 @@ const koPracticeCopy = [
   { mission: '현재 링크가 example.com을 새 탭에서 열도록 링크 요소의 정보를 수정하세요.', hint: '링크의 이동 위치와 여는 방식을 결정하는 정보는 시작 태그 안의 속성으로 지정합니다.' },
   { mission: '기존 가장 큰 제목 아래에 한 단계 낮은 제목과 설명 문단을 추가해 문서의 계층을 만들어보세요.', hint: '제목은 중요도에 따라 단계가 있고, 일반적인 설명 문장은 문단 요소를 사용합니다.' },
   { mission: '현재 링크가 example.com으로 이동하도록 수정하세요.', hint: '링크의 목적지는 a 요소의 시작 태그 안에 있는 속성이 결정합니다.' },
-  { mission: '현재 이미지가 보이지 않는 상황에서도 내용이 전달되도록 대체 설명을 알맞게 수정하세요.', hint: '이미지에는 파일 위치 외에도 이미지를 설명하는 속성이 있습니다.' },
+  { mission: '현재 이미지의 대체 설명을 “산 풍경”으로 수정하세요.', hint: '이미지에는 파일 위치 외에도 이미지를 설명하는 속성이 있습니다.' },
   { mission: '현재 기술 목록에 JavaScript 항목을 하나 더 추가하세요.', hint: '목록 전체를 감싸는 요소 안에 기존 항목들과 같은 구조의 새 항목을 추가하면 됩니다.' },
-  { mission: '이름 입력칸에 연결되는 설명 글자를 추가해, 글자를 눌러도 입력칸이 선택되도록 만들어보세요.', hint: '입력칸과 설명 요소는 서로 같은 식별 값을 공유해 연결할 수 있습니다.' },
+  { mission: '입력칸에 id="name"을 지정하고, 바로 앞에 “이름” label을 추가해 for="name"으로 연결하세요.', hint: '입력칸과 설명 요소는 서로 같은 식별 값을 공유해 연결할 수 있습니다.' },
   { mission: '두 번째 안내 문단도 첫 번째 안내 문단과 같은 그룹으로 묶어보세요.', hint: '여러 요소가 같은 그룹에 속하도록 만들 때는 반복해서 사용할 수 있는 속성을 사용합니다.' },
-  { mission: '현재 표에 JavaScript와 그 역할을 나타내는 새로운 데이터 행을 추가하세요.', hint: '표는 행 안에 여러 셀이 들어가는 구조입니다. 기존 데이터 행의 중첩 구조를 참고하세요.' },
+  { mission: '현재 표에 새 데이터 행을 추가하고, 첫 셀에는 “JavaScript”, 두 번째 셀에는 “동작”을 입력하세요.', hint: '표는 행 안에 여러 셀이 들어가는 구조입니다. 기존 데이터 행의 중첩 구조를 참고하세요.' },
   { mission: 'main 안의 관련 콘텐츠를 하나의 의미 있는 구역으로 묶어 문서 구조를 더 명확하게 만들어보세요.', hint: '단순한 상자보다 "하나의 주제를 가진 영역"이라는 의미를 전달하는 요소를 생각해보세요.' },
   { mission: '비어 있는 main 안에 자기소개 페이지의 콘텐츠를 직접 구성하세요. 제목, 소개, 기술 목록, 이동할 수 있는 링크가 모두 있어야 합니다.', hint: '먼저 정보의 순서를 정하세요. 가장 중요한 제목에서 시작해 설명, 목록, 이동 경로 순으로 구조를 잡으면 쉽습니다.' },
-  { mission: '현재 제목 스타일을 더 차분한 색으로 바꾸고, 제목 크기도 더 크게 조정하세요.', hint: '하나의 CSS 규칙 안에는 여러 선언을 넣을 수 있습니다. 무엇을 바꿀지에 해당하는 속성을 각각 찾아보세요.' },
-  { mission: '페이지 전체 배경을 현재보다 부드러운 밝은 회색 계열로 바꿔보세요.', hint: '글자색이 아니라 요소 뒤쪽의 색을 지정하는 속성을 사용합니다.' },
+  { mission: 'h1의 글자색을 #344960으로 바꾸고 글자 크기를 36px로 설정하세요.', hint: '하나의 CSS 규칙 안에는 여러 선언을 넣을 수 있습니다. 무엇을 바꿀지에 해당하는 속성을 각각 찾아보세요.' },
+  { mission: '페이지 전체 배경색을 #f2f2f0으로 변경하세요.', hint: '글자색이 아니라 요소 뒤쪽의 색을 지정하는 속성을 사용합니다.' },
   { mission: '가장 큰 제목이 지금보다 눈에 띄도록 글자 크기를 42px로 조정하세요.', hint: '타이포그래피에서 글자의 실제 크기를 결정하는 속성을 찾으세요.' },
   { mission: '카드 안의 콘텐츠가 테두리에 너무 붙지 않도록 안쪽 여백을 24px로 조정하세요.', hint: '바깥 요소와의 간격이 아니라, 요소 내부에서 콘텐츠와 경계 사이의 간격을 바꿔야 합니다.' },
-  { mission: '카드의 네 모서리를 16px 정도로 둥글게 만들어보세요.', hint: '테두리 자체가 아니라 테두리 모서리의 형태를 바꾸는 속성을 사용합니다.' },
+  { mission: '카드의 네 모서리를 16px로 둥글게 만드세요.', hint: '테두리 자체가 아니라 테두리 모서리의 형태를 바꾸는 속성을 사용합니다.' },
   { mission: '카드의 지정된 너비 안에 안쪽 여백과 테두리까지 포함되도록 크기 계산 방식을 바꿔보세요.', hint: '박스 모델에서 width가 어디까지 포함할지를 정하는 속성이 있습니다.' },
   { mission: '배지가 카드의 오른쪽 위를 기준으로 배치되도록 두 요소의 위치 기준 관계를 완성하세요.', hint: '한 요소는 위치의 기준점이 되고, 다른 요소는 그 기준을 따라 일반 흐름에서 벗어나 배치되어야 합니다.' },
   { mission: 'A, B, C 상자가 세로가 아니라 한 줄로 나란히 배치되도록 부모의 레이아웃 방식을 바꿔보세요.', hint: '여러 자식 요소를 한 방향으로 정렬하기 위한 레이아웃 기능을 부모 요소에 적용합니다.' },
@@ -485,7 +498,7 @@ const koPracticeCopy = [
   { mission: '버튼을 누르면 입력창에 사용자가 적은 내용이 아래 문장 영역에 그대로 표시되도록 코드를 완성하세요.', hint: '입력 요소에는 현재 입력된 값을 읽을 수 있는 속성이 있습니다. 그 값을 출력 요소에 전달하세요.' },
   { mission: '현재 배열에 JavaScript라는 기술을 하나 더 추가해 화면 목록에도 함께 나타나게 해보세요.', hint: '반복문은 이미 배열 전체를 출력하고 있습니다. 반복문보다 데이터가 들어 있는 배열을 먼저 확인하세요.' },
   { mission: '버튼을 한 번 누를 때 숫자가 1이 아니라 2씩 증가하도록 카운터의 상태 변경 로직을 수정하세요.', hint: '화면 갱신 코드는 그대로 사용할 수 있습니다. 클릭할 때 count가 어떻게 바뀌는지만 살펴보세요.' },
-  { mission: '프로필을 나타내는 카드 하나를 직접 만들고, HTML 구조와 CSS 스타일을 연결해 카드처럼 보이게 완성하세요.', hint: '먼저 카드 전체를 묶을 요소와 이름을 정한 뒤, 그 이름을 CSS에서 선택해 여백과 형태를 조절하세요.' },
+  { mission: 'class="profile"인 프로필 카드 요소를 만들고, CSS의 .profile에 border-radius를 적용해 카드 형태로 완성하세요.', hint: '먼저 카드 전체를 묶을 요소와 이름을 정한 뒤, 그 이름을 CSS에서 선택해 여백과 형태를 조절하세요.' },
   { mission: '버튼을 클릭하면 화면의 글자가 바뀌는 간단한 상호작용을 처음부터 직접 만들어보세요.', hint: '필요한 흐름은 요소 찾기 → 사용자 행동 감지 → 화면 내용 변경의 세 단계입니다.' },
   { mission: '할 일을 입력하고 버튼을 누르면 새로운 항목이 목록에 추가되는 작은 Todo 기능을 만들어보세요.', hint: '입력값을 읽고, 새 목록 항목을 만든 뒤, 그 항목을 기존 목록에 붙이는 순서로 나눠 생각하세요.' },
   { mission: 'HTML, CSS, JavaScript를 모두 사용해 자유 주제의 한 페이지를 완성하세요. 사용자가 직접 조작할 수 있는 기능도 하나 이상 포함하세요.', hint: '처음부터 크게 만들지 말고 구조 → 디자인 → 동작 순으로 하나씩 완성하세요. 기능은 버튼 하나에서 시작해도 됩니다.' }
@@ -497,18 +510,18 @@ const jaPracticeCopy = [
   { mission: '現在のリンクがexample.comを新しいタブで開くよう、リンク要素の情報を修正してください。', hint: '移動先と開き方は、開始タグの中に追加する属性で指定します。' },
   { mission: '最上位の見出しの下に、1段階下の見出しと説明用の段落を追加して文書の階層を作ってください。', hint: '見出しには重要度の段階があり、通常の説明文には段落要素を使います。' },
   { mission: '現在のリンクがexample.comへ移動するように修正してください。', hint: 'リンク先はa要素の開始タグにある属性で決まります。' },
-  { mission: '画像が表示できない場合でも内容が伝わるよう、代替説明を適切に修正してください。', hint: '画像にはファイルの場所とは別に、内容を説明するための属性があります。' },
+  { mission: '現在の画像の代替説明を「山の風景」に変更してください。', hint: '画像にはファイルの場所とは別に、内容を説明するための属性があります。' },
   { mission: '現在の技術リストにJavaScriptの項目を1つ追加してください。', hint: 'リスト全体を囲む要素の中に、既存項目と同じ構造の新しい項目を追加します。' },
-  { mission: '名前入力欄に対応する説明を追加し、その説明を押しても入力欄が選択されるようにしてください。', hint: '入力欄と説明要素は同じ識別値を共有することで関連付けられます。' },
+  { mission: '入力欄に id="name" を指定し、直前に「名前」のlabelを追加して for="name" で関連付けてください。', hint: '入力欄と説明要素は同じ識別値を共有することで関連付けられます。' },
   { mission: '2つ目の案内段落も、1つ目と同じグループに所属させてください。', hint: '複数の要素で共有できるグループ名のための属性を使います。' },
-  { mission: '現在の表に、JavaScriptとその役割を示す新しいデータ行を追加してください。', hint: '表は「行の中に複数のセル」という入れ子構造です。既存のデータ行を参考にしてください。' },
+  { mission: '現在の表に新しいデータ行を追加し、1つ目のセルに「JavaScript」、2つ目のセルに「動作」と入力してください。', hint: '表は「行の中に複数のセル」という入れ子構造です。既存のデータ行を参考にしてください。' },
   { mission: 'main内の関連コンテンツを、意味のある1つの領域としてまとめてください。', hint: '単なる箱ではなく「同じ主題を持つ領域」という意味を表す要素を考えてみてください。' },
   { mission: '空のmainの中に自己紹介ページを構成してください。見出し、紹介文、技術リスト、移動できるリンクを含めます。', hint: '情報の順番を先に決めましょう。重要な見出し → 説明 → 一覧 → 移動先の順に考えると整理しやすいです。' },
-  { mission: '現在の見出しを落ち着いた色にし、文字サイズもより大きく調整してください。', hint: '1つのCSSルールには複数の宣言を書けます。色と大きさを担当するプロパティをそれぞれ探してください。' },
-  { mission: 'ページ全体の背景を、現在より柔らかい明るいグレー系に変更してください。', hint: '文字色ではなく、要素の後ろ側の色を指定するプロパティを使います。' },
+  { mission: 'h1の文字色を #344960 に変更し、文字サイズを36pxに設定してください。', hint: '1つのCSSルールには複数の宣言を書けます。色と大きさを担当するプロパティをそれぞれ探してください。' },
+  { mission: 'ページ全体の背景色を #f2f2f0 に変更してください。', hint: '文字色ではなく、要素の後ろ側の色を指定するプロパティを使います。' },
   { mission: '最も大きな見出しが目立つよう、文字サイズを42pxに調整してください。', hint: 'タイポグラフィで文字そのものの大きさを決めるプロパティを探してください。' },
   { mission: 'カードの内容が端に近すぎないよう、内側の余白を24pxに調整してください。', hint: '他の要素との距離ではなく、要素の内側で内容と境界の間を広げます。' },
-  { mission: 'カードの4つの角を16px程度の丸みにしてください。', hint: '境界線そのものではなく、境界の角の形を変えるプロパティを使います。' },
+  { mission: 'カードの4つの角を16pxの丸みにしてください。', hint: '境界線そのものではなく、境界の角の形を変えるプロパティを使います。' },
   { mission: 'カードの指定幅の中に、内側余白と境界線まで含まれるようサイズ計算を変更してください。', hint: 'ボックスモデルでwidthがどこまで含むかを決めるプロパティがあります。' },
   { mission: 'バッジがカード右上を基準に配置されるよう、2つの要素の位置関係を完成させてください。', hint: '片方を位置の基準にし、もう片方を通常フローから外してその基準に従わせます。' },
   { mission: 'A・B・Cの箱が縦ではなく1行に並ぶよう、親要素のレイアウト方法を変更してください。', hint: '複数の子要素を一方向へ並べるレイアウト機能を親要素に適用します。' },
@@ -527,19 +540,17 @@ const jaPracticeCopy = [
   { mission: 'ボタンを押すと、入力欄に書いた内容が下の文章領域へそのまま表示されるようコードを完成させてください。', hint: '入力要素には現在の入力内容を取得するための値があります。それを表示先へ渡してください。' },
   { mission: '現在の配列にJavaScriptを1つ追加し、画面の一覧にも一緒に表示させてください。', hint: '繰り返し処理はすでに配列全体を表示しています。まずデータが入っている配列を確認してください。' },
   { mission: 'ボタンを1回押すたび、数値が1ではなく2ずつ増えるよう状態変更の処理を修正してください。', hint: '画面を更新する処理はそのまま使えます。クリック時にcountがどう変わるかだけ確認してください。' },
-  { mission: 'プロフィールを表すカードを1つ自分で作り、HTML構造とCSSをつないでカードらしく完成させてください。', hint: 'まずカード全体を囲む要素と名前を決め、その名前をCSSで選択して余白や形を整えます。' },
+  { mission: 'class="profile" のプロフィールカード要素を作り、CSSの.profileにborder-radiusを適用してカードとして完成させてください。', hint: 'まずカード全体を囲む要素と名前を決め、その名前をCSSで選択して余白や形を整えます。' },
   { mission: 'ボタンをクリックすると画面の文字が変わる簡単なインタラクションを、最初から自分で作ってください。', hint: '流れを「要素を探す → 操作を検知する → 画面を変更する」の3段階に分けて考えます。' },
   { mission: 'Todoを入力してボタンを押すと、新しい項目が一覧へ追加される小さな機能を作ってください。', hint: '入力値を読む → 新しい一覧項目を作る → 既存の一覧へ追加する、の順に分解してください。' },
   { mission: 'HTML・CSS・JavaScriptをすべて使い、自由テーマの1ページを完成させてください。ユーザーが操作できる機能も1つ以上含めます。', hint: '最初から大きく作らず、構造 → デザイン → 動作の順に1つずつ完成させましょう。機能はボタン1つからでも十分です。' }
 ];
 
 const jaValidationOverrides = {
-  0: f => /<body>[\s\S]*ブラウザに表示される内容[\s\S]*<\/body>/i.test(f.html),
-  1: f => /<main>[\s\S]*<h1>\s*最初の見出し\s*<\/h1>[\s\S]*<p>\s*HTMLの構造を学んでいます。?\s*<\/p>[\s\S]*<\/main>/i.test(f.html),
-  3: f => /<h2>\s*今日学ぶ内容\s*<\/h2>/i.test(f.html) && /<p>\s*タグの意味を使い分けます。?\s*<\/p>/i.test(f.html),
-  5: f => /alt\s*=\s*["']山の風景["']/i.test(f.html),
+  0: f => { const m=String(f.html||'').match(/<body\b[^>]*>([\s\S]*?)<\/body>/i); if(!m) return false; const text=m[1].replace(/<!-- [\s\S]*? -->/g,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim(); return text.replace('この文はbodyの中にあるため画面に表示されます。','').replace('이 문장은 body 안에 있어서 화면에 보입니다.','').trim().length>0; },
+  5: f => /<img\b[^>]*alt\s*=\s*["']山の風景["'][^>]*>/i.test(f.html),
   7: f => /<label\s+[^>]*for\s*=\s*["']name["'][^>]*>\s*名前\s*<\/label>/i.test(f.html) && /<input\s+[^>]*id\s*=\s*["']name["'][^>]*>/i.test(f.html),
-  9: f => /<tr>[\s\S]*<td>\s*JavaScript\s*<\/td>[\s\S]*<td>\s*動作\s*<\/td>[\s\S]*<\/tr>/i.test(f.html)
+  9: f => /<table\b[^>]*>[\s\S]*?<tr\b[^>]*>[\s\S]*?<td\b[^>]*>\s*JavaScript\s*<\/td>\s*<td\b[^>]*>\s*動作\s*<\/td>[\s\S]*?<\/tr>[\s\S]*?<\/table>/i.test(f.html)
 };
 function lessonFor(index) {
   const base = lessons[index];
@@ -550,6 +561,7 @@ function lessonFor(index) {
   if (!state || state.locale !== 'ja') {
     return {
       ...base,
+      mission: practice.mission || base.mission,
       hint: practice.hint || base.hint
     };
   }
@@ -558,6 +570,7 @@ function lessonFor(index) {
   return {
     ...base,
     ...tr,
+    mission: practice.mission || tr.mission || base.mission,
     hint: practice.hint || tr.hint || base.hint,
     kind: kindMapJa[base.kind] || base.kind,
     syntax: jaSyntaxOverrides[index] || base.syntax,
