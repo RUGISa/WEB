@@ -779,7 +779,127 @@ function applyStaticLanguage() {
   el.previewFrame.setAttribute('title', ja ? '練習結果' : '실습 결과');
 }
 
-const storageKey = 'frame-study-v24';
+
+
+// v25: CSS 학습용 선택자/속성 참고 사전
+const cssPropertyLibrary = {
+  'color': {ko:['글자색','텍스트의 색을 바꿉니다.','color: #222;','색상 이름, HEX, rgb(), hsl()'],ja:['文字色','テキストの色を変更します。','color: #222;','色名、HEX、rgb()、hsl()']},
+  'background-color': {ko:['배경색','요소의 배경에 색을 채웁니다.','background-color: #f5f5f2;','transparent, 색상 값'],ja:['背景色','要素の背景に色を付けます。','background-color: #f5f5f2;','transparent、色の値']},
+  'font-size': {ko:['글자 크기','텍스트의 크기를 정합니다.','font-size: 32px;','px, rem, em 등'],ja:['文字サイズ','テキストの大きさを決めます。','font-size: 32px;','px、rem、em など']},
+  'font-weight': {ko:['글자 굵기','텍스트가 얼마나 굵게 보일지 정합니다.','font-weight: 700;','normal, bold, 100~900'],ja:['文字の太さ','テキストの太さを決めます。','font-weight: 700;','normal、bold、100〜900']},
+  'line-height': {ko:['줄 높이','여러 줄 텍스트의 줄 간격과 한 줄의 높이를 정합니다.','line-height: 1.6;','숫자, px, em 등'],ja:['行の高さ','複数行テキストの行間と1行の高さを決めます。','line-height: 1.6;','数値、px、em など']},
+  'text-align': {ko:['글자 정렬','요소 안의 인라인 내용이 좌우 어느 쪽에 정렬될지 정합니다.','text-align: center;','left, center, right, justify'],ja:['文字揃え','要素内のインライン内容の横方向の揃え方を決めます。','text-align: center;','left、center、right、justify']},
+  'margin': {ko:['바깥 여백','요소 바깥쪽에 다른 요소와의 거리를 만듭니다.','margin: 16px;','px, rem, %, auto / 방향별 지정'],ja:['外側余白','要素の外側に他の要素との距離を作ります。','margin: 16px;','px、rem、%、auto / 方向別指定']},
+  'margin-bottom': {ko:['아래 바깥 여백','요소의 아래쪽에만 바깥 여백을 만듭니다.','margin-bottom: 24px;','px, rem, % 등'],ja:['下側の外余白','要素の下側だけに外側余白を作ります。','margin-bottom: 24px;','px、rem、% など']},
+  'padding': {ko:['안쪽 여백','내용과 요소의 테두리 사이에 공간을 만듭니다.','padding: 20px;','px, rem, % / 1~4개 값'],ja:['内側余白','内容と要素の境界の間に空間を作ります。','padding: 20px;','px、rem、% / 1〜4個の値']},
+  'border': {ko:['테두리','요소 가장자리에 선을 만듭니다.','border: 1px solid #ddd;','두께 + 선 종류 + 색상'],ja:['境界線','要素の周囲に線を作ります。','border: 1px solid #ddd;','太さ + 線種 + 色']},
+  'border-radius': {ko:['모서리 둥글기','박스의 네 모서리를 둥글게 만듭니다.','border-radius: 12px;','px, %, 방향별 값'],ja:['角の丸み','ボックスの四隅を丸くします。','border-radius: 12px;','px、%、方向別の値']},
+  'width': {ko:['너비','요소의 가로 크기를 정합니다.','width: 80%;','px, %, rem, auto 등'],ja:['幅','要素の横幅を決めます。','width: 80%;','px、%、rem、auto など']},
+  'max-width': {ko:['최대 너비','요소가 지정한 너비보다 더 커지지 않게 제한합니다.','max-width: 640px;','px, rem, %, none'],ja:['最大幅','要素が指定値より大きくならないよう制限します。','max-width: 640px;','px、rem、%、none']},
+  'min-height': {ko:['최소 높이','내용이 적어도 요소가 일정 높이보다 작아지지 않게 합니다.','min-height: 320px;','px, rem, %, vh 등'],ja:['最小高さ','内容が少なくても要素が一定の高さ未満にならないようにします。','min-height: 320px;','px、rem、%、vh など']},
+  'box-sizing': {ko:['크기 계산 방식','width/height에 padding과 border를 포함할지 정합니다.','box-sizing: border-box;','content-box, border-box'],ja:['サイズ計算方式','width/heightにpaddingとborderを含めるか決めます。','box-sizing: border-box;','content-box、border-box']},
+  'display': {ko:['배치 방식','요소가 레이아웃에서 어떤 방식으로 자리를 차지할지 정합니다.','display: flex;','block, inline, inline-block, flex, grid, none'],ja:['表示方式','要素がレイアウト上でどのように領域を使うか決めます。','display: flex;','block、inline、inline-block、flex、grid、none']},
+  'flex-direction': {ko:['Flex 방향','Flex 자식들이 나열되는 주축 방향을 정합니다.','flex-direction: column;','row, row-reverse, column, column-reverse'],ja:['Flex方向','Flexの子要素が並ぶ主軸方向を決めます。','flex-direction: column;','row、row-reverse、column、column-reverse']},
+  'gap': {ko:['요소 사이 간격','Flex/Grid 자식 사이에 일정한 간격을 만듭니다.','gap: 16px;','px, rem, % 등'],ja:['要素間の間隔','Flex/Gridの子要素間に一定の間隔を作ります。','gap: 16px;','px、rem、% など']},
+  'justify-content': {ko:['주축 정렬','Flex/Grid의 주축 방향에서 자식들을 어떻게 배치할지 정합니다.','justify-content: center;','flex-start, center, space-between 등'],ja:['主軸揃え','Flex/Gridの主軸方向で子要素をどう配置するか決めます。','justify-content: center;','flex-start、center、space-between など']},
+  'align-items': {ko:['교차축 정렬','Flex/Grid의 교차축 방향에서 자식들의 정렬을 정합니다.','align-items: center;','stretch, flex-start, center, flex-end 등'],ja:['交差軸揃え','Flex/Gridの交差軸方向で子要素の揃え方を決めます。','align-items: center;','stretch、flex-start、center、flex-end など']},
+  'grid-template-columns': {ko:['Grid 열','Grid의 열 개수와 각 열의 크기를 정합니다.','grid-template-columns: repeat(3, 1fr);','px, %, fr, repeat(), minmax() 등'],ja:['Grid列','Gridの列数と各列の大きさを決めます。','grid-template-columns: repeat(3, 1fr);','px、%、fr、repeat()、minmax() など']},
+  'position': {ko:['위치 기준','요소가 문서 흐름과 어떤 관계로 배치될지 정합니다.','position: relative;','static, relative, absolute, fixed, sticky'],ja:['位置指定','要素を通常の文書フローとどの関係で配置するか決めます。','position: relative;','static、relative、absolute、fixed、sticky']},
+  'top/right/bottom/left': {ko:['위치 오프셋','position이 적용된 요소를 기준점에서 얼마나 이동시킬지 정합니다.','top: 12px; right: 12px;','px, rem, %, auto 등'],ja:['位置オフセット','positionが設定された要素を基準点からどれだけ移動するか決めます。','top: 12px; right: 12px;','px、rem、%、auto など']},
+  '@media': {ko:['미디어 쿼리','화면 너비 같은 조건이 맞을 때만 특정 CSS를 적용하는 규칙입니다.','@media (max-width: 600px) { ... }','max-width, min-width, orientation 등'],ja:['メディアクエリ','画面幅などの条件を満たすときだけCSSを適用するルールです。','@media (max-width: 600px) { ... }','max-width、min-width、orientation など']},
+  'background': {ko:['배경 단축 속성','배경색, 이미지 등 여러 배경 설정을 한 줄에 쓸 수 있습니다.','background: #f5f5f2;','색상, 이미지, 위치 등'],ja:['背景の短縮プロパティ','背景色や画像など複数の背景設定をまとめて書けます。','background: #f5f5f2;','色、画像、位置など']},
+  'opacity': {ko:['투명도','요소 전체의 불투명도를 조절합니다.','opacity: 0.6;','0 ~ 1'],ja:['透明度','要素全体の不透明度を調整します。','opacity: 0.6;','0〜1']},
+  'overflow': {ko:['넘친 내용 처리','박스보다 큰 내용이 생겼을 때 보이게 할지, 자를지, 스크롤할지 정합니다.','overflow: auto;','visible, hidden, auto, scroll'],ja:['はみ出し処理','ボックスより大きい内容を表示・非表示・スクロールのどれにするか決めます。','overflow: auto;','visible、hidden、auto、scroll']},
+  'cursor': {ko:['마우스 커서','요소 위에 마우스를 올렸을 때 커서 모양을 정합니다.','cursor: pointer;','auto, default, pointer, text 등'],ja:['マウスカーソル','要素にマウスを乗せたときのカーソル形状を決めます。','cursor: pointer;','auto、default、pointer、text など']},
+  'transition': {ko:['변화 애니메이션','CSS 값이 바뀔 때 갑자기 바뀌지 않고 부드럽게 전환되도록 합니다.','transition: 0.2s ease;','속성, 시간, 타이밍 함수'],ja:['変化のアニメーション','CSS値が変わるとき滑らかに切り替わるようにします。','transition: 0.2s ease;','プロパティ、時間、タイミング関数']}
+};
+
+const cssLessonPropertyMap = {
+  'CSS 규칙 읽기':['color','font-size'],
+  '태그 선택자와 class 선택자':['color','background-color'],
+  '글자색과 배경색':['color','background-color'],
+  'px, %, rem 단위':['width','font-size','padding'],
+  'font-size로 크기 조절하기':['font-size'],
+  'font-weight와 line-height':['font-weight','line-height'],
+  'text-align으로 글자 정렬하기':['text-align'],
+  'margin으로 바깥 간격 만들기':['margin','margin-bottom'],
+  'padding으로 안쪽 공간 만들기':['padding'],
+  'border로 경계 만들기':['border'],
+  'border-radius로 모서리 다듬기':['border-radius'],
+  'width와 max-width':['width','max-width'],
+  '박스 모델과 box-sizing':['box-sizing','width','padding','border'],
+  'block, inline, inline-block':['display'],
+  'Flexbox 시작하기':['display'],
+  'flex-direction과 gap':['flex-direction','gap'],
+  'justify-content와 align-items':['justify-content','align-items'],
+  'Grid 시작하기':['display'],
+  'Grid 열 나누기':['grid-template-columns','gap'],
+  'position relative와 absolute':['position','top/right/bottom/left'],
+  '반응형 웹과 미디어 쿼리':['@media','grid-template-columns'],
+  'CSS 미니 프로젝트':['padding','background','border','border-radius','font-size','color']
+};
+
+const cssSelectors = [
+  ['*',{ko:'모든 요소를 선택합니다.',ja:'すべての要素を選択します。'}],
+  ['p',{ko:'태그 이름이 p인 모든 요소를 선택합니다.',ja:'タグ名がpのすべての要素を選択します。'}],
+  ['.card',{ko:'class="card"인 요소를 선택합니다.',ja:'class="card"の要素を選択します。'}],
+  ['#title',{ko:'id="title"인 요소를 선택합니다. 보통 한 요소에 사용합니다.',ja:'id="title"の要素を選択します。通常は1つの要素に使います。'}],
+  ['.card p',{ko:'.card 안쪽에 있는 모든 p를 선택합니다.',ja:'.cardの内側にあるすべてのpを選択します。'}],
+  ['.card > p',{ko:'.card의 바로 아래 자식 p만 선택합니다.',ja:'.cardの直下の子pだけを選択します。'}],
+  ['input[type="text"]',{ko:'특정 속성이나 속성값을 가진 요소를 선택합니다.',ja:'特定の属性や属性値を持つ要素を選択します。'}],
+  ['button:hover',{ko:'마우스를 올린 상태처럼 특정 상태의 요소를 선택합니다.',ja:'マウスを乗せた状態など、特定状態の要素を選択します。'}],
+  ['h1, h2',{ko:'여러 선택자에 같은 규칙을 한 번에 적용합니다.',ja:'複数のセレクタに同じルールをまとめて適用します。'}]
+];
+
+const cssPropertyCategories = [
+  [{ko:'글자',ja:'文字'}, ['color','font-size','font-weight','line-height','text-align']],
+  [{ko:'배경·테두리',ja:'背景・境界'}, ['background-color','background','border','border-radius','opacity']],
+  [{ko:'크기·여백',ja:'サイズ・余白'}, ['width','max-width','min-height','margin','padding','gap','box-sizing']],
+  [{ko:'레이아웃',ja:'レイアウト'}, ['display','flex-direction','justify-content','align-items','grid-template-columns']],
+  [{ko:'위치·동작',ja:'位置・動作'}, ['position','top/right/bottom/left','overflow','cursor','transition']],
+  [{ko:'반응형',ja:'レスポンシブ'}, ['@media']]
+];
+
+function renderCssReference() {
+  const l = lessons[state.current];
+  const box = el.cssReference;
+  if (!box) return;
+  if (!l || l.group !== 'CSS') {
+    box.hidden = true;
+    return;
+  }
+  box.hidden = false;
+  const ja = state.locale === 'ja';
+  el.cssReferenceLabel.textContent = ja ? 'CSSプロパティガイド' : 'CSS 속성 가이드';
+  el.cssReferenceTitle.textContent = ja ? 'このレッスンで使うプロパティ' : '이번 레슨에서 사용하는 속성';
+  el.cssReferenceIntro.textContent = ja
+    ? '名前だけを暗記せず、「何を変えるか」「どんな値を書けるか」「どう書くか」をセットで確認してください。'
+    : '이름만 외우지 말고 “무엇을 바꾸는지”, “어떤 값을 쓸 수 있는지”, “어떻게 작성하는지”를 함께 확인하세요.';
+  el.cssDictionarySummary.textContent = ja ? 'よく使うCSSセレクタとプロパティをまとめて見る' : '자주 쓰는 CSS 선택자와 속성 전체 보기';
+  el.cssSelectorTitle.textContent = ja ? 'セレクタ — どのHTMLを装飾するか選ぶ' : '선택자 — 어떤 HTML을 꾸밀지 고르기';
+  el.cssAllPropertyTitle.textContent = ja ? 'プロパティ — 選んだ要素の何を変えるか決める' : '속성 — 선택한 요소의 무엇을 바꿀지 정하기';
+
+  const names = cssLessonPropertyMap[l.title] || [];
+  el.cssPropertyList.innerHTML = names.map(name => {
+    const item = cssPropertyLibrary[name];
+    if (!item) return '';
+    const [label, meaning, syntax, values] = item[ja ? 'ja' : 'ko'];
+    return `<div class="css-property-card">
+      <div class="css-property-name"><code>${escapeHtml(name)}</code><small>${escapeHtml(label)}</small></div>
+      <div class="css-property-info">
+        <p>${escapeHtml(meaning)}</p>
+        <div class="css-property-meta">
+          <div><span>${ja ? '書き方' : '작성법'}</span><code>${escapeHtml(syntax)}</code></div>
+          <div><span>${ja ? '主な値' : '주요 값'}</span><code>${escapeHtml(values)}</code></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  el.cssSelectorList.innerHTML = cssSelectors.map(([selector, desc]) => `<div class="css-mini-item"><code>${escapeHtml(selector)}</code><p>${escapeHtml(desc[ja ? 'ja' : 'ko'])}</p></div>`).join('');
+  el.cssAllPropertyList.innerHTML = cssPropertyCategories.map(([category, props]) => `<div class="css-property-category"><strong>${escapeHtml(category[ja ? 'ja' : 'ko'])}</strong><div class="css-property-chips">${props.map(name => `<span class="css-property-chip" title="${escapeHtml(cssPropertyLibrary[name][ja ? 'ja' : 'ko'][1])}">${escapeHtml(name)}</span>`).join('')}</div></div>`).join('');
+}
+const storageKey = 'frame-study-v25';
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch { saved = {}; }
 
@@ -799,7 +919,7 @@ const state = {
 state.code = state.codeLocales[state.locale];
 
 const el = Object.fromEntries([
-  'sidebar','sidebarClose','sidebarOverlay','curriculum','summaryProgress','progressBar','crumb','lessonNumber','lessonKind','lessonTitle','lessonDescription','learningPoints','syntaxCode','missionText','problemNumber','problemFile','successCondition','missionResult','codeFeedback','feedbackTitle','feedbackMessage','editorTabs','codeEditor','lineNumbers','languageBadge','hintButton','hintBox','runButton','previewFrame','explanationList','prevButton','nextButton','resetButton','menuButton','toast','saveState'
+  'sidebar','sidebarClose','sidebarOverlay','curriculum','summaryProgress','progressBar','crumb','lessonNumber','lessonKind','lessonTitle','lessonDescription','learningPoints','syntaxCode','missionText','problemNumber','problemFile','successCondition','missionResult','codeFeedback','feedbackTitle','feedbackMessage','editorTabs','codeEditor','lineNumbers','languageBadge','hintButton','hintBox','runButton','previewFrame','explanationList','prevButton','nextButton','resetButton','menuButton','toast','saveState','cssReference','cssReferenceLabel','cssReferenceTitle','cssReferenceIntro','cssPropertyList','cssDictionary','cssDictionarySummary','cssSelectorTitle','cssSelectorList','cssAllPropertyTitle','cssAllPropertyList'
 ].map(id => [id, document.getElementById(id)]));
 
 function filesFor(index) {
@@ -907,6 +1027,7 @@ function renderLesson() {
   renderTabs();
   loadEditor();
   renderExplain();
+  renderCssReference();
   runPreview(false);
   renderCurriculum();
   el.prevButton.disabled = state.current === 0;

@@ -1169,3 +1169,157 @@ body.drawer-open {
   .language-option { min-height: 32px; padding: 0 8px; }
   .reset-button { display: none; }
 }
+
+/* v25: CSS property / selector learning reference */
+.css-reference {
+  max-width: 940px;
+  margin-top: 34px;
+  padding-top: 30px;
+  border-top: 1px solid var(--line);
+}
+.css-reference[hidden] { display: none !important; }
+.css-reference-head h3 {
+  margin: 8px 0 0;
+  font-size: 18px;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+.css-reference-head p {
+  max-width: 720px;
+  margin: 9px 0 0;
+  color: #6a6a65;
+  font-size: 12px;
+  line-height: 1.75;
+}
+.css-property-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+.css-property-card {
+  display: grid;
+  grid-template-columns: minmax(150px, 190px) 1fr;
+  gap: 20px;
+  padding: 17px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fbfbf9;
+}
+.css-property-name code {
+  display: inline-block;
+  color: #2f465d;
+  font: 600 12px/1.5 ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+}
+.css-property-name small {
+  display: block;
+  margin-top: 6px;
+  color: #898983;
+  font-size: 10px;
+}
+.css-property-info p {
+  margin: 0;
+  color: #4f4f4b;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.css-property-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+.css-property-meta div {
+  min-width: 0;
+  padding-top: 9px;
+  border-top: 1px solid #e8e8e3;
+}
+.css-property-meta span {
+  display: block;
+  margin-bottom: 4px;
+  color: #94948e;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.css-property-meta code {
+  color: #3d3d3a;
+  font: 11px/1.55 ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+.css-dictionary {
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f7f7f4;
+  overflow: clip;
+}
+.css-dictionary summary {
+  padding: 15px 17px;
+  cursor: pointer;
+  color: #3d3d39;
+  font-size: 12px;
+  font-weight: 650;
+  list-style-position: inside;
+  user-select: none;
+}
+.css-dictionary[open] summary { border-bottom: 1px solid var(--line); }
+.css-dictionary-body { padding: 18px; }
+.css-dictionary-block + .css-dictionary-block { margin-top: 24px; }
+.css-dictionary-block h4 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.css-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.css-mini-item {
+  padding: 11px 12px;
+  border: 1px solid #e4e4df;
+  border-radius: 9px;
+  background: #fff;
+}
+.css-mini-item code {
+  color: #334b62;
+  font: 600 11px/1.5 ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+}
+.css-mini-item p {
+  margin: 5px 0 0;
+  color: #6e6e68;
+  font-size: 10px;
+  line-height: 1.55;
+}
+.css-all-properties { display: grid; gap: 14px; }
+.css-property-category {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+.css-property-category > strong {
+  padding-top: 7px;
+  color: #6e6e68;
+  font-size: 10px;
+}
+.css-property-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.css-property-chip {
+  padding: 6px 8px;
+  border: 1px solid #e1e1dc;
+  border-radius: 7px;
+  background: #fff;
+  color: #41413d;
+  font: 10px/1.35 ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+}
+@media (max-width: 720px) {
+  .css-property-card { grid-template-columns: 1fr; gap: 10px; }
+  .css-property-meta { grid-template-columns: 1fr; }
+  .css-mini-grid { grid-template-columns: 1fr; }
+  .css-property-category { grid-template-columns: 1fr; gap: 6px; }
+}
